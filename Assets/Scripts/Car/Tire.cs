@@ -66,7 +66,7 @@ public class Tire : MonoBehaviour
         //World space direction of suspension force
         Vector3 suspensionDirection = transform.up;
 
-        Vector3 tireWorldVelocity = carRB.velocity;
+        Vector3 tireWorldVelocity = carRB.linearVelocity;
 
         //Offset of spring length and distance to floor
         float offset = suspensionRestLength - tireRay.distance;
@@ -88,7 +88,7 @@ public class Tire : MonoBehaviour
         Vector3 accelerationDirection = transform.forward;
 
         //Projects linear velocity on forward vector to get speed of car
-        float carSpeed = Vector3.Dot(_carForward, carRB.velocity);
+        float carSpeed = Vector3.Dot(_carForward, carRB.linearVelocity);
 
         //Acceleration force
         if (_accelerationInput > 0.0f)
