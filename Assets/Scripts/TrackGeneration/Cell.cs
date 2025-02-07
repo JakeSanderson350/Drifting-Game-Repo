@@ -12,7 +12,8 @@ public class Cell : MonoBehaviour
     [Header("Cell Information")]
     public Bounds cellBounds;
     public Vector3 cellPosition;
-    public float[,] heightMap;
+    public Terrain cellTerrain;
+    //public float[,] heightMap;
 
     public Cell()
     {
