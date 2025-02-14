@@ -11,7 +11,6 @@ public class Tire : MonoBehaviour
 
     //Collision data
     private RaycastHit tireRay;
-    [SerializeField]
 
     //suspension variables
     private Vector3 suspensionForce;
@@ -37,19 +36,19 @@ public class Tire : MonoBehaviour
         steeringForce = Vector3.zero;
     }
 
-    public void UpdateForces(float _accelerationInput, float _brakeInput, Vector3 _carForward)
+    public void UpdateForces(/*float _accelerationInput, float _brakeInput, Vector3 _carForward*/)
     {
         if (Physics.Raycast(transform.position, -transform.up, out tireRay, suspensionRestLength + 0.1f))
         {
             UpdateSuspension();
-            UpdateAcceleration(_accelerationInput, _brakeInput, _carForward);
-            UpdateSteering();
+            //UpdateAcceleration(_accelerationInput, _brakeInput, _carForward);
+            //UpdateSteering();
         }
 
         accForces = suspensionForce + accelerationForce + steeringForce;
-        Debug.DrawLine(transform.position, transform.position + suspensionForce, Color.green);
-        Debug.DrawLine(transform.position, transform.position + accelerationForce, Color.blue);
-        Debug.DrawLine(transform.position, transform.position + steeringForce, Color.red);
+        //Debug.DrawLine(transform.position, transform.position + suspensionForce, Color.green);
+        //Debug.DrawLine(transform.position, transform.position + accelerationForce, Color.blue);
+        //Debug.DrawLine(transform.position, transform.position + steeringForce, Color.red);
 
         suspensionForce = Vector3.zero;
         accelerationForce = Vector3.zero;
