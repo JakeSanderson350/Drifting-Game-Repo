@@ -8,8 +8,8 @@ public class CellManager : MonoBehaviour
     [Header("Cell Info")]
     private List<Cell> activeCells = new List<Cell>();
     public Cell currentCell;
-    public GameObject cellPrefab;
-    public float maxLoadedCells = 6;
+    public int currentCellIndex;
+    public float maxLoadedCells = 10;
 
     public Transform player;
 
@@ -25,6 +25,7 @@ public class CellManager : MonoBehaviour
     //Generates the initial 3-5 loaded cells w track
     private void GenerateInitialCells()
     {
+
     }
     //Instaniates the next cell prefab
     //calls trackmanager.CarveTrack with the just created cell prefab
