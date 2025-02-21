@@ -6,6 +6,11 @@ public class CarDriftController : MonoBehaviour
     [SerializeField] private Rigidbody rb;
     [SerializeField] private List<Tire> frontTires, backTires;
 
+    [SerializeField] private Transform groundTrigger;
+    [SerializeField] private LayerMask groundLayerMask;
+
+    [SerializeField] private Transform centerOfMass;
+
     // Control
     public float throttle = 1.0f;
     public float screenUse = 0.8f;
@@ -33,17 +38,27 @@ public class CarDriftController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        rb.centerOfMass = centerOfMass.localPosition;
         rb.AddForce(-GetDragForce() * rb.linearVelocity.normalized);
 
         // Check if grounded
+        if (IsGrounded())
+        {
+            // Engine
+            rb.AddForce(GetDriveDirection() * (driveForce * throttle));
+            Debug.DrawLine(transform.position, transform.position + GetDriveDirection() * (driveForce * throttle), Color.red);
 
-        // Engine
-        rb.AddForce(GetDriveDirection() * (driveForce * throttle));
-
-        // Steering
-        rb.angularVelocity += -transform.up * GetSteeringAngularAcceleration() * Time.fixedDeltaTime;
+            // Steering
+            rb.angularVelocity += -transform.up * GetSteeringAngularAcceleration() * Time.fixedDeltaTime;
+            Debug.DrawLine(transform.position, transform.position + rb.angularVelocity, Color.blue);
+        }
 
         UpdateSuspensionForce();
+    }
+
+    private bool IsGrounded()
+    {
+        return Physics.OverlapBox(groundTrigger.position, groundTrigger.localScale / 2, Quaternion.identity, groundLayerMask).Length > 0;
     }
 
     private void UpdateSuspensionForce()
@@ -61,6 +76,7 @@ public class CarDriftController : MonoBehaviour
             tire.UpdateForces();
 
             rb.AddForceAtPosition(tire.GetForces(), tire.transform.position);
+            Debug.DrawLine(tire.transform.position, tire.transform.position + tire.GetForces(), Color.green);
         }
     }
 

@@ -12,13 +12,6 @@ public class TouchInput : MonoBehaviour
     public static Vector2 centeredScreenPosition = Vector2.zero;
 
     public static bool touched = false;
-    public static InputMode inputMode;
-
-    public enum InputMode
-    {
-        Mouse,
-        Touch,
-    }
 
     // Start is called before the first frame update
     void Start()
@@ -29,29 +22,17 @@ public class TouchInput : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.touchCount > 0)
+        if (Input.GetMouseButton(0))
         {
             touched = true;
-            inputMode = InputMode.Touch;
-            Touch touch = Input.GetTouch(0);
-            pixelPosition = touch.position;
-            screenPosition = new Vector2(
-                Mathf.Min(Mathf.Max(0, pixelPosition.x / Screen.width), 1),
-                Mathf.Min(Mathf.Max(0, pixelPosition.y / Screen.height), 1)
-            );
-            centeredScreenPosition = screenPosition * 2 - Vector2.one;
-        }
-        else if (Input.mousePresent && Input.GetMouseButton(0))
-        {
-            touched = true;
-            inputMode = InputMode.Mouse;
             pixelPosition = Input.mousePosition;
             screenPosition = new Vector2(
                 Mathf.Min(Mathf.Max(0, pixelPosition.x / Screen.width), 1),
                 Mathf.Min(Mathf.Max(0, pixelPosition.y / Screen.height), 1)
             );
             centeredScreenPosition = screenPosition * 2 - Vector2.one;
-        } else
+        }
+        else
         {
             touched = false;
             screenPosition = Vector2.zero;
