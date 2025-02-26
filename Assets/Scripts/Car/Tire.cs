@@ -42,7 +42,7 @@ public class Tire : MonoBehaviour
         {
             UpdateSuspension();
             //UpdateAcceleration(_accelerationInput, _brakeInput, _carForward);
-            //UpdateSteering();
+            UpdateSteering();
         }
 
         accForces = suspensionForce + accelerationForce + steeringForce;
