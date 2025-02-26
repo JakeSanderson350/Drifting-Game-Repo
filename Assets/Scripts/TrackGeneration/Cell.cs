@@ -14,11 +14,6 @@ public class Cell : MonoBehaviour
     public Vector3 cellPosition;
     public Terrain cellTerrain;
 
-    void Start()
-    {
-        init();
-    }
-
     public void init()
     {
         GameObject cube = new GameObject("Procedural Cube");

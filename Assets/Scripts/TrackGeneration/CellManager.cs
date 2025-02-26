@@ -6,7 +6,7 @@ using UnityEngine;
 public class CellManager : MonoBehaviour
 {
     [Header("Cell Info")]
-    private List<Cell> activeCells = new List<Cell>();
+    public List<Cell> activeCells = new List<Cell>();
     public Cell currentCell;
     public int currentCellIndex;
     public float maxLoadedCells = 10;
