@@ -22,7 +22,9 @@ public class CarDriftController : MonoBehaviour
     public float driveForce = 10.0f;
 
     // Steering
-    public float maxAngularAcceleration = 30.0f;
+    public float maxAngularAcceleration = 9000.0f;
+    public float maxVisualSteeringAngle = 40.0f;
+    public float maxVisualSteeringSpeed = 10.0f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -34,6 +36,23 @@ public class CarDriftController : MonoBehaviour
     void Update()
     {
         // update tire angles visually
+        float wheelAngle = -Vector3.Angle(rb.linearVelocity.normalized, GetDriveDirection()) * Vector3.Cross(rb.linearVelocity.normalized, GetDriveDirection()).y;
+        // clamp wheel angle
+        wheelAngle = Mathf.Min(Mathf.Max(-maxVisualSteeringAngle, wheelAngle), maxVisualSteeringAngle);
+        Debug.Log(wheelAngle);
+
+        PointWheelsAt(wheelAngle);
+    }
+
+    private void PointWheelsAt(float _targetAngle)
+    {
+        foreach (Tire tire in frontTires)
+        {
+            float currentAngle = tire.transform.localEulerAngles.y;
+            float change = ((((_targetAngle - currentAngle) % 360) + 540) % 360) - 180;
+            float newAngle = currentAngle + change * Time.deltaTime * maxVisualSteeringSpeed;
+            tire.transform.localEulerAngles = new Vector3(0, newAngle, 0);
+        }
     }
 
     private void FixedUpdate()
@@ -47,6 +66,7 @@ public class CarDriftController : MonoBehaviour
             // Engine
             rb.AddForce(GetDriveDirection() * (driveForce * throttle));
             Debug.DrawLine(transform.position, transform.position + GetDriveDirection() * (driveForce * throttle), Color.red);
+            Debug.DrawLine(transform.position, transform.position + rb.linearVelocity, Color.green);
 
             // Steering
             rb.angularVelocity += -transform.up * GetSteeringAngularAcceleration() * Time.fixedDeltaTime;
@@ -59,6 +79,13 @@ public class CarDriftController : MonoBehaviour
     private bool IsGrounded()
     {
         return Physics.OverlapBox(groundTrigger.position, groundTrigger.localScale / 2, Quaternion.identity, groundLayerMask).Length > 0;
+    }
+
+    private Vector3 UpdateCOMDelta()
+    {
+        float playerInput = Mathf.Clamp(TouchInput.centeredScreenPosition.x / screenUse, -1, 1);
+        Vector3 direction = centerOfMass.transform.right;
+        return Vector3.zero;
     }
 
     private void UpdateSuspensionForce()
