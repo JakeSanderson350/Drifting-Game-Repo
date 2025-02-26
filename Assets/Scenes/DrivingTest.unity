@@ -409,7 +409,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 294157719}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 18065519880c1f84b853beded0a49633, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -450,7 +450,7 @@ MonoBehaviour:
   throttle: 1
   screenUse: 0.8
   drag: 1
-  driveForce: 100
+  driveForce: 80
   maxAngularAcceleration: 9000
 --- !u!1 &298012511
 GameObject:
@@ -478,7 +478,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 298012511}
-  m_Material: {fileID: 13400000, guid: 18065519880c1f84b853beded0a49633, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
