@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4660242906826397230}
   - component: {fileID: 1627097177515848974}
   - component: {fileID: 344127847823506020}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Spline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -298,7 +298,7 @@ GameObject:
   - component: {fileID: 2358667525165238785}
   - component: {fileID: 8765172260500452345}
   - component: {fileID: 6567950279718321116}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Track2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -409,8 +409,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trackStartPos: {x: 0, y: 0, z: 0}
-  trackEndPos: {x: 0, y: 0, z: 0}
   trackStartRotation: {x: 0, y: 0, z: 0, w: 0}
+  trackEndPos: {x: 0, y: 0, z: 0}
   trackEndRotation: {x: 0, y: 0, z: 0, w: 0}
   spline: {fileID: 4510228883496881817}
   bounds:
