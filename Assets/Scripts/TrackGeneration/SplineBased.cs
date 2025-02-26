@@ -75,9 +75,9 @@ public class SplineBased : MonoBehaviour
     Vector3 GetNormal3D(Vector3[] points, float t, Vector3 up)
     { 
         Vector3 tangent = GetTangent(points, t);
-        Vector3 biNormal = Mathf.Cross(up, tangent).normalized;
+        Vector3 biNormal = Vector3.Cross(up, tangent).normalized;
 
-        return Mathf.Cross(tangent, biNormal);
+        return Vector3.Cross(tangent, biNormal);
     }
 
     Quaternion GetOrientation3D(Vector3[] points, float t, Vector3 up)
