@@ -32,13 +32,13 @@ Material:
     - _BlendFactor: 1
     - _DebugNormals: 0
     - _EdgeIntensity: 1
-    - _EdgeThreshold: 0.55
+    - _EdgeThreshold: 1
     - _RimIntensity: 35.4
     - _Threshold: -0.33
     m_Colors:
-    - _DarkColor: {r: 0, g: 0, b: 1, a: 1}
-    - _EdgeColor: {r: 1, g: 0, b: 0, a: 1}
-    - _LightColor: {r: 0.7798742, g: 0.5363782, b: 0.076025344, a: 1}
+    - _DarkColor: {r: 0.45811796, g: 0, b: 1, a: 1}
+    - _EdgeColor: {r: 1, g: 0, b: 0, a: 0}
+    - _LightColor: {r: 0.46909425, g: 0.5849056, b: 0.4653494, a: 1}
     - _RimColor: {r: 1, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

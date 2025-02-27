@@ -80,36 +80,36 @@ Shader "Unlit/GoochShaderWithDepthEdgeDetection"
                 
                 // Depth-based edge detection
                 // Sample the depth texture using the correct function
-                float depth = Linear01Depth(tex2D(_CameraDepthTexture, i.uv));
+                // float depth = Linear01Depth(tex2D(_CameraDepthTexture, i.uv));
                 
-                // Sample surrounding depths to detect edges (larger filter size for better edge detection)
-                float depthLeft = Linear01Depth(tex2D(_CameraDepthTexture, i.uv + float2(-0.02, 0.0)));
-                float depthRight = Linear01Depth(tex2D(_CameraDepthTexture, i.uv + float2(0.02, 0.0)));
-                float depthUp = Linear01Depth(tex2D(_CameraDepthTexture, i.uv + float2(0.0, 0.02)));
-                float depthDown = Linear01Depth(tex2D(_CameraDepthTexture, i.uv + float2(0.0, -0.02)));
+                // // Sample surrounding depths to detect edges (larger filter size for better edge detection)
+                // float depthLeft = Linear01Depth(tex2D(_CameraDepthTexture, i.uv + float2(-0.02, 0.0)));
+                // float depthRight = Linear01Depth(tex2D(_CameraDepthTexture, i.uv + float2(0.02, 0.0)));
+                // float depthUp = Linear01Depth(tex2D(_CameraDepthTexture, i.uv + float2(0.0, 0.02)));
+                // float depthDown = Linear01Depth(tex2D(_CameraDepthTexture, i.uv + float2(0.0, -0.02)));
                 
-                // Calculate the difference in depth (Sobel-like approach with larger filter)
-                float depthDifference = abs(depth - depthLeft) + abs(depth - depthRight) + abs(depth - depthUp) + abs(depth - depthDown);
+                // // Calculate the difference in depth (Sobel-like approach with larger filter)
+                // float depthDifference = abs(depth - depthLeft) + abs(depth - depthRight) + abs(depth - depthUp) + abs(depth - depthDown);
                 
-                // Apply threshold to detect edges
-                float edgeMask = step(_EdgeThreshold, depthDifference);
+                // // Apply threshold to detect edges
+                // float edgeMask = step(_EdgeThreshold, depthDifference);
                 
-                // If depth-based edge detection is not strong enough, use normals to enhance edge detection
-                if (edgeMask == 0)
-                {
-                    float3 normalLeft = normalize(tex2D(_CameraDepthTexture, i.uv + float2(-0.02, 0.0)).xyz);
-                    float3 normalRight = normalize(tex2D(_CameraDepthTexture, i.uv + float2(0.02, 0.0)).xyz);
-                    float3 normalUp = normalize(tex2D(_CameraDepthTexture, i.uv + float2(0.0, 0.02)).xyz);
-                    float3 normalDown = normalize(tex2D(_CameraDepthTexture, i.uv + float2(0.0, -0.02)).xyz);
+                // // If depth-based edge detection is not strong enough, use normals to enhance edge detection
+                // if (edgeMask == 0)
+                // {
+                //     float3 normalLeft = normalize(tex2D(_CameraDepthTexture, i.uv + float2(-0.02, 0.0)).xyz);
+                //     float3 normalRight = normalize(tex2D(_CameraDepthTexture, i.uv + float2(0.02, 0.0)).xyz);
+                //     float3 normalUp = normalize(tex2D(_CameraDepthTexture, i.uv + float2(0.0, 0.02)).xyz);
+                //     float3 normalDown = normalize(tex2D(_CameraDepthTexture, i.uv + float2(0.0, -0.02)).xyz);
                     
-                    float normalDifference = abs(dot(i.normal, normalLeft)) + abs(dot(i.normal, normalRight)) + abs(dot(i.normal, normalUp)) + abs(dot(i.normal, normalDown));
+                //     float normalDifference = abs(dot(i.normal, normalLeft)) + abs(dot(i.normal, normalRight)) + abs(dot(i.normal, normalUp)) + abs(dot(i.normal, normalDown));
                     
-                    // If normal difference is large, this might indicate an edge
-                    edgeMask = step(_EdgeThreshold, normalDifference);
-                }
+                //     // If normal difference is large, this might indicate an edge
+                //     edgeMask = step(_EdgeThreshold, normalDifference);
+                // }
                 
                 // Blend edge color with Gooch shading
-                col.rgb = lerp(col.rgb, _EdgeColor.rgb, edgeMask);
+    
                 
                 return col;
             }
