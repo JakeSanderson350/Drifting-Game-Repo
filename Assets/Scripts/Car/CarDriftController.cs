@@ -11,25 +11,33 @@ public class CarDriftController : MonoBehaviour
 
     [SerializeField] private Transform centerOfMass;
 
-    // Control
+    [Header("Control")]
     public float throttle = 1.0f;
+    public float throttleIncrement = 0.05f;
+    private float defaultThrottle = 0.5f;
     public float screenUse = 0.8f;
 
-    // Body
+    [Header("Body")]
     public float drag = 1.0f;
 
-    // Engine
+    [Header("Engine")]
     public float driveForce = 10.0f;
 
-    // Steering
+    [Header("Steering")]
     public float maxAngularAcceleration = 9000.0f;
     public float maxVisualSteeringAngle = 40.0f;
     public float maxVisualSteeringSpeed = 10.0f;
 
+    [Header("Drifting")]
+    public float driftAngleThreshold = 5.0f;
+    public float defaultRearGrip = -1.0f;
+    public float driftingRearGrip = -4.0f;
+    public float maxDriftAngle = 60.0f;
+    public float transferSpeed = 10.0f;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -42,6 +50,21 @@ public class CarDriftController : MonoBehaviour
         //Debug.Log(wheelAngle);
 
         PointWheelsAt(wheelAngle);
+    }
+
+    public float GetDriftAngle()
+    {
+        if (!IsGrounded())
+        {
+            return 0.0f;
+        }
+
+        return Vector3.Angle(rb.linearVelocity, GetDriveDirection()) * Vector3.Cross(rb.linearVelocity.normalized, GetDriveDirection()).y;
+    }
+
+    public bool IsDrifting()
+    {
+        return Mathf.Abs(GetDriftAngle()) > driftAngleThreshold;
     }
 
     private void PointWheelsAt(float _targetAngle)
@@ -64,31 +87,38 @@ public class CarDriftController : MonoBehaviour
         if (IsGrounded())
         {
             // Engine
-            rb.AddForce(GetDriveDirection() * (driveForce * throttle));
-            Debug.DrawLine(transform.position, transform.position + GetDriveDirection() * (driveForce * throttle), Color.red);
-            Debug.DrawLine(transform.position, transform.position + rb.linearVelocity, Color.green);
+            UpdateEngine();
 
             // Steering
             rb.angularVelocity += -transform.up * GetSteeringAngularAcceleration() * Time.fixedDeltaTime;
-            Debug.DrawLine(transform.position, transform.position + rb.angularVelocity, Color.blue);
+            //Debug.DrawLine(transform.position, transform.position + rb.angularVelocity, Color.blue);
         }
 
-        UpdateSuspensionForce();
+        UpdateTireForce();
     }
 
-    private bool IsGrounded()
+    public bool IsGrounded()
     {
         return Physics.OverlapBox(groundTrigger.position, groundTrigger.localScale / 2, Quaternion.identity, groundLayerMask).Length > 0;
     }
 
-    private Vector3 UpdateCOMDelta()
+    private void UpdateEngine()
     {
-        float playerInput = Mathf.Clamp(TouchInput.centeredScreenPosition.x / screenUse, -1, 1);
-        Vector3 direction = centerOfMass.transform.right;
-        return Vector3.zero;
+        if (!IsDrifting())
+        {
+            throttle = Mathf.Clamp01(throttle + throttleIncrement * Time.fixedDeltaTime);
+        }
+        else
+        {
+            throttle = Mathf.Clamp(throttle - throttleIncrement * Time.fixedDeltaTime, defaultThrottle, 1.0f);
+        }
+
+        rb.AddForce(GetDriveDirection() * (driveForce * throttle));
+        Debug.DrawLine(transform.position, transform.position + GetDriveDirection() * (driveForce * throttle), Color.red);
+        Debug.Log(rb.linearVelocity.magnitude);
     }
 
-    private void UpdateSuspensionForce()
+    private void UpdateTireForce()
     {
         //Update tire forces
         foreach (Tire tire in frontTires)
@@ -100,6 +130,15 @@ public class CarDriftController : MonoBehaviour
         }
         foreach (Tire tire in backTires)
         {
+            if (IsDrifting())
+            {
+                tire.tireGripFactor = Mathf.Lerp(driftingRearGrip, defaultRearGrip, (Mathf.Abs(GetDriftAngle()) / maxDriftAngle));
+            }
+            else
+            {
+                tire.tireGripFactor = Mathf.Lerp(defaultRearGrip, driftingRearGrip , 1 / (Mathf.Abs(GetDriftAngle()) / maxDriftAngle));
+            }
+
             tire.UpdateForces();
 
             rb.AddForceAtPosition(tire.GetForces(), tire.transform.position);

@@ -147,6 +147,7 @@ GameObject:
   - component: {fileID: 7378872709621726207}
   - component: {fileID: 6438217589871897378}
   - component: {fileID: 3488100902572810491}
+  - component: {fileID: 7260372234300094930}
   m_Layer: 0
   m_Name: Car
   m_TagString: Untagged
@@ -198,7 +199,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
@@ -248,13 +249,36 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   centerOfMass: {fileID: 3608617058442101234}
-  throttle: 1
+  throttle: 0.1
+  throttleIncrement: 0.1
   screenUse: 0.8
   drag: 1
-  driveForce: 80
+  driveForce: 200
   maxAngularAcceleration: 9000
   maxVisualSteeringAngle: 40
   maxVisualSteeringSpeed: 10
+  driftAngleThreshold: 5
+  defaultRearGrip: -1
+  driftingRearGrip: -4
+  maxDriftAngle: 60
+  transferSpeed: 10
+--- !u!114 &7260372234300094930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7567560579064384266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 198aa5572e576c345842e4e94febb565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  acceleration: 40
+  direction: {x: 0, y: -1, z: 0}
+  maxAngle: 30
+  rb: {fileID: 7378872709621726207}
+  car: {fileID: 3488100902572810491}
 --- !u!1 &8433912454428698913
 GameObject:
   m_ObjectHideFlags: 0

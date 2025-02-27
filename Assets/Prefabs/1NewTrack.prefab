@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5966690180953303842}
   - component: {fileID: 224524113986325854}
   - component: {fileID: 7619028452936381268}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 1NewTrack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3239580340078442836}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 18065519880c1f84b853beded0a49633, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
