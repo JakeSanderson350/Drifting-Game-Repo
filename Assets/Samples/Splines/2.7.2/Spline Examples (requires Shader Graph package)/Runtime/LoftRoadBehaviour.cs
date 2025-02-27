@@ -27,7 +27,7 @@ namespace Unity.Splines.Examples
                 foreach (var width in m_Widths)
                 {
                     if (width.DefaultValue == 0)
-                        width.DefaultValue = 1f;
+                        width.DefaultValue = 3f;
                 }
 
                 return m_Widths;
