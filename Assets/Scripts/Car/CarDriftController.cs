@@ -39,7 +39,7 @@ public class CarDriftController : MonoBehaviour
         float wheelAngle = -Vector3.Angle(rb.linearVelocity.normalized, GetDriveDirection()) * Vector3.Cross(rb.linearVelocity.normalized, GetDriveDirection()).y;
         // clamp wheel angle
         wheelAngle = Mathf.Min(Mathf.Max(-maxVisualSteeringAngle, wheelAngle), maxVisualSteeringAngle);
-        Debug.Log(wheelAngle);
+        //Debug.Log(wheelAngle);
 
         PointWheelsAt(wheelAngle);
     }
