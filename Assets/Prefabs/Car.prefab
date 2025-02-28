@@ -257,7 +257,7 @@ MonoBehaviour:
   maxAngularAcceleration: 9000
   maxVisualSteeringAngle: 40
   maxVisualSteeringSpeed: 10
-  driftAngleThreshold: 5
+  driftAngleThreshold: 2
   defaultRearGrip: -1
   driftingRearGrip: -4
   maxDriftAngle: 60

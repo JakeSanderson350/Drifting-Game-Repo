@@ -4,5 +4,9 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/SplineTesting.unity
+    guid: ea7e921a7b7bc1d45a97f2ecdd25eed8
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0

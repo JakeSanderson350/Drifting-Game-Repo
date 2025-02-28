@@ -447,7 +447,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.4842044, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -311.3, y: -233}
+  m_AnchoredPosition: {x: 316, y: -151}
   m_SizeDelta: {x: 181, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &389706502
@@ -470,7 +470,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: dfssf
+  m_text: 'Speed: '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -568,6 +568,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7567560579064384266, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
   m_PrefabInstance: {fileID: 8679054556794040011}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &611018768 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3488100902572810491, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
+  m_PrefabInstance: {fileID: 8679054556794040011}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 611018766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e44792ea2611e1b4b82326caca88b4c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1211642407
 GameObject:
   m_ObjectHideFlags: 0
@@ -578,8 +589,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1211642409}
   - component: {fileID: 1211642408}
+  - component: {fileID: 1211642410}
   m_Layer: 0
-  m_Name: SteerController
+  m_Name: GameController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -612,6 +624,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1211642410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1211642407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99f1555949c94ac46a036ccde094a778, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scoreUI: {fileID: 1769450617}
+  car: {fileID: 611018768}
 --- !u!1 &1769450615
 GameObject:
   m_ObjectHideFlags: 0
@@ -646,7 +672,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.4842044, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -449, y: -233}
+  m_AnchoredPosition: {x: -285, y: -151}
   m_SizeDelta: {x: 181, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1769450617
@@ -669,7 +695,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: dfssf
+  m_text: 'Score:
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -734,7 +762,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: -22.578491, z: 0, w: 0}
+  m_margin: {x: 0, y: -22.578491, z: -95.351326, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -796,7 +824,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}

@@ -115,7 +115,6 @@ public class CarDriftController : MonoBehaviour
 
         rb.AddForce(GetDriveDirection() * (driveForce * throttle));
         Debug.DrawLine(transform.position, transform.position + GetDriveDirection() * (driveForce * throttle), Color.red);
-        Debug.Log(rb.linearVelocity.magnitude);
     }
 
     private void UpdateTireForce()
