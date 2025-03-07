@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Splines;
 using UnityEngine.Splines.ExtrusionShapes;
 
-public class SplineBased : MonoBehaviour
+public class GDCGeneration : MonoBehaviour
 {
     public Vector2[] verts;
     public Vector2[] normals;

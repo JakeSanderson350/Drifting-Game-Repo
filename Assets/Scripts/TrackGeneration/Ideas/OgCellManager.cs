@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CellManager : MonoBehaviour
+public class OgCellManager : MonoBehaviour
 {
     [Header("Cell Info")]
     public List<Cell> activeCells = new List<Cell>();
@@ -31,7 +31,7 @@ public class CellManager : MonoBehaviour
     //calls trackmanager.CarveTrack with the just created cell prefab
     private void GenerateNextCell()
     {
-        TrackManager.instance.CarveTrack(currentCell);
+        OgTrackManager.instance.CarveTrack(currentCell);
     }
     //deals with the creation and deletion of cells
     //based on players current position

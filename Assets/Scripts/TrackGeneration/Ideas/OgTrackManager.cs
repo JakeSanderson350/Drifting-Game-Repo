@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEngine.Splines;
 
-public class TrackManager : MonoBehaviour
+public class OgTrackManager : MonoBehaviour
 {
-    public static TrackManager instance;
+    public static OgTrackManager instance;
     
     public void Awake()
     {
