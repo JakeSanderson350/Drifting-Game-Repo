@@ -1,13 +1,25 @@
 using System.Collections.Generic;
+using TMPro;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Splines;
+using Random = UnityEngine.Random;
 
-public class SplineTest : MonoBehaviour
+public class SplineGenerator : MonoBehaviour
 {
+    //need to create spline class for generated splines
+    public class SplineH
+    {
+
+    }
+
     [Header("Spline Info")]
     public SplineContainer splineContainer;
+
+    [Header("Mesh Info")]
+    public GameObject splineObj;
+    public GameObject myCell;
 
     [Header("Knot Positions")]
     public float3 p1 = new float3(1.0f, 0.0f, 1.0f);
@@ -21,15 +33,28 @@ public class SplineTest : MonoBehaviour
 
     void Start()
     {
+        splineObj = new GameObject("Procedural Spline");
+        splineContainer = splineObj.AddComponent<SplineContainer>();
+        splineObj.tag = "Spline";
+
         UpdateSpline();
     }
-    private void OnValidate()
+    public void OnValidate()
     {
         UpdateSpline();
     }
 
     public void UpdateSpline()
     {
+        //need to convert to world space then calculate bounds
+/*        Bounds bounds = myCell.GetComponent<MeshFilter>().sharedMesh.bounds;
+        Vector3 center = myCell.GetComponent<Mesh>().bounds.center;
+
+        float x = Random.Range(center.x - bounds.x, center.x + bounds.x);
+        float y = Random.Range(center.y - bounds.y, center.y + bounds.y);
+        float z = Random.Range(center.z - bounds.z, center.z + bounds.z);
+        p1 = new float3(x, y, z);*/
+
         List<BezierKnot> totalKnots = new List<BezierKnot>
         {
             new BezierKnot(p1, tangentIn, tangentOut, quaternion.identity),
@@ -44,5 +69,10 @@ public class SplineTest : MonoBehaviour
         {
             splineContainer.Spline.SetTangentMode(i, TangentMode.AutoSmooth);
         }
+    }
+
+    public void SetCell(GameObject cell)
+    {
+        myCell = cell;
     }
 }

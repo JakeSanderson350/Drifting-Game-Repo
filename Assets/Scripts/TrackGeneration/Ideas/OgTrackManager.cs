@@ -1,4 +1,4 @@
-using UnityEngine;
+/*using UnityEngine;
 using UnityEngine.Splines;
 
 public class OgTrackManager : MonoBehaviour
@@ -14,7 +14,7 @@ public class OgTrackManager : MonoBehaviour
     //generates spline and then modifies terrain accordingly
     //sets cell.TrackStartPos and cell.TrackEndPos for future use
     //sets cell.EndingTrackAngle for future use
-    public void CarveTrack(Cell cell)
+    public void CarveTrack(CellGenerator cell)
     {
         Spline cellSpline = SplineGenerator(cell);
         TerrainModifier(cell, cellSpline);
@@ -22,7 +22,7 @@ public class OgTrackManager : MonoBehaviour
 
     //generates a random spline (track) for a given cell
     //stays within the cell.Bounds
-    public Spline SplineGenerator(Cell cell)
+    public Spline SplineGenerator(CellGenerator cell)
     {
         return new Spline();
     }
@@ -30,8 +30,9 @@ public class OgTrackManager : MonoBehaviour
     //uses the previously created spline
     //changes cell heightmap, and edits the terrain around the track
     //does the actual modifying of the basic cell, using the spline as reference
-    public void TerrainModifier(Cell cell, Spline generatedSpline)
+    public void TerrainModifier(CellGenerator cell, Spline generatedSpline)
     {
 
     }
 }
+*/

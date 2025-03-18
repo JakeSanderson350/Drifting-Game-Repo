@@ -129,10 +129,9 @@ GameObject:
   m_Component:
   - component: {fileID: 957738051}
   - component: {fileID: 957738050}
-  - component: {fileID: 957738052}
   m_Layer: 0
   m_Name: TestingSplines
-  m_TagString: Untagged
+  m_TagString: SplineGen
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -149,10 +148,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c90ba8462bd71a419725436807b0733, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  splineContainer: {fileID: 957738052}
+  splineContainer: {fileID: 0}
+  splineObj: {fileID: 0}
+  myCell: {fileID: 0}
   p1:
     x: 1
-    y: 0.81
+    y: 0
     z: 1
   p2:
     x: 1
@@ -160,7 +161,7 @@ MonoBehaviour:
     z: -1
   p3:
     x: -1
-    y: 0.84
+    y: 0
     z: -1
   p4:
     x: -1
@@ -183,132 +184,12 @@ Transform:
   m_GameObject: {fileID: 957738049}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -5.37}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &957738052
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 957738049}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dab5c7d4c32e743048dfca98e2d5914f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Spline:
-    m_EditModeType: 1
-    m_Knots: []
-    m_MetaData: []
-    m_Closed: 0
-    m_IntData:
-      m_Data: []
-    m_FloatData:
-      m_Data: []
-    m_Float4Data:
-      m_Data: []
-    m_ObjectData:
-      m_Data: []
-  m_Splines:
-  - m_EditModeType: 1
-    m_Knots:
-    - Position:
-        x: 1
-        y: 0.81
-        z: 1
-      TangentIn:
-        x: -0
-        y: -0
-        z: -0.4714045
-      TangentOut:
-        x: 0
-        y: 0
-        z: 0.4714045
-      Rotation:
-        value:
-          x: 0
-          y: 0.92387956
-          z: 0
-          w: 0.38268346
-    - Position:
-        x: 1
-        y: 0
-        z: -1
-      TangentIn:
-        x: -0
-        y: -0
-        z: -0.47080395
-      TangentOut:
-        x: 0
-        y: 0
-        z: 0.47205034
-      Rotation:
-        value:
-          x: 0.0017287838
-          y: 0.9243751
-          z: 0.0041893083
-          w: -0.38145787
-    - Position:
-        x: -1
-        y: 0.84
-        z: -1
-      TangentIn:
-        x: -0
-        y: -0
-        z: -0.4714045
-      TangentOut:
-        x: 0
-        y: 0
-        z: 0.4714045
-      Rotation:
-        value:
-          x: 0
-          y: -0.38268346
-          z: -0
-          w: 0.92387956
-    - Position:
-        x: -1
-        y: 0
-        z: 1
-      TangentIn:
-        x: -0
-        y: -0
-        z: -0.47205034
-      TangentOut:
-        x: 0
-        y: 0
-        z: 0.47080395
-      Rotation:
-        value:
-          x: 0.0041847234
-          y: 0.38390043
-          z: -0.0017398538
-          w: 0.9233634
-    m_MetaData:
-    - Mode: 0
-      Tension: 0.5
-    - Mode: 0
-      Tension: 0.5
-    - Mode: 0
-      Tension: 0.5
-    - Mode: 0
-      Tension: 0.5
-    m_Closed: 1
-    m_IntData:
-      m_Data: []
-    m_FloatData:
-      m_Data: []
-    m_Float4Data:
-      m_Data: []
-    m_ObjectData:
-      m_Data: []
-  m_Knots:
-    m_KnotsLink: []
 --- !u!1 &1189291855
 GameObject:
   m_ObjectHideFlags: 0
@@ -446,14 +327,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vertices:
-  - {x: 1, y: -1, z: 1}
-  - {x: -1, y: -1, z: 1}
-  - {x: 1, y: -1, z: -1}
-  - {x: -1, y: -1, z: -1}
-  - {x: 1, y: 1, z: 1}
-  - {x: -1, y: 1, z: 1}
-  - {x: 1, y: 1, z: -1}
-  - {x: -1, y: 1, z: -1}
+  - {x: 4, y: -1, z: 10}
+  - {x: -4, y: -1, z: 10}
+  - {x: 4, y: -1, z: -1}
+  - {x: -4, y: -1, z: -1}
+  - {x: 4, y: 1, z: 10}
+  - {x: -4, y: 1, z: 10}
+  - {x: 4, y: 1, z: -1}
+  - {x: -4, y: 1, z: -1}
+  - {x: 0.5, y: -0.5, z: 0.5}
+  - {x: -0.5, y: -0.5, z: 0.5}
+  - {x: 0.5, y: 0.5, z: 0.5}
+  - {x: -0.5, y: 0.5, z: 0.5}
+  - {x: 0.5, y: -0.5, z: -0.5}
+  - {x: -0.5, y: -0.5, z: -0.5}
+  - {x: 0.5, y: 0.5, z: -0.5}
+  - {x: -0.5, y: 0.5, z: -0.5}
+  - {x: -0.5, y: -0.5, z: 0.5}
+  - {x: -0.5, y: -0.5, z: -0.5}
+  - {x: -0.5, y: 0.5, z: 0.5}
+  - {x: -0.5, y: 0.5, z: -0.5}
+  - {x: 0.5, y: -0.5, z: 0.5}
+  - {x: 0.5, y: -0.5, z: -0.5}
+  - {x: 0.5, y: 0.5, z: 0.5}
+  - {x: 0.5, y: 0.5, z: -0.5}
   normals:
   - {x: 0, y: -1, z: 0}
   - {x: 0, y: -1, z: 0}
@@ -479,16 +376,86 @@ MonoBehaviour:
   - {x: 1, y: 0, z: 0}
   - {x: 1, y: 0, z: 0}
   - {x: 1, y: 0, z: 0}
-  uvs:
-  - {x: 0, y: 1}
+  uvs0:
   - {x: 0, y: 0}
-  - {x: 1, y: 1}
   - {x: 1, y: 0}
   - {x: 0, y: 1}
-  - {x: 0, y: 0}
   - {x: 1, y: 1}
+  - {x: 0, y: 0}
   - {x: 1, y: 0}
+  - {x: 0, y: 1}
+  - {x: 1, y: 1}
+  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  - {x: 0, y: 1}
+  - {x: 1, y: 1}
+  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  - {x: 0, y: 1}
+  - {x: 1, y: 1}
+  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  - {x: 0, y: 1}
+  - {x: 1, y: 1}
+  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  - {x: 0, y: 1}
+  - {x: 1, y: 1}
+  uvs1:
+  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  - {x: 0, y: 1}
+  - {x: 1, y: 1}
+  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  - {x: 0, y: 1}
+  - {x: 1, y: 1}
+  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  - {x: 0, y: 1}
+  - {x: 1, y: 1}
+  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  - {x: 0, y: 1}
+  - {x: 1, y: 1}
+  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  - {x: 0, y: 1}
+  - {x: 1, y: 1}
+  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  - {x: 0, y: 1}
+  - {x: 1, y: 1}
   triangles: 000000000200000003000000030000000100000000000000040000000500000007000000070000000600000004000000000000000100000005000000050000000400000000000000020000000600000007000000070000000300000002000000010000000300000007000000070000000500000001000000000000000400000006000000060000000200000000000000
+  tangents:
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  - {x: 1, y: 0, z: 0, w: 1}
+  cube: {fileID: 0}
+  mesh: {fileID: 0}
+  temp: {fileID: 2100000, guid: 0964d871d36afd64d8031460ce24bee6, type: 2}
+  finished: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

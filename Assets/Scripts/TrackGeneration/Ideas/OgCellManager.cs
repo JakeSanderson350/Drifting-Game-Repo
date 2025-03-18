@@ -1,4 +1,4 @@
-using NUnit.Framework;
+/*using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,8 +6,8 @@ using UnityEngine;
 public class OgCellManager : MonoBehaviour
 {
     [Header("Cell Info")]
-    public List<Cell> activeCells = new List<Cell>();
-    public Cell currentCell;
+    public List<CellGenerator> activeCells = new List<CellGenerator>();
+    public CellGenerator currentCell;
     public int currentCellIndex;
     public float maxLoadedCells = 10;
 
@@ -41,3 +41,4 @@ public class OgCellManager : MonoBehaviour
     
     }
 }
+*/
