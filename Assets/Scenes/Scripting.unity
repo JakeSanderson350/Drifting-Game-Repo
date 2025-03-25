@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 957738051}
   - component: {fileID: 957738050}
   m_Layer: 0
-  m_Name: TestingSplines
+  m_Name: SplineGenerator
   m_TagString: SplineGen
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -293,7 +293,7 @@ GameObject:
   - component: {fileID: 1772169516}
   - component: {fileID: 1772169517}
   m_Layer: 0
-  m_Name: TestingObject
+  m_Name: ObjGenerator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
