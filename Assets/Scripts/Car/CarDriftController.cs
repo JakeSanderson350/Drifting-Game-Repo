@@ -18,6 +18,7 @@ public class CarDriftController : MonoBehaviour
     public float screenUse = 0.8f;
 
     [Header("Body")]
+    public float tireRadius = 0.5f;
     public float drag = 1.0f;
 
     [Header("Engine")]
@@ -62,6 +63,18 @@ public class CarDriftController : MonoBehaviour
         return Vector3.Angle(rb.linearVelocity, GetDriveDirection()) * Vector3.Cross(rb.linearVelocity.normalized, GetDriveDirection()).y;
     }
 
+    public float GetSlipRatio()
+    {
+        float carVelocity = rb.linearVelocity.magnitude;
+        float tireAngularVelocity = 6.0f;
+
+        float slipRatio = tireAngularVelocity * tireRadius - carVelocity;
+        slipRatio /= Mathf.Abs(carVelocity);
+        Debug.Log(slipRatio);
+
+        return slipRatio;
+    }
+
     public bool IsDrifting()
     {
         return Mathf.Abs(GetDriftAngle()) > driftAngleThreshold;
@@ -88,6 +101,7 @@ public class CarDriftController : MonoBehaviour
         {
             // Engine
             UpdateEngine();
+            GetSlipRatio();
 
             // Steering
             rb.angularVelocity += -transform.up * GetSteeringAngularAcceleration() * Time.fixedDeltaTime;
