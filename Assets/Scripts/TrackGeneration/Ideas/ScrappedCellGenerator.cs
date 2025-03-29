@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CellGenerator : MonoBehaviour
+public class ScrappedCellGenerator : MonoBehaviour
 {
     [Header("Mesh Values")]
     public Vector3[] vertices = new Vector3[]
@@ -143,12 +143,11 @@ public class CellGenerator : MonoBehaviour
 
     void Start()
     {
-        GenerateWithValues();
+        PrimitiveGeneration();
     }
     public void PrimitiveGeneration()
     {
         var newCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-
     }
 /*    public void OnValidate()
     {
@@ -179,6 +178,6 @@ public class CellGenerator : MonoBehaviour
         mesh.uv2 = uvs1;
 
         GameObject tempObj = GameObject.FindGameObjectWithTag("SplineGen");
-        tempObj.GetComponent<SplineGenerator>().SetCell(cube);
+        //tempObj.GetComponent<SplineGenerator>().SetCell(cube);
     }
 }
