@@ -61,4 +61,6 @@ public class ScoreManager : MonoBehaviour
             scoreMultiplier = 1.0f;
         }
     }
+
+    float GetDriftLength() { return driftLength; }
 }
