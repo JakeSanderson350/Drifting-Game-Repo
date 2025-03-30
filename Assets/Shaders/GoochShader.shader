@@ -1,4 +1,4 @@
-Shader "Unlit/GoochShaderWithDepthEdgeDetection"
+Shader "Unlit/EnhancedGoochShader"
 {
     Properties
     {
@@ -7,12 +7,65 @@ Shader "Unlit/GoochShaderWithDepthEdgeDetection"
         _BlendFactor ("Color Blend Subtlety", Range(0.1, 3.0)) = 1.0 // Controls color transition subtlety
         _EdgeColor ("Edge Color", Color) = (0, 0, 0, 1) // Black edge color
         _EdgeThreshold ("Edge Threshold", Range(0.0, 1.0)) = 0.1 // Controls edge strength
+        _EdgeWidth ("Edge Width", Range(0.0, 2.0)) = 1.0 // Controls width of silhouette edges
+        
+        // Specular and rim highlight properties
+        _SpecColor ("Specular Color", Color) = (1, 1, 1, 1) // Specular highlight color
+        _SpecPower ("Specular Power", Range(1, 128)) = 64 // Specular power/shininess
+        _RimColor ("Rim Light Color", Color) = (1, 1, 1, 1) // Rim lighting color
+        _RimPower ("Rim Power", Range(0.1, 10.0)) = 3.0 // Controls rim light falloff
+        
+        // Fresnel effect properties
+        _FresnelColor ("Fresnel Color", Color) = (0.5, 0.5, 1.0, 1) // Color for fresnel effect
+        _FresnelPower ("Fresnel Power", Range(0.1, 10.0)) = 2.0 // Controls fresnel falloff
     }
     SubShader
     {
         Tags { "RenderType"="Opaque" }
         LOD 100
         
+        // First pass - Edge detection
+        Pass
+        {
+            Cull Front // Render back faces first
+            
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #include "UnityCG.cginc"
+            
+            float _EdgeWidth;
+            fixed4 _EdgeColor;
+            
+            struct appdata
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+            };
+            
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+            };
+            
+            v2f vert(appdata v)
+            {
+                v2f o;
+                // Extrude vertices along normals for silhouette effect
+                float3 normal = normalize(v.normal);
+                float3 extrudedVertex = v.vertex.xyz + normal * _EdgeWidth * 0.01;
+                o.pos = UnityObjectToClipPos(float4(extrudedVertex, 1.0));
+                return o;
+            }
+            
+            fixed4 frag(v2f i) : SV_Target
+            {
+                return _EdgeColor;
+            }
+            ENDCG
+        }
+        
+        // Main Pass - Gooch shading with enhancements
         Pass
         {
             CGPROGRAM
@@ -21,13 +74,24 @@ Shader "Unlit/GoochShaderWithDepthEdgeDetection"
             #pragma target 3.0
             #include "UnityCG.cginc"
             
-            // Declare the depth texture correctly using lowercase 'sampler2D'
             sampler2D _CameraDepthTexture;
             float _EdgeThreshold;
             fixed4 _EdgeColor;
             fixed4 _DarkColor;
             fixed4 _LightColor;
             float _BlendFactor;
+            
+            // Specular properties
+            float4 _SpecColor;
+            float _SpecPower;
+            
+            // Rim light properties
+            float4 _RimColor;
+            float _RimPower;
+            
+            // Fresnel properties
+            float4 _FresnelColor;
+            float _FresnelPower;
             
             struct appdata_t
             {
@@ -42,6 +106,8 @@ Shader "Unlit/GoochShaderWithDepthEdgeDetection"
                 float3 normal : TEXCOORD0;
                 float3 worldPos : TEXCOORD1;
                 float2 uv : TEXCOORD2;
+                float4 screenPos : TEXCOORD3;
+                float3 viewDir : TEXCOORD4;
             };
             
             // Vertex shader
@@ -52,14 +118,21 @@ Shader "Unlit/GoochShaderWithDepthEdgeDetection"
                 o.normal = UnityObjectToWorldNormal(v.normal);
                 o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
                 o.uv = v.uv;
+                o.screenPos = ComputeScreenPos(o.pos);
+                
+                // Calculate view direction for rim lighting and fresnel
+                float3 worldViewDir = normalize(UnityWorldSpaceViewDir(o.worldPos));
+                o.viewDir = worldViewDir;
+                
                 return o;
             }
             
-            // Fragment shader with depth-based edge detection
+            // Fragment shader
             fixed4 frag(v2f i) : SV_Target
             {
                 // Calculate Gooch shading
                 float3 normalDir = normalize(i.normal);
+                float3 viewDir = normalize(i.viewDir);
                 float3 lightDir;
                 
                 if (_WorldSpaceLightPos0.w == 0) // Directional Light
@@ -71,49 +144,34 @@ Shader "Unlit/GoochShaderWithDepthEdgeDetection"
                     lightDir = normalize(_WorldSpaceLightPos0.xyz - i.worldPos);
                 }
                 
+                // Base Gooch shading
                 float baseLightIntensity = dot(normalDir, lightDir);
                 float blendedIntensity = pow((baseLightIntensity * 0.5 + 0.5), _BlendFactor);
                 blendedIntensity = smoothstep(0.2, 0.8, blendedIntensity);
                 
                 float3 goochColor = lerp(_DarkColor.rgb, _LightColor.rgb, blendedIntensity);
-                fixed4 col = float4(goochColor, 1.0);
                 
-                // Depth-based edge detection
-                // Sample the depth texture using the correct function
-                // float depth = Linear01Depth(tex2D(_CameraDepthTexture, i.uv));
+                // Specular highlight
+                float3 halfVector = normalize(lightDir + viewDir);
+                float specularIntensity = pow(max(0, dot(normalDir, halfVector)), _SpecPower);
+                float3 specular = _SpecColor.rgb * specularIntensity;
                 
-                // // Sample surrounding depths to detect edges (larger filter size for better edge detection)
-                // float depthLeft = Linear01Depth(tex2D(_CameraDepthTexture, i.uv + float2(-0.02, 0.0)));
-                // float depthRight = Linear01Depth(tex2D(_CameraDepthTexture, i.uv + float2(0.02, 0.0)));
-                // float depthUp = Linear01Depth(tex2D(_CameraDepthTexture, i.uv + float2(0.0, 0.02)));
-                // float depthDown = Linear01Depth(tex2D(_CameraDepthTexture, i.uv + float2(0.0, -0.02)));
+                // Rim lighting (edge highlighting based on view angle)
+                float rimFactor = 1.0 - max(0, dot(normalDir, viewDir));
+                rimFactor = pow(rimFactor, _RimPower);
+                float3 rim = _RimColor.rgb * rimFactor;
                 
-                // // Calculate the difference in depth (Sobel-like approach with larger filter)
-                // float depthDifference = abs(depth - depthLeft) + abs(depth - depthRight) + abs(depth - depthUp) + abs(depth - depthDown);
+                // Fresnel effect for depth perception
+                float fresnel = pow(1.0 - max(0, dot(normalDir, viewDir)), _FresnelPower);
+                float3 fresnelColor = _FresnelColor.rgb * fresnel;
                 
-                // // Apply threshold to detect edges
-                // float edgeMask = step(_EdgeThreshold, depthDifference);
+                // Combine all lighting effects
+                float3 finalColor = goochColor + specular + rim + fresnelColor;
                 
-                // // If depth-based edge detection is not strong enough, use normals to enhance edge detection
-                // if (edgeMask == 0)
-                // {
-                //     float3 normalLeft = normalize(tex2D(_CameraDepthTexture, i.uv + float2(-0.02, 0.0)).xyz);
-                //     float3 normalRight = normalize(tex2D(_CameraDepthTexture, i.uv + float2(0.02, 0.0)).xyz);
-                //     float3 normalUp = normalize(tex2D(_CameraDepthTexture, i.uv + float2(0.0, 0.02)).xyz);
-                //     float3 normalDown = normalize(tex2D(_CameraDepthTexture, i.uv + float2(0.0, -0.02)).xyz);
-                    
-                //     float normalDifference = abs(dot(i.normal, normalLeft)) + abs(dot(i.normal, normalRight)) + abs(dot(i.normal, normalUp)) + abs(dot(i.normal, normalDown));
-                    
-                //     // If normal difference is large, this might indicate an edge
-                //     edgeMask = step(_EdgeThreshold, normalDifference);
-                // }
-                
-                // Blend edge color with Gooch shading
-    
-                
-                return col;
+                return float4(finalColor, 1.0);
             }
             ENDCG
         }
     }
+    FallBack "Diffuse"
 }

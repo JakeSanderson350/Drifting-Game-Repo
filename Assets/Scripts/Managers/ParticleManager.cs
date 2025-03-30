@@ -41,8 +41,8 @@ public class ParticleManager : MonoBehaviour
             foreach (ParticleSystem particleSystem in particleSystems)
             {
                 var emission = particleSystem.emission;
-                particleSystem.duration = baseEmissionRate + Time.deltaTime;
-                Debug.Log("Current Emission Rate: " + semission.rateOverTime);
+                //particleSystem.duration = baseEmissionRate + Time.deltaTime;
+                //Debug.Log("Current Emission Rate: " + semission.rateOverTime);
                 emission.enabled = true;
             }
         }
