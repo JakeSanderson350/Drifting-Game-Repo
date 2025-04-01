@@ -13,6 +13,7 @@ public class Cell : MonoBehaviour
 
     [Header("Previous Values")]
     public Vector3 lastKnotPos;
+    public float lastKnotYRot;
 
     public void Start()
     {
@@ -27,6 +28,7 @@ public class Cell : MonoBehaviour
 
     public void GenerateCell()
     {
+        //generate cube with respect to last knot position
         cube = cubeGen.Init(lastKnotPos);
 
         splineGen.Init();

@@ -15,23 +15,25 @@ public class PrimitveC : MonoBehaviour
 
     public GameObject Init(Vector3 prevPos)
     {
-        Debug.Log("Cube Init");
-
         cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
         mesh = cube.GetComponent<MeshFilter>().mesh;
         cube.GetComponent<MeshRenderer>().material = tempMaterial;
 
         cube.transform.localScale = new Vector3(lengthX, heightY, widthZ);
 
-        //spawn first cube at 0,0,0
         if(prevPos == Vector3.zero)
-        {
+        {   //spawn first cube at 0,0,0
             cube.transform.position = new Vector3(prevPos.x, prevPos.y, prevPos.z);
         }
 
         cube.transform.position = new Vector3(prevPos.x + (lengthX / 2), 0, prevPos.z);
-        //new Vector3(prevPos.x + (lengthX / 2), prevPos.y - (heightY / 2), prevPos.z);
 
         return cube;
+    }
+
+    public void alterRotation(float prevRot)
+    {
+        Debug.Log("cube alteration: " + prevRot);
+        cube.transform.rotation = Quaternion.Euler(0, prevRot, 0);
     }
 }

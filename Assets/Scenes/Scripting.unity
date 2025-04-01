@@ -153,6 +153,7 @@ MonoBehaviour:
   cube: {fileID: 0}
   timerDuration: 3
   lastKnotPos: {x: 0, y: 0, z: 0}
+  lastKnotRot: {x: 0, y: 0, z: 0, w: 0}
 --- !u!4 &720523246
 Transform:
   m_ObjectHideFlags: 0
@@ -202,6 +203,7 @@ MonoBehaviour:
   totalKnots: []
   minStepX: 2
   maxStepX: 3
+  spaceValue: 2
   tangentIn:
     x: -0.4714046
     y: -0.4714046
@@ -363,7 +365,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cube: {fileID: 0}
   mesh: {fileID: 0}
-  temp: {fileID: 2100000, guid: 1008dd29d20dca44eba85c933cfa5af3, type: 2}
+  tempMaterial: {fileID: 2100000, guid: 1008dd29d20dca44eba85c933cfa5af3, type: 2}
   lengthX: 30
   heightY: 2
   widthZ: 10
