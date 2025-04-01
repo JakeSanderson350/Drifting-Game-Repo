@@ -24,7 +24,6 @@ public class PrefabCell : MonoBehaviour
         init();
         setBounds();
         setTrackPos();
-        
     }
 
     public void init()

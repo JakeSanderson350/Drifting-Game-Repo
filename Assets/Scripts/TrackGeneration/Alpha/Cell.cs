@@ -28,8 +28,11 @@ public class Cell : MonoBehaviour
     public void GenerateCell()
     {
         cube = cubeGen.Init(lastKnotPos);
+
         splineGen.Init();
-        lastKnotPos = splineGen.AttachCube(cube);
+        splineGen.AttachCube(cube);
+
+        lastKnotPos = splineGen.lastKnotPos();
     }
 
     private void UpdateTimer()

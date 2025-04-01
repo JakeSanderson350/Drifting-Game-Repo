@@ -152,6 +152,7 @@ MonoBehaviour:
   cubeGen: {fileID: 1772169517}
   cube: {fileID: 0}
   timerDuration: 3
+  lastKnotPos: {x: 0, y: 0, z: 0}
 --- !u!4 &720523246
 Transform:
   m_ObjectHideFlags: 0
@@ -198,6 +199,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   splineContainer: {fileID: 0}
   splineObj: {fileID: 0}
+  totalKnots: []
   minStepX: 2
   maxStepX: 3
   tangentIn:
@@ -361,7 +363,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cube: {fileID: 0}
   mesh: {fileID: 0}
-  temp: {fileID: 2100000, guid: 0964d871d36afd64d8031460ce24bee6, type: 2}
+  temp: {fileID: 2100000, guid: 1008dd29d20dca44eba85c933cfa5af3, type: 2}
   lengthX: 30
   heightY: 2
   widthZ: 10

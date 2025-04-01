@@ -2,12 +2,13 @@ using UnityEngine;
 
 public class PrimitveC : MonoBehaviour
 {
-    [Header("Mesh Object")]
+    [Header("Mesh Values")]
     public GameObject cube;
     public Mesh mesh;
-    public Material temp;
+    public Material tempMaterial;
 
-    [Header("Scaling Values")]
+    [Space(10)]
+    [Header("Cube Dimension Values")]
     public float lengthX;
     public float heightY;
     public float widthZ;
@@ -18,11 +19,18 @@ public class PrimitveC : MonoBehaviour
 
         cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
         mesh = cube.GetComponent<MeshFilter>().mesh;
-        cube.GetComponent<MeshRenderer>().material = temp;
+        cube.GetComponent<MeshRenderer>().material = tempMaterial;
 
         cube.transform.localScale = new Vector3(lengthX, heightY, widthZ);
 
-        cube.transform.position = new Vector3(prevPos.x + (lengthX / 2), prevPos.y - (heightY / 2), prevPos.z);
+        //spawn first cube at 0,0,0
+        if(prevPos == Vector3.zero)
+        {
+            cube.transform.position = new Vector3(prevPos.x, prevPos.y, prevPos.z);
+        }
+
+        cube.transform.position = new Vector3(prevPos.x + (lengthX / 2), 0, prevPos.z);
+        //new Vector3(prevPos.x + (lengthX / 2), prevPos.y - (heightY / 2), prevPos.z);
 
         return cube;
     }
