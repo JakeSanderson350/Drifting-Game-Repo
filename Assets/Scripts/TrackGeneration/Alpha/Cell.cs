@@ -13,7 +13,7 @@ public class Cell : MonoBehaviour
 
     [Header("Previous Values")]
     public Vector3 lastKnotPos;
-    public float lastKnotYRot;
+    public Quaternion lastKnotRot;
 
     public void Start()
     {
@@ -35,6 +35,7 @@ public class Cell : MonoBehaviour
         splineGen.AttachCube(cube);
 
         lastKnotPos = splineGen.lastKnotPos();
+        lastKnotRot = splineGen.lastKnotRot();
     }
 
     private void UpdateTimer()

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Mathematics;
 using Unity.Splines.Examples;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Splines;
@@ -42,7 +43,6 @@ public class SplineC: MonoBehaviour
         }
 
         //set spline as child of cube
-        splineContainer.transform.SetParent(cube.transform, worldPositionStays: true);
         Bounds bounds = cube.GetComponent<Renderer>().bounds;
 
         //set min and max knot spawning values
@@ -84,6 +84,8 @@ public class SplineC: MonoBehaviour
                 nextX = max.x;
                 randomZ = UnityEngine.Random.Range(minZBound, maxZBound);
                 totalKnots.Add(new BezierKnot(new Vector3(nextX, topY, randomZ), float3.zero, float3.zero, quaternion.identity));
+
+                Debug.Log("After Creation: " + totalKnots[totalKnots.Count - 1].Rotation);
                 break;
             }
 
@@ -92,14 +94,21 @@ public class SplineC: MonoBehaviour
 
         splineContainer.Spline = new Spline(totalKnots, closed: false);
 
-        //important: DONT autosmooth first knot, will mess up tangents
+        //important: DONT autosmooth first and last knot, will mess up tangents
         for (int i = 1; i < splineContainer.Spline.Count; i++)
         {
             splineContainer.Spline.SetTangentMode(i, TangentMode.AutoSmooth);
         }
+        Quaternion rotation = Quaternion.LookRotation(splineContainer.Spline.EvaluateTangent(1f));
+        Debug.Log("After Smoothing: " + rotation.eulerAngles);
 
-        //set first knot as mirrored
+        //set first as mirrored
         splineContainer.Spline.SetTangentMode(0, TangentMode.Mirrored);
+
+        splineContainer.transform.SetParent(cube.transform, worldPositionStays: true);
+
+        Quaternion rotation2 = Quaternion.LookRotation(splineContainer.Spline.EvaluateTangent(1f));
+        Debug.Log("After Parenting: " + rotation2.eulerAngles);
 
         splineObj.AddComponent<LoftRoadBehaviour>();
     }
@@ -107,11 +116,10 @@ public class SplineC: MonoBehaviour
     {
         return totalKnots[totalKnots.Count - 1].Position;
     }
-    public float lastKnotRot()
+    public Quaternion lastKnotRot()
     {
-        Vector3 endTangent = splineContainer.Spline.EvaluateTangent(1f);
-        Quaternion trackEndRotation = Quaternion.LookRotation(endTangent);
-        float yaw = trackEndRotation.eulerAngles.y;
-        return yaw;
+        Quaternion rotation = Quaternion.LookRotation(splineContainer.Spline.EvaluateTangent(1f));
+        Debug.Log("Before sending: " + rotation.eulerAngles);
+        return totalKnots[totalKnots.Count - 1].Rotation;
     }
 }

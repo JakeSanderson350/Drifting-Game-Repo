@@ -21,13 +21,14 @@ public class PrimitveC : MonoBehaviour
 
         cube.transform.localScale = new Vector3(lengthX, heightY, widthZ);
 
-        if(prevPos == Vector3.zero)
+        if (prevPos == Vector3.zero)
         {   //spawn first cube at 0,0,0
-            cube.transform.position = new Vector3(prevPos.x, prevPos.y, prevPos.z);
+            cube.transform.position = Vector3.zero;
         }
-
-        cube.transform.position = new Vector3(prevPos.x + (lengthX / 2), 0, prevPos.z);
-
+        else
+        {
+            cube.transform.position = new Vector3(prevPos.x + (lengthX / 2), 0, prevPos.z);
+        }
         return cube;
     }
 
