@@ -1,4 +1,4 @@
-Shader "Unlit/EnhancedGoochShader"
+Shader "Unlit/GoochShader"
 {
     Properties
     {
@@ -28,6 +28,9 @@ Shader "Unlit/EnhancedGoochShader"
         Pass
         {
             Cull Front // Render back faces first
+            ZWrite On
+            ZTest LEqual
+            Offset 0, -1 // Fix for z-fighting
             
             CGPROGRAM
             #pragma vertex vert
@@ -51,10 +54,14 @@ Shader "Unlit/EnhancedGoochShader"
             v2f vert(appdata v)
             {
                 v2f o;
-                // Extrude vertices along normals for silhouette effect
-                float3 normal = normalize(v.normal);
-                float3 extrudedVertex = v.vertex.xyz + normal * _EdgeWidth * 0.01;
+                float3 normal = normalize(UnityObjectToWorldNormal(v.normal));
+                // Convert normal back to object space for consistent scaling
+                normal = normalize(mul((float3x3)unity_WorldToObject, normal));
+                
+                // Scale the extrusion based on screen-space considerations
+                float3 extrudedVertex = v.vertex.xyz + normal * _EdgeWidth * 0.005;
                 o.pos = UnityObjectToClipPos(float4(extrudedVertex, 1.0));
+                
                 return o;
             }
             
