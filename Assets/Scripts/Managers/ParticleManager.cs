@@ -93,6 +93,10 @@ public class ParticleManager : MonoBehaviour
         particleSystems.Add(particleSystem);
     }
 
+    public Color GetCurrentColor() 
+    {
+        return currentColor;
+    }
     private void CreateTrailRenderer(Transform attachPoint)
     {
         GameObject trailObj = new GameObject($"DriftTrail_{attachPoint.name}");
