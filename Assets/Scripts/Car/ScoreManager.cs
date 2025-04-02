@@ -11,6 +11,7 @@ public class ScoreManager : MonoBehaviour
     private float score = 0.0f;
     private float driftLength = 0.0f;
     private float scoreMultiplier = 1.0f;
+    private Color textColor = Color.white;
 
     void Start()
     {
@@ -48,7 +49,8 @@ public class ScoreManager : MonoBehaviour
         }
         if (particleManager != null)
         {
-            scoreUI.color = particleManager.GetCurrentColor();
+            scoreUI.color = textColor;
+            textColor = particleManager.GetCurrentColor();
         }
 
         scoreUI.text = "Score: " + (int)score + "\nMultiplier: " + scoreMultiplier;
