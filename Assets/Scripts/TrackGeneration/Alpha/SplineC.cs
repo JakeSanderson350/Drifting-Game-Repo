@@ -27,14 +27,16 @@ public class SplineC: MonoBehaviour
     public float3 tangentIn    = new float3(-0.4714046);
     public float3 tangentOut   = new float3(0.4714046);
 
-    public void Init()
+    public GameObject Init()
     { 
         splineObj = new GameObject("Procedural Spline");
         splineContainer = splineObj.AddComponent<SplineContainer>();
         splineObj.tag = "Spline";
+
+        return splineObj;
     }
 
-    public void AttachCube(GameObject cube)
+    public void GenerateKnots(GameObject cube)
     {
         if (cube == null || splineContainer == null)
         {
@@ -84,8 +86,6 @@ public class SplineC: MonoBehaviour
                 nextX = max.x;
                 randomZ = UnityEngine.Random.Range(minZBound, maxZBound);
                 totalKnots.Add(new BezierKnot(new Vector3(nextX, topY, randomZ), float3.zero, float3.zero, quaternion.identity));
-
-                Debug.Log("After Creation: " + totalKnots[totalKnots.Count - 1].Rotation);
                 break;
             }
 
@@ -99,18 +99,16 @@ public class SplineC: MonoBehaviour
         {
             splineContainer.Spline.SetTangentMode(i, TangentMode.AutoSmooth);
         }
-        Quaternion rotation = Quaternion.LookRotation(splineContainer.Spline.EvaluateTangent(1f));
-        Debug.Log("After Smoothing: " + rotation.eulerAngles);
 
         //set first as mirrored
         splineContainer.Spline.SetTangentMode(0, TangentMode.Mirrored);
 
-        splineContainer.transform.SetParent(cube.transform, worldPositionStays: true);
-
-        Quaternion rotation2 = Quaternion.LookRotation(splineContainer.Spline.EvaluateTangent(1f));
-        Debug.Log("After Parenting: " + rotation2.eulerAngles);
-
         splineObj.AddComponent<LoftRoadBehaviour>();
+    }
+
+    public Vector3 firstKnotPos()
+    {
+        return totalKnots[0].Position;
     }
     public Vector3 lastKnotPos()
     {
@@ -118,8 +116,12 @@ public class SplineC: MonoBehaviour
     }
     public Quaternion lastKnotRot()
     {
-        Quaternion rotation = Quaternion.LookRotation(splineContainer.Spline.EvaluateTangent(1f));
-        Debug.Log("Before sending: " + rotation.eulerAngles);
-        return totalKnots[totalKnots.Count - 1].Rotation;
+        Vector3 endTangent = splineContainer.Spline.EvaluateTangent(1f);
+        Vector3 endUpVector = splineContainer.Spline.EvaluateUpVector(1f);
+        Quaternion quaternion = Quaternion.LookRotation(endTangent, endUpVector);
+
+        Quaternion correction = Quaternion.Euler(0, -90, 0);
+        quaternion = quaternion * correction;
+        return quaternion;
     }
 }

@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PrimitveC : MonoBehaviour
@@ -13,7 +14,7 @@ public class PrimitveC : MonoBehaviour
     public float heightY;
     public float widthZ;
 
-    public GameObject Init(Vector3 prevPos)
+    public GameObject Init()
     {
         cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
         mesh = cube.GetComponent<MeshFilter>().mesh;
@@ -21,20 +22,21 @@ public class PrimitveC : MonoBehaviour
 
         cube.transform.localScale = new Vector3(lengthX, heightY, widthZ);
 
-        if (prevPos == Vector3.zero)
-        {   //spawn first cube at 0,0,0
-            cube.transform.position = Vector3.zero;
-        }
-        else
-        {
-            cube.transform.position = new Vector3(prevPos.x + (lengthX / 2), 0, prevPos.z);
-        }
+        cube.transform.position = Vector3.zero;
+        cube.transform.eulerAngles = Vector3.zero;
         return cube;
     }
 
-    public void alterRotation(float prevRot)
+    public void alterRotation(Quaternion prevRot, Vector3 lastKnotPos, Vector3 firstKnotPos)
     {
-        Debug.Log("cube alteration: " + prevRot);
-        cube.transform.rotation = Quaternion.Euler(0, prevRot, 0);
+
+        float distance = Vector3.Distance(lastKnotPos, firstKnotPos);
+        Vector3 directionVector = lastKnotPos - firstKnotPos;
+        Vector3 normalizedDirection = directionVector.normalized;
+
+        Debug.Log("Distance between points: " + distance);
+        Debug.Log("Direction vector: " + normalizedDirection.ToString("F8"));
+
+        cube.transform.rotation = prevRot;
     }
 }
