@@ -185,7 +185,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7567560579064384266}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 25
   m_Drag: 0
   m_AngularDrag: 36
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -252,14 +252,13 @@ MonoBehaviour:
   throttle: 0.1
   throttleIncrement: 0.1
   screenUse: 0.8
+  tireRadius: 0.5
   drag: 1
-  driveForce: 200
+  driveForce: 300
   maxAngularAcceleration: 9000
   maxVisualSteeringAngle: 40
   maxVisualSteeringSpeed: 10
   driftAngleThreshold: 2
-  defaultRearGrip: -1
-  driftingRearGrip: -4
   maxDriftAngle: 60
   transferSpeed: 10
 --- !u!114 &7260372234300094930
