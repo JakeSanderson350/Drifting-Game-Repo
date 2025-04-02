@@ -35,18 +35,26 @@ public class Cell : MonoBehaviour
     {
         empty = new GameObject("empty");
         cube = cubeGen.Init();
-        //cube.transform.SetParent(empty.transform, worldPositionStays: true);
+        cube.transform.SetParent(empty.transform, worldPositionStays: true);
 
         spline = splineGen.Init();
         splineGen.GenerateKnots(cube);
-        //spline.transform.SetParent(empty.transform, worldPositionStays: true);
+        spline.transform.SetParent(empty.transform, worldPositionStays: true);
 
-        firstKnotPos = splineGen.firstKnotPos();
+        //cubeGen.alterRotation(lastKnotRot);
+        alterRotation(lastKnotRot);
 
-        cubeGen.alterRotation(lastKnotRot, lastKnotPos, firstKnotPos);
+        firstKnotPos = splineGen.firstKnotPos(spline);
+        cubeGen.alterPosition(lastKnotPos, firstKnotPos);
 
-        lastKnotPos = splineGen.lastKnotPos();
+        lastKnotPos = splineGen.lastKnotPos(spline);
         lastKnotRot = splineGen.lastKnotRot();
+
+    }
+    public void alterRotation(Quaternion prevRot)
+    {
+        Debug.Log("Rotation altered");
+        empty.transform.rotation = prevRot;
     }
     private void UpdateTimer()
     {

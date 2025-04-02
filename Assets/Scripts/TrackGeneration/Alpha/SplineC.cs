@@ -106,13 +106,13 @@ public class SplineC: MonoBehaviour
         splineObj.AddComponent<LoftRoadBehaviour>();
     }
 
-    public Vector3 firstKnotPos()
+    public Vector3 firstKnotPos(GameObject givenSpline)
     {
-        return totalKnots[0].Position;
+        return givenSpline.GetComponent<SplineContainer>().Spline.EvaluatePosition(0f);
     }
-    public Vector3 lastKnotPos()
+    public Vector3 lastKnotPos(GameObject givenSpline)
     {
-        return totalKnots[totalKnots.Count - 1].Position;
+        return givenSpline.GetComponent<SplineContainer>().Spline.EvaluatePosition(1f);
     }
     public Quaternion lastKnotRot()
     {
