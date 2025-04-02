@@ -31,10 +31,9 @@ public class CarDriftController : MonoBehaviour
 
     [Header("Drifting")]
     public float driftAngleThreshold = 5.0f;
-    public float defaultRearGrip = -1.0f;
-    public float driftingRearGrip = -4.0f;
     public float maxDriftAngle = 60.0f;
     public float transferSpeed = 10.0f;
+    private float driftAngle;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -77,7 +76,7 @@ public class CarDriftController : MonoBehaviour
 
     public bool IsDrifting()
     {
-        return Mathf.Abs(GetDriftAngle()) > driftAngleThreshold;
+        return Mathf.Abs(driftAngle) > driftAngleThreshold;
     }
 
     private void PointWheelsAt(float _targetAngle)
@@ -99,9 +98,10 @@ public class CarDriftController : MonoBehaviour
         // Check if grounded
         if (IsGrounded())
         {
+            driftAngle = GetDriftAngle();
+
             // Engine
             UpdateEngine();
-            GetSlipRatio();
 
             // Steering
             rb.angularVelocity += -transform.up * GetSteeringAngularAcceleration() * Time.fixedDeltaTime;
@@ -136,6 +136,8 @@ public class CarDriftController : MonoBehaviour
         //Update tire forces
         foreach (Tire tire in frontTires)
         {
+            //tire.tireGripFactor = TireGripLookUpCurve(Mathf.Abs(driftAngle));
+
             tire.UpdateForces();
 
             rb.AddForceAtPosition(tire.GetForces(), tire.transform.position);
@@ -143,20 +145,29 @@ public class CarDriftController : MonoBehaviour
         }
         foreach (Tire tire in backTires)
         {
-            if (IsDrifting())
-            {
-                tire.tireGripFactor = Mathf.Lerp(driftingRearGrip, defaultRearGrip, (Mathf.Abs(GetDriftAngle()) / maxDriftAngle));
-            }
-            else
-            {
-                tire.tireGripFactor = Mathf.Lerp(defaultRearGrip, driftingRearGrip , 1 / (Mathf.Abs(GetDriftAngle()) / maxDriftAngle));
-            }
+            tire.tireGripFactor = TireGripLookUpCurve(Mathf.Abs(driftAngle));
 
             tire.UpdateForces();
 
             rb.AddForceAtPosition(tire.GetForces(), tire.transform.position);
             Debug.DrawLine(tire.transform.position, tire.transform.position + tire.GetForces(), Color.green);
         }
+    }
+
+    private float TireGripLookUpCurve(float _tireAngle)
+    {
+        float tireGrip;
+
+        if (_tireAngle < 10)
+        {
+            tireGrip = 0.9f;
+        }
+        else
+        {
+            tireGrip = 0.0075f * _tireAngle - 0.5f;
+        }
+        Debug.Log(tireGrip);
+        return tireGrip;
     }
 
     private float GetSteeringAngularAcceleration()
