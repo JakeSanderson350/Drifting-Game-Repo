@@ -148,6 +148,7 @@ GameObject:
   - component: {fileID: 6438217589871897378}
   - component: {fileID: 3488100902572810491}
   - component: {fileID: 7260372234300094930}
+  - component: {fileID: 2652190493771351157}
   m_Layer: 0
   m_Name: Car
   m_TagString: Untagged
@@ -278,6 +279,39 @@ MonoBehaviour:
   maxAngle: 30
   rb: {fileID: 7378872709621726207}
   car: {fileID: 3488100902572810491}
+--- !u!114 &2652190493771351157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7567560579064384266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74fd28c1a968de64383bcb96fca7ece0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  carDriftController: {fileID: 3488100902572810491}
+  trailAttachPoints:
+  - {fileID: 3267265012776776845}
+  - {fileID: 1072702072305641541}
+  particlePrefab: {fileID: 6090096630861670416, guid: ded0bc335c5094b4084f3135ef6227f6, type: 3}
+  trailMaterial: {fileID: 10308, guid: 0000000000000000f000000000000000, type: 0}
+  roadLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  initialColor: {r: 0, g: 0, b: 1, a: 1}
+  finalColor: {r: 1, g: 0, b: 0, a: 1}
+  colorTransitionTime: 5
+  minDriftAngleForEffects: 3
+  particleEmissionRate: 250
+  trailWidth: 8
+  trailMaxWidth: 14
+  trailHeightOffset: 0.01
+  trailTime: 1.8
+  particleSpawnRadius: 1.8
+  particleSpawnHeightOffset: 0.2
+  particleSpawnDistance: 2.5
 --- !u!1 &8433912454428698913
 GameObject:
   m_ObjectHideFlags: 0

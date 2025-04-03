@@ -22,17 +22,19 @@ public class ParticleManager : MonoBehaviour
     [SerializeField] private float particleEmissionRate = 250f;
 
     [Header("Trail Configuration")]
-    [SerializeField] private float trailWidth = 2f;
-    [SerializeField] private float trailMaxWidth = 4f;
+    [SerializeField] private float trailWidth = 8f;        // Base trail width
+    [SerializeField] private float trailMaxWidth = 14f;    // Max trail width
     [SerializeField] private float trailHeightOffset = 0.01f;
-    [SerializeField] private float trailTime = 1f;
+    [SerializeField] private float trailTime = 1.8f;
 
     [Header("Particle Configuration")]
-    [SerializeField] private float particleSpawnRadius = 1.5f;
+    [SerializeField] private float particleSpawnRadius = 1.8f;
     [SerializeField] private float particleSpawnHeightOffset = 0.2f;
+    [SerializeField] private float particleSpawnDistance = 2.5f;  // Distance behind the trail
 
     private List<ParticleSystem> particleSystems = new List<ParticleSystem>();
     private List<TrailRenderer> trailRenderers = new List<TrailRenderer>();
+    private List<Transform> particleAttachPoints = new List<Transform>();  // Separate attachment points for particles
 
     private bool isDrifting;
     private float driftTime;
@@ -48,6 +50,9 @@ public class ParticleManager : MonoBehaviour
         }
 
         InitializeEffectSystems();
+
+        // Make sure all effects are disabled at start
+        SetEffectsActive(false);
     }
 
     private void InitializeEffectSystems()
@@ -67,8 +72,20 @@ public class ParticleManager : MonoBehaviour
         // Create effects for each attach point
         foreach (Transform attachPoint in trailAttachPoints)
         {
-            CreateParticleSystem(attachPoint);
             CreateTrailRenderer(attachPoint);
+            CreateParticleAttachPoint(attachPoint);
+        }
+
+        // Make sure all effects are initially disabled
+        foreach (TrailRenderer trail in trailRenderers)
+        {
+            trail.enabled = false;
+            trail.Clear();
+        }
+
+        foreach (ParticleSystem ps in particleSystems)
+        {
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
     }
 
@@ -83,9 +100,23 @@ public class ParticleManager : MonoBehaviour
         trailAttachPoints = wheelTransforms.ToArray();
     }
 
+    private void CreateParticleAttachPoint(Transform wheelAttachPoint)
+    {
+        // Create a new attach point for particles that will be positioned behind the wheel
+        GameObject particleAttachObj = new GameObject($"ParticleAttach_{wheelAttachPoint.name}");
+        particleAttachObj.transform.SetParent(transform, true);
+
+        // Position will be dynamically updated in Update()
+        Transform particleAttach = particleAttachObj.transform;
+        particleAttachPoints.Add(particleAttach);
+
+        // Create particle system at this new attachment point
+        CreateParticleSystem(particleAttach);
+    }
+
     private void CreateParticleSystem(Transform attachPoint)
     {
-        GameObject particleObj = Instantiate(particlePrefab, attachPoint.position, Quaternion.identity, transform);
+        GameObject particleObj = Instantiate(particlePrefab, attachPoint.position, Quaternion.identity, attachPoint);
         ParticleSystem particleSystem = particleObj.GetComponent<ParticleSystem>()
             ?? particleObj.AddComponent<ParticleSystem>();
 
@@ -93,10 +124,11 @@ public class ParticleManager : MonoBehaviour
         particleSystems.Add(particleSystem);
     }
 
-    public Color GetCurrentColor() 
+    public Color GetCurrentColor()
     {
         return currentColor;
     }
+
     private void CreateTrailRenderer(Transform attachPoint)
     {
         GameObject trailObj = new GameObject($"DriftTrail_{attachPoint.name}");
@@ -111,28 +143,59 @@ public class ParticleManager : MonoBehaviour
     {
         var main = ps.main;
         main.startColor = initialColor;
-        main.startLifetime = 1f;
+        main.startLifetime = 2.0f;
+        main.startSize = 1.0f;
         main.simulationSpace = ParticleSystemSimulationSpace.World;
+        main.startSpeed = 2.0f; // Fixed initial speed to avoid compatibility issues
+        main.playOnAwake = false; // Prevent playing automatically on awake
 
         var emission = ps.emission;
         emission.rateOverTime = 0;
+        emission.burstCount = 1;
+        emission.SetBurst(0, new ParticleSystem.Burst(0.0f, 3, 5, 1, 0.1f));
 
         var shape = ps.shape;
-        shape.shapeType = ParticleSystemShapeType.Hemisphere;
+        shape.shapeType = ParticleSystemShapeType.Cone;
+        shape.angle = 25f;
         shape.radius = particleSpawnRadius;
         shape.position = new Vector3(0, particleSpawnHeightOffset, 0);
+        shape.rotation = new Vector3(-90, 0, 0); // Point cone upward and backward
 
         var velocityOverLifetime = ps.velocityOverLifetime;
         velocityOverLifetime.enabled = true;
-        velocityOverLifetime.y = 0.5f;
+
+        // Set all velocity curves in the same mode (MinMax)
+        velocityOverLifetime.x = new ParticleSystem.MinMaxCurve(0.0f, 0.0f);
+        velocityOverLifetime.y = new ParticleSystem.MinMaxCurve(0.5f, 1.2f);  // Variable upward velocity
+        velocityOverLifetime.z = new ParticleSystem.MinMaxCurve(0.0f, 0.0f);
+
+        // Add rotation to particles
+        var rotationOverLifetime = ps.rotationOverLifetime;
+        rotationOverLifetime.enabled = true;
+        rotationOverLifetime.z = new ParticleSystem.MinMaxCurve(-90f, 90f);
+
+        // Add size over lifetime for particles to shrink
+        var sizeOverLifetime = ps.sizeOverLifetime;
+        sizeOverLifetime.enabled = true;
+
+        // Use consistent curve mode
+        AnimationCurve curve = new AnimationCurve();
+        curve.AddKey(0.0f, 1.0f);
+        curve.AddKey(1.0f, 0.3f);
+        sizeOverLifetime.size = new ParticleSystem.MinMaxCurve(1.0f, curve);
+        sizeOverLifetime.separateAxes = false;
+
+        // Initially stop the particle system
+        ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
     }
 
     private void ConfigureTrailRenderer(TrailRenderer trail)
     {
         trail.time = trailTime;
         trail.startWidth = trailWidth;
-        trail.endWidth = trailWidth * 0.5f;
-        trail.minVertexDistance = 0.2f;
+        trail.endWidth = trailWidth * 0.7f;  // Even less taper for much wider trails
+        trail.minVertexDistance = 0.05f;     // More detail in the trail for smoother curves
+        trail.widthMultiplier = 1.2f;        // Additional width multiplier for even larger trails
 
         trail.material = trailMaterial;
         trail.startColor = initialColor;
@@ -146,8 +209,9 @@ public class ParticleManager : MonoBehaviour
 
     private void AdjustTrailToRoad()
     {
-        foreach (TrailRenderer trail in trailRenderers)
+        for (int i = 0; i < trailRenderers.Count; i++)
         {
+            TrailRenderer trail = trailRenderers[i];
             Transform attachPoint = trail.transform.parent;
             Vector3 raycastOrigin = attachPoint.position;
 
@@ -155,6 +219,30 @@ public class ParticleManager : MonoBehaviour
             {
                 trail.transform.position = hit.point + (Vector3.up * trailHeightOffset);
                 trail.transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+
+                // Update particle attach point to be behind the wheel in the driving direction
+                if (i < particleAttachPoints.Count)
+                {
+                    // Get car's velocity direction or use wheel's right vector if velocity not available
+                    Vector3 movementDirection = Vector3.zero;
+                    Rigidbody carRigidbody = carDriftController.GetComponent<Rigidbody>();
+
+                    if (carRigidbody != null && carRigidbody.linearVelocity.magnitude > 0.1f)
+                    {
+                        // Use the actual movement direction of the car
+                        movementDirection = -carRigidbody.linearVelocity.normalized;
+                    }
+                    else
+                    {
+                        // Fallback to wheel orientation if velocity is too low
+                        movementDirection = -attachPoint.forward; // Using forward as driving direction
+                    }
+
+                    // Calculate position well behind the wheel based on movement direction
+                    Vector3 offsetPosition = hit.point + (Vector3.up * (trailHeightOffset + particleSpawnHeightOffset))
+                                          + (movementDirection * particleSpawnDistance);
+                    particleAttachPoints[i].position = offsetPosition;
+                }
             }
             else
             {
@@ -231,7 +319,11 @@ public class ParticleManager : MonoBehaviour
         foreach (TrailRenderer trail in trailRenderers)
         {
             trail.startWidth = dynamicWidth;
-            trail.endWidth = dynamicWidth * 0.5f;
+            trail.endWidth = dynamicWidth * 0.7f;  // Maintain the 0.7 ratio for less taper
+
+            // Apply a sine wave effect to the trail width for an even more dramatic effect
+            float pulseAmount = Mathf.Sin(Time.time * 8f) * 0.15f + 1.0f;
+            trail.widthMultiplier = 1.2f * pulseAmount;
         }
     }
 
@@ -261,11 +353,29 @@ public class ParticleManager : MonoBehaviour
         {
             var emission = ps.emission;
             emission.rateOverTime = active ? particleEmissionRate : 0;
+
+            if (active)
+            {
+                if (!ps.isPlaying) ps.Play();
+            }
+            else
+            {
+                ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            }
         }
 
         foreach (TrailRenderer trail in trailRenderers)
         {
-            trail.enabled = active;
+            if (trail.enabled != active)
+            {
+                trail.enabled = active;
+
+                // Clear the trail when enabling to prevent sudden appearance
+                if (active)
+                {
+                    trail.Clear();
+                }
+            }
         }
     }
 
@@ -279,6 +389,10 @@ public class ParticleManager : MonoBehaviour
         foreach (TrailRenderer trail in trailRenderers)
             Destroy(trail.gameObject);
         trailRenderers.Clear();
+
+        foreach (Transform attachPoint in particleAttachPoints)
+            Destroy(attachPoint.gameObject);
+        particleAttachPoints.Clear();
 
         trailAttachPoints = newAttachPoints;
 
