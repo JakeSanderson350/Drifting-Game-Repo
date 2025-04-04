@@ -759,7 +759,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cube: {fileID: 0}
   mesh: {fileID: 0}
-  tempMaterial: {fileID: 2100000, guid: 1008dd29d20dca44eba85c933cfa5af3, type: 2}
+  tempMaterial: {fileID: 2100000, guid: e18144705a0a6be42b49846db26bc9ce, type: 2}
   lengthX: 50
   heightY: 2
   widthZ: 20
