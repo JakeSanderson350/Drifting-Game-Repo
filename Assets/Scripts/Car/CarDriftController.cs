@@ -16,6 +16,7 @@ public class CarDriftController : MonoBehaviour
     public float throttleIncrement = 0.05f;
     private float defaultThrottle = 0.5f;
     public float screenUse = 0.8f;
+    private bool isDead = false;
 
     [Header("Body")]
     public float tireRadius = 0.5f;
@@ -38,6 +39,16 @@ public class CarDriftController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+    }
+
+    private void OnEnable()
+    {
+        CarState.onCarDeath += GameOver;
+    }
+
+    private void OnDisable()
+    {
+        CarState.onCarDeath -= GameOver;
     }
 
     // Update is called once per frame
@@ -92,6 +103,9 @@ public class CarDriftController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (isDead)
+            return;
+
         rb.centerOfMass = centerOfMass.localPosition;
         rb.AddForce(-GetDragForce() * rb.linearVelocity.normalized);
 
@@ -166,7 +180,6 @@ public class CarDriftController : MonoBehaviour
         {
             tireGrip = 0.0075f * _tireAngle - 0.5f;
         }
-        Debug.Log(tireGrip);
         return tireGrip;
     }
 
@@ -188,5 +201,10 @@ public class CarDriftController : MonoBehaviour
     private float GetDragForce()
     {
         return Mathf.Pow(rb.linearVelocity.magnitude, 2) * drag;
+    }
+
+    private void GameOver()
+    {
+        isDead = true;
     }
 }

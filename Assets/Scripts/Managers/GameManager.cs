@@ -4,6 +4,17 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+
+    private void OnEnable()
+    {
+        CarState.onCarDeath += GameOver;
+    }
+
+    private void OnDisable()
+    {
+        CarState.onCarDeath -= GameOver;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -14,5 +25,10 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    private void GameOver()
+    {
+
     }
 }
