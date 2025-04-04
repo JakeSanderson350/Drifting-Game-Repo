@@ -36,7 +36,7 @@ public class Cell : MonoBehaviour
     {
         lastKnotPos = Vector3.zero;
         lastKnotRot = Quaternion.identity;
-        currentTimerTime = timerDuration;
+        currentTimerTime = 0f;
         obstacles = new List<GameObject>();
         tempIndex = 0;
     }

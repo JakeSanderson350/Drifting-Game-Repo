@@ -151,7 +151,7 @@ public class SplineC: MonoBehaviour
         //set first as mirrored
         splineContainer.Spline.SetTangentMode(0, TangentMode.Mirrored);
 
-        splineObj.AddComponent<LoftRoadBehaviour>();
+        splineObj.AddComponent<LoftRoadBehaviour>().IncreaseWidthsCount();
     }
 
     public Vector3 firstKnotPos(GameObject givenSpline)

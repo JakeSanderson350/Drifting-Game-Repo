@@ -17,6 +17,7 @@ public class CarDriftController : MonoBehaviour
     private float defaultThrottle = 0.5f;
     public float screenUse = 0.8f;
     private bool isDead = false;
+    private bool isPaused = false;
 
     [Header("Body")]
     public float drag = 1.0f;
@@ -40,6 +41,7 @@ public class CarDriftController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        Time.timeScale = 1.0f;
     }
 
     private void OnEnable()

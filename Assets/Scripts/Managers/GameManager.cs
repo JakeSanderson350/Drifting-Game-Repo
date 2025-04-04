@@ -32,6 +32,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject gameOverScreen;
     private bool gameOver = false;
 
+    [SerializeField] private GameObject pauseScreen;
+
     private void Awake()
     {
         Instance = this;
@@ -48,11 +50,13 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         CarState.onCarDeath += GameOver;
+        CarState.onPauseGame += PauseGame;
     }
 
     private void OnDisable()
     {
         CarState.onCarDeath -= GameOver;
+        CarState.onPauseGame -= PauseGame;
     }
 
     // Start is called before the first frame update
@@ -72,6 +76,10 @@ public class GameManager : MonoBehaviour
     {
         gameOverScreen.SetActive(true);
         gameOver = true;
+    }
+    private void PauseGame()
+    {
+        pauseScreen.GetComponent<PauseUI>().SetUIStatus(true);
     }
 
     private IEnumerator IncrementDifficulty()

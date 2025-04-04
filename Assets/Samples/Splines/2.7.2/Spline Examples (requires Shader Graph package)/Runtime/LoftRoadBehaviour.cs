@@ -27,10 +27,22 @@ namespace Unity.Splines.Examples
                 foreach (var width in m_Widths)
                 {
                     if (width.DefaultValue == 0)
-                        width.DefaultValue = 3f;
+                        width.DefaultValue = 6f;
                 }
 
                 return m_Widths;
+            }
+        }
+
+        public void IncreaseWidthsCount()
+        {
+            if (m_Widths.Count == 0)
+            {
+                m_Widths.Add(new SplineData<float> { DefaultValue = 6f });
+            }
+            else
+            {
+                m_Widths.Add(new SplineData<float> { DefaultValue = 6f });
             }
         }
 

@@ -10,17 +10,28 @@ public class CarState : MonoBehaviour
     [SerializeField] private Rigidbody carRB;
     private float carSpeed;
 
+    [SerializeField] private bool isPaused;
+
     public static Action onCarDeath;
+    public static Action onPauseGame;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        isPaused = false;
         health = startingHealth;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            isPaused = !isPaused;
+            onPauseGame.Invoke();
+            //GameObject.Find("PauseUI").GetComponent<PauseUI>().SetUIStatus(isPaused);
+        }
+
         carSpeed = carRB.linearVelocity.magnitude;
 
         if (transform.position.y < -12)
