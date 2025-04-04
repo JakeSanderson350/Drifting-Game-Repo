@@ -211,6 +211,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: OnScreenUI
       objectReference: {fileID: 0}
+    - target: {fileID: 6544284231044865466, guid: 78571b5290d34834e9f0c73a7d60ddf8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: QuitGame
+      objectReference: {fileID: 0}
     - target: {fileID: 6596328886268933810, guid: 78571b5290d34834e9f0c73a7d60ddf8, type: 3}
       propertyPath: carState
       value: 
@@ -673,6 +677,7 @@ MonoBehaviour:
   difficultyIncrementTime: 5
   difficulty: 0
   gameOverScreen: {fileID: 1001942337}
+  pauseScreen: {fileID: 0}
 --- !u!114 &1177215278
 MonoBehaviour:
   m_ObjectHideFlags: 0

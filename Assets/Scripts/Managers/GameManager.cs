@@ -75,6 +75,7 @@ public class GameManager : MonoBehaviour
     private void GameOver()
     {
         gameOverScreen.SetActive(true);
+        Time.timeScale = 0f;
         gameOver = true;
     }
     private void PauseGame()
