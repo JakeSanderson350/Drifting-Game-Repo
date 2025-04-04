@@ -157,6 +157,11 @@ MonoBehaviour:
   lastKnotPos: {x: 0, y: 0, z: 0}
   firstKnotPos: {x: 0, y: 0, z: 0}
   lastKnotRot: {x: 0, y: 0, z: 0, w: 0}
+  obstaclePrefabs:
+  - {fileID: 3251523534738225239, guid: 53cb7964d1e732d48b90a5591672695e, type: 3}
+  - {fileID: 9175834846965401456, guid: 5fcfc17efbe7b514c82b29acad79e18e, type: 3}
+  numObstaclesPerCell: 10
+  obstaclesDistToRoad: 4
 --- !u!4 &720523246
 Transform:
   m_ObjectHideFlags: 0

@@ -34,7 +34,7 @@ public class CarCameraController : MonoBehaviour
         //Move Camera
         Vector3 desiredPos = target.position + offsetWorld;
         //Interpolate to desired position
-        transform.position = Vector3.Lerp(transform.position, desiredPos, followSpeed * Time.fixedDeltaTime);
+        transform.position = isThirdPerson ? Vector3.Lerp(transform.position, desiredPos, followSpeed * Time.fixedDeltaTime) : desiredPos;
 
         //Orient Camera
         if (isThirdPerson)
