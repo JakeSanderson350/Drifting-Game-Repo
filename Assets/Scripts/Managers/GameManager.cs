@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private GameObject gameOverScreen;
 
     private void OnEnable()
     {
@@ -29,6 +30,6 @@ public class GameManager : MonoBehaviour
 
     private void GameOver()
     {
-
+        gameOverScreen.SetActive(true);
     }
 }
