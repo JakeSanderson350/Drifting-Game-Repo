@@ -18,7 +18,7 @@ public class PauseUI : MonoBehaviour
 
     public void RestartGame()
     {
-        SceneManager.LoadScene("Scripting");
+        SceneManager.LoadScene("AlphaScene");
         Time.timeScale = 1.0f;
     }
 
