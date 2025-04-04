@@ -32,13 +32,28 @@ public class ParticleManager : MonoBehaviour
     [SerializeField] private float particleSpawnHeightOffset = 0.2f;
     [SerializeField] private float particleSpawnDistance = 2.5f;  // Distance behind the trail
 
+    [Header("Fade Configuration")]
+    [SerializeField] private float fadeInDuration = 0.5f;
+    [SerializeField] private float fadeOutDuration = 1.0f;
+
     private List<ParticleSystem> particleSystems = new List<ParticleSystem>();
     private List<TrailRenderer> trailRenderers = new List<TrailRenderer>();
-    private List<Transform> particleAttachPoints = new List<Transform>();  // Separate attachment points for particles
+    private List<Transform> particleAttachPoints = new List<Transform>();
 
     private bool isDrifting;
+    private bool isFadingIn;
+    private bool isFadingOut;
     private float driftTime;
+    private float fadeInTime;
+    private float fadeOutTime;
     private Color currentColor;
+
+    // Store original effect values for fade-out
+    private List<float> originalEmissionRates = new List<float>();
+    private List<float> originalStartWidths = new List<float>();
+    private List<float> originalEndWidths = new List<float>();
+    private List<Color> originalStartColors = new List<Color>();
+    private List<Color> originalEndColors = new List<Color>();
 
     private void Start()
     {
@@ -52,7 +67,7 @@ public class ParticleManager : MonoBehaviour
         InitializeEffectSystems();
 
         // Make sure all effects are disabled at start
-        SetEffectsActive(false);
+        SetEffectsInactive();
     }
 
     private void InitializeEffectSystems()
@@ -122,6 +137,10 @@ public class ParticleManager : MonoBehaviour
 
         ConfigureParticleSystem(particleSystem);
         particleSystems.Add(particleSystem);
+
+        // Store original emission rate for fading
+        var emission = particleSystem.emission;
+        originalEmissionRates.Add(particleEmissionRate);
     }
 
     public Color GetCurrentColor()
@@ -137,6 +156,12 @@ public class ParticleManager : MonoBehaviour
         TrailRenderer trailRenderer = trailObj.AddComponent<TrailRenderer>();
         ConfigureTrailRenderer(trailRenderer);
         trailRenderers.Add(trailRenderer);
+
+        // Store original values for fading
+        originalStartWidths.Add(trailWidth);
+        originalEndWidths.Add(trailWidth * 0.7f);
+        originalStartColors.Add(initialColor);
+        originalEndColors.Add(new Color(initialColor.r, initialColor.g, initialColor.b, 0.5f));
     }
 
     private void ConfigureParticleSystem(ParticleSystem ps)
@@ -146,7 +171,7 @@ public class ParticleManager : MonoBehaviour
         main.startLifetime = 2.0f;
         main.startSize = 1.0f;
         main.simulationSpace = ParticleSystemSimulationSpace.World;
-        main.startSpeed = 2.0f; // Fixed initial speed to avoid compatibility issues
+        main.startSpeed = 2.0f;
         main.playOnAwake = false; // Prevent playing automatically on awake
 
         var emission = ps.emission;
@@ -166,7 +191,7 @@ public class ParticleManager : MonoBehaviour
 
         // Set all velocity curves in the same mode (MinMax)
         velocityOverLifetime.x = new ParticleSystem.MinMaxCurve(0.0f, 0.0f);
-        velocityOverLifetime.y = new ParticleSystem.MinMaxCurve(0.5f, 1.2f);  // Variable upward velocity
+        velocityOverLifetime.y = new ParticleSystem.MinMaxCurve(0.5f, 1.2f);
         velocityOverLifetime.z = new ParticleSystem.MinMaxCurve(0.0f, 0.0f);
 
         // Add rotation to particles
@@ -193,9 +218,9 @@ public class ParticleManager : MonoBehaviour
     {
         trail.time = trailTime;
         trail.startWidth = trailWidth;
-        trail.endWidth = trailWidth * 0.7f;  // Even less taper for much wider trails
-        trail.minVertexDistance = 0.05f;     // More detail in the trail for smoother curves
-        trail.widthMultiplier = 1.2f;        // Additional width multiplier for even larger trails
+        trail.endWidth = trailWidth * 0.7f;
+        trail.minVertexDistance = 0.05f;
+        trail.widthMultiplier = 1.2f;
 
         trail.material = trailMaterial;
         trail.startColor = initialColor;
@@ -256,9 +281,22 @@ public class ParticleManager : MonoBehaviour
         if (carDriftController == null) return;
 
         UpdateDriftState();
-        UpdateEffectColors();
         AdjustTrailToRoad();
-        UpdateTrailWidth();
+
+        // Update effects based on current state
+        if (isDrifting)
+        {
+            UpdateEffectColors();
+            UpdateTrailWidth();
+        }
+        else if (isFadingIn)
+        {
+            UpdateFadeIn();
+        }
+        else if (isFadingOut)
+        {
+            UpdateFadeOut();
+        }
     }
 
     private void UpdateDriftState()
@@ -266,25 +304,103 @@ public class ParticleManager : MonoBehaviour
         float driftAngle = Mathf.Abs(carDriftController.GetDriftAngle());
         bool isDriftingNow = driftAngle > minDriftAngleForEffects;
 
-        if (!isDrifting && isDriftingNow)
-            StartDrift();
-        else if (isDriftingNow)
+        if (!isDrifting && !isFadingIn && !isFadingOut && isDriftingNow)
+        {
+            StartFadeIn();
+        }
+        else if ((isFadingIn || isDrifting) && !isDriftingNow)
+        {
+            StartFadeOut();
+        }
+        else if (isDrifting)
+        {
             ContinueDrift();
-        else if (!isDriftingNow)
-            EndDrift();
+        }
+    }
+
+    private void StartFadeIn()
+    {
+        isDrifting = false;
+        isFadingIn = true;
+        isFadingOut = false;
+        fadeInTime = 0f;
+        driftTime = 0f;
+        currentColor = initialColor;
+
+        EnableEffects();
+    }
+
+    private void UpdateFadeIn()
+    {
+        fadeInTime += Time.deltaTime;
+        float progress = Mathf.Clamp01(fadeInTime / fadeInDuration);
+
+        // Use smooth easing for the fade-in
+        float easedProgress = progress * progress;
+
+        // Update trail renderers
+        foreach (TrailRenderer trail in trailRenderers)
+        {
+            // Fade in alpha
+            Color targetStartColor = initialColor;
+            Color targetEndColor = new Color(initialColor.r, initialColor.g, initialColor.b, 0.5f);
+
+            trail.startColor = new Color(
+                targetStartColor.r,
+                targetStartColor.g,
+                targetStartColor.b,
+                targetStartColor.a * easedProgress
+            );
+
+            trail.endColor = new Color(
+                targetEndColor.r,
+                targetEndColor.g,
+                targetEndColor.b,
+                targetEndColor.a * easedProgress
+            );
+
+            // Grow width from 0
+            trail.startWidth = trailWidth * easedProgress;
+            trail.endWidth = (trailWidth * 0.7f) * easedProgress;
+        }
+
+        // Update particle systems
+        foreach (ParticleSystem ps in particleSystems)
+        {
+            var emission = ps.emission;
+            emission.rateOverTime = particleEmissionRate * easedProgress;
+
+            var main = ps.main;
+            Color particleColor = initialColor;
+            main.startColor = new Color(
+                particleColor.r,
+                particleColor.g,
+                particleColor.b,
+                particleColor.a * easedProgress
+            );
+        }
+
+        // Transition to full drift when fade-in completes
+        if (progress >= 1.0f)
+        {
+            isDrifting = true;
+            isFadingIn = false;
+            driftTime = 0f;
+        }
     }
 
     private void StartDrift()
     {
         isDrifting = true;
+        isFadingIn = false;
+        isFadingOut = false;
         driftTime = 0f;
         currentColor = initialColor;
-        SetEffectsActive(true);
+        EnableEffects();
     }
 
     private void ContinueDrift()
     {
-        isDrifting = true;
         driftTime += Time.deltaTime;
         currentColor = Color.Lerp(currentColor, GetTargetColor(), Time.deltaTime * 2f);
     }
@@ -304,11 +420,133 @@ public class ParticleManager : MonoBehaviour
         return Color.Lerp(initialColor, Color.yellow, initialT);
     }
 
-    private void EndDrift()
+    private void StartFadeOut()
     {
         isDrifting = false;
-        driftTime = 0f;
-        SetEffectsActive(false);
+        isFadingIn = false;
+        isFadingOut = true;
+        fadeOutTime = 0f;
+
+        // Store current values to fade from
+        for (int i = 0; i < trailRenderers.Count; i++)
+        {
+            if (i < originalStartWidths.Count)
+            {
+                TrailRenderer trail = trailRenderers[i];
+                originalStartWidths[i] = trail.startWidth;
+                originalEndWidths[i] = trail.endWidth;
+                originalStartColors[i] = trail.startColor;
+                originalEndColors[i] = trail.endColor;
+            }
+        }
+
+        for (int i = 0; i < particleSystems.Count; i++)
+        {
+            if (i < originalEmissionRates.Count)
+            {
+                var emission = particleSystems[i].emission;
+                originalEmissionRates[i] = emission.rateOverTime.constant;
+            }
+        }
+    }
+
+    private void UpdateFadeOut()
+    {
+        fadeOutTime += Time.deltaTime;
+        float progress = Mathf.Clamp01(fadeOutTime / fadeOutDuration);
+
+        // Use smooth easing for the fade-out
+        float easedProgress = 1 - ((1 - progress) * (1 - progress)); // Inverse quadratic easing
+
+        // Update trail renderers
+        for (int i = 0; i < trailRenderers.Count; i++)
+        {
+            if (i >= originalStartWidths.Count) continue;
+
+            TrailRenderer trail = trailRenderers[i];
+
+            // Gradually reduce the trail time for quicker disappearance
+            trail.time = Mathf.Lerp(trailTime, 0.1f, easedProgress);
+
+            // Fade out alpha
+            Color startColor = originalStartColors[i];
+            Color endColor = originalEndColors[i];
+
+            trail.startColor = new Color(
+                startColor.r,
+                startColor.g,
+                startColor.b,
+                startColor.a * (1.0f - easedProgress)
+            );
+
+            trail.endColor = new Color(
+                endColor.r,
+                endColor.g,
+                endColor.b,
+                endColor.a * (1.0f - easedProgress)
+            );
+
+            // Shrink width
+            trail.startWidth = originalStartWidths[i] * (1.0f - easedProgress);
+            trail.endWidth = originalEndWidths[i] * (1.0f - easedProgress);
+        }
+
+        // Update particle systems
+        for (int i = 0; i < particleSystems.Count; i++)
+        {
+            if (i >= originalEmissionRates.Count) continue;
+
+            ParticleSystem ps = particleSystems[i];
+            var emission = ps.emission;
+            var main = ps.main;
+
+            // Reduce emission rate
+            emission.rateOverTime = originalEmissionRates[i] * (1.0f - easedProgress);
+
+            // Fade particle alpha
+            Color particleColor = main.startColor.color;
+            main.startColor = new Color(
+                particleColor.r,
+                particleColor.g,
+                particleColor.b,
+                particleColor.a * (1.0f - easedProgress)
+            );
+
+            // Reduce particle lifetime for quicker fading
+            main.startLifetime = Mathf.Lerp(2.0f, 0.5f, easedProgress);
+        }
+
+        // Complete fade-out and disable effects
+        if (progress >= 1.0f)
+        {
+            isFadingOut = false;
+            SetEffectsInactive();
+            ResetEffectsProperties();
+        }
+    }
+
+    private void ResetEffectsProperties()
+    {
+        // Reset all trails to their default values
+        foreach (TrailRenderer trail in trailRenderers)
+        {
+            trail.time = trailTime;
+            trail.startWidth = trailWidth;
+            trail.endWidth = trailWidth * 0.7f;
+            trail.startColor = initialColor;
+            trail.endColor = new Color(initialColor.r, initialColor.g, initialColor.b, 0.5f);
+        }
+
+        // Reset all particles to their default values
+        foreach (ParticleSystem ps in particleSystems)
+        {
+            var main = ps.main;
+            main.startColor = initialColor;
+            main.startLifetime = 2.0f;
+
+            var emission = ps.emission;
+            emission.rateOverTime = 0;
+        }
     }
 
     private void UpdateTrailWidth()
@@ -319,9 +557,8 @@ public class ParticleManager : MonoBehaviour
         foreach (TrailRenderer trail in trailRenderers)
         {
             trail.startWidth = dynamicWidth;
-            trail.endWidth = dynamicWidth * 0.7f;  // Maintain the 0.7 ratio for less taper
+            trail.endWidth = dynamicWidth * 0.7f;
 
-            // Apply a sine wave effect to the trail width for an even more dramatic effect
             float pulseAmount = Mathf.Sin(Time.time * 8f) * 0.15f + 1.0f;
             trail.widthMultiplier = 1.2f * pulseAmount;
         }
@@ -329,8 +566,6 @@ public class ParticleManager : MonoBehaviour
 
     private void UpdateEffectColors()
     {
-        if (!isDrifting) return;
-
         foreach (ParticleSystem ps in particleSystems)
         {
             var main = ps.main;
@@ -347,35 +582,47 @@ public class ParticleManager : MonoBehaviour
         }
     }
 
-    private void SetEffectsActive(bool active)
+    private void EnableEffects()
     {
         foreach (ParticleSystem ps in particleSystems)
         {
+            if (!ps.isPlaying) ps.Play();
             var emission = ps.emission;
-            emission.rateOverTime = active ? particleEmissionRate : 0;
-
-            if (active)
-            {
-                if (!ps.isPlaying) ps.Play();
-            }
-            else
-            {
-                ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            }
+            emission.rateOverTime = 0;
         }
 
         foreach (TrailRenderer trail in trailRenderers)
         {
-            if (trail.enabled != active)
-            {
-                trail.enabled = active;
+            trail.Clear();
+            trail.enabled = true;
+            trail.emitting = true;
 
-                // Clear the trail when enabling to prevent sudden appearance
-                if (active)
-                {
-                    trail.Clear();
-                }
-            }
+            // Start with zero width and fade in
+            trail.startWidth = 0;
+            trail.endWidth = 0;
+
+            // Start with zero alpha and fade in
+            Color startColor = trail.startColor;
+            Color endColor = trail.endColor;
+            trail.startColor = new Color(startColor.r, startColor.g, startColor.b, 0);
+            trail.endColor = new Color(endColor.r, endColor.g, endColor.b, 0);
+        }
+    }
+
+    private void SetEffectsInactive()
+    {
+        foreach (ParticleSystem ps in particleSystems)
+        {
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            var emission = ps.emission;
+            emission.rateOverTime = 0;
+        }
+
+        foreach (TrailRenderer trail in trailRenderers)
+        {
+            trail.Clear();
+            trail.enabled = false;
+            trail.emitting = false;
         }
     }
 
@@ -393,6 +640,13 @@ public class ParticleManager : MonoBehaviour
         foreach (Transform attachPoint in particleAttachPoints)
             Destroy(attachPoint.gameObject);
         particleAttachPoints.Clear();
+
+        // Clear stored original values
+        originalEmissionRates.Clear();
+        originalStartWidths.Clear();
+        originalEndWidths.Clear();
+        originalStartColors.Clear();
+        originalEndColors.Clear();
 
         trailAttachPoints = newAttachPoints;
 
