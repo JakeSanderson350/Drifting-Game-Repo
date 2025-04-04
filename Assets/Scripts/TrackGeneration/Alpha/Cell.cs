@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using NUnit.Framework;
+using Unity.Hierarchy;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Splines;
@@ -28,6 +29,7 @@ public class Cell : MonoBehaviour
     [SerializeField] private int numObstaclesPerCell = 10;
     [SerializeField] private float obstaclesDistToRoad = 4.0f;
 
+    private float scaleFactor = 2.0f;
     private int tempIndex;
 
     public void Start()
@@ -53,6 +55,11 @@ public class Cell : MonoBehaviour
 
         //add obstacles to cell
         InitObstacles();
+
+        cube.transform.localScale *= scaleFactor;
+        spline.transform.localScale *= scaleFactor;
+        cube.layer = 6;
+        spline.layer = 6;
 
         //change the rotation of both cube and spline
         alterRotation(lastKnotRot);

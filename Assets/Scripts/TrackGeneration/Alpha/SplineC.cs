@@ -185,7 +185,6 @@ public class SplineC: MonoBehaviour
             // If in a certian distance to road return false
             if (Vector3.Distance(bezierKnot.Position, _pos) < _minDist)
             {
-                Debug.Log("Invalid Spawn");
                 return false;
             }
         }

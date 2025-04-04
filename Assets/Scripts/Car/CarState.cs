@@ -5,7 +5,7 @@ public class CarState : MonoBehaviour
 {
     [SerializeField] private int startingHealth = 10;
     [SerializeField] private float speedToHealthFactor = 0.5f;
-    public int health;
+    private int health;
 
     [SerializeField] private Rigidbody carRB;
     private float carSpeed;
@@ -22,6 +22,11 @@ public class CarState : MonoBehaviour
     void Update()
     {
         carSpeed = carRB.linearVelocity.magnitude;
+
+        if (transform.position.y < -12)
+        {
+            onCarDeath.Invoke();
+        }
     }
 
     void OnCollisionEnter(Collision collision)
@@ -36,5 +41,10 @@ public class CarState : MonoBehaviour
                 onCarDeath.Invoke();
             }
         }
+    }
+
+    public float GetHealth01()
+    {
+        return (float)(health) / (float)(startingHealth);
     }
 }

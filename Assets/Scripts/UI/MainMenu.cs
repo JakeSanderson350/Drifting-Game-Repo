@@ -6,7 +6,7 @@ public class MainMenu : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void PlayGame()
     {
-        SceneManager.LoadScene("DrivingTest"); // Change to whatever our play scene gonna be
+        SceneManager.LoadScene("Scripting"); // Change to whatever our play scene gonna be
     }
 
     // Quit the game

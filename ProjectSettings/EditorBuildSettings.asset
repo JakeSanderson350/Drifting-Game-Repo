@@ -9,10 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: 2de1ad76a1e8b5e478d0a2b2427f3e61
   - enabled: 1
-    path: Assets/Scenes/SplineTesting.unity
-    guid: ea7e921a7b7bc1d45a97f2ecdd25eed8
-  - enabled: 1
-    path: Assets/Scenes/DrivingTest.unity
-    guid: 8142e8baf64c61c4baeab9fc3c52fc9d
+    path: Assets/Scenes/Scripting.unity
+    guid: 2aad84f5f8eb2e44e89a22432f6af02e
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
