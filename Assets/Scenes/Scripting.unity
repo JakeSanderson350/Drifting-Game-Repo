@@ -151,8 +151,11 @@ MonoBehaviour:
   splineGen: {fileID: 957738050}
   cubeGen: {fileID: 1772169517}
   cube: {fileID: 0}
+  spline: {fileID: 0}
+  empty: {fileID: 0}
   timerDuration: 3
   lastKnotPos: {x: 0, y: 0, z: 0}
+  firstKnotPos: {x: 0, y: 0, z: 0}
   lastKnotRot: {x: 0, y: 0, z: 0, w: 0}
 --- !u!4 &720523246
 Transform:
@@ -202,8 +205,9 @@ MonoBehaviour:
   splineObj: {fileID: 0}
   totalKnots: []
   minStepX: 2
-  maxStepX: 3
-  spaceValue: 2
+  maxStepX: 5
+  spaceValue: 4
+  maxAngle: 50
   tangentIn:
     x: -0.4714046
     y: -0.4714046
@@ -366,9 +370,9 @@ MonoBehaviour:
   cube: {fileID: 0}
   mesh: {fileID: 0}
   tempMaterial: {fileID: 2100000, guid: 1008dd29d20dca44eba85c933cfa5af3, type: 2}
-  lengthX: 30
+  lengthX: 50
   heightY: 2
-  widthZ: 10
+  widthZ: 20
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

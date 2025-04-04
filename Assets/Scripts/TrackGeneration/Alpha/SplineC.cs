@@ -21,6 +21,10 @@ public class SplineC: MonoBehaviour
     public float maxStepX; // Largest X step
     [Tooltip("The space between the edge of the cube and the road")]
     public float spaceValue;
+    [Tooltip("Max angle allowed between points")]
+    public float maxAngle;
+    [Tooltip("Number of attempts to get a non harsh angle between knots")]
+    const int maxAttempts = 20;
 
     [Space(10)]
     [Header("Knot Values")]
@@ -32,11 +36,10 @@ public class SplineC: MonoBehaviour
         splineObj = new GameObject("Procedural Spline");
         splineContainer = splineObj.AddComponent<SplineContainer>();
         splineObj.tag = "Spline";
-
         return splineObj;
     }
 
-    public void GenerateKnots(GameObject cube)
+    public void GenerateKnots(GameObject cube, Quaternion lastKnotRot)
     {
         if (cube == null || splineContainer == null)
         {
@@ -50,42 +53,87 @@ public class SplineC: MonoBehaviour
         //set min and max knot spawning values
         Vector3 min = bounds.min;
         Vector3 max = bounds.max;
+
         //leaving some space on left and right of track
         float minZBound = min.z + spaceValue;
         float maxZBound = max.z - spaceValue;
-        float topY = bounds.max.y + 0.01f;
+        //0.01 is added so spline sits on top of cube
+        float topY = bounds.max.y + 0.01f;  
 
         totalKnots = new List<BezierKnot>();
+        Vector3 rightDirection = cube.transform.right;
 
-        //create first knot perpendicular to edge
+        //create first knot perpendicular to edge add to list w/ perpendicular tangent
         float randomZ = Random.Range(minZBound, maxZBound);
         Vector3 startPos = new Vector3(min.x, topY, randomZ);
-        Vector3 xAxisTangent = new Vector3(1.0f, 0, 0);
+        totalKnots.Add(new BezierKnot(startPos, -rightDirection, rightDirection, lastKnotRot));
 
-        //add first knot to list w/ perpendicular tangent
-        totalKnots.Add(new BezierKnot(startPos, -xAxisTangent, xAxisTangent, quaternion.identity));
+        Vector3 prevKnotPos = startPos;
+        Vector3 prevDirection = rightDirection;
 
         //generate rest of knots along a random inc from min.x to max.x
         float xPosition = min.x + UnityEngine.Random.Range(minStepX, maxStepX);
 
         while (xPosition < max.x)
         {
-            //gen position
-            randomZ = UnityEngine.Random.Range(minZBound, maxZBound);
-            Vector3 knotPosition = new Vector3(xPosition, topY, randomZ);
+            Vector3 knotPosition = Vector3.zero;
 
-            //add knot
+            //try to get a non harsh angle between knots
+            for (int attempt = 0; attempt < maxAttempts; attempt++)
+            {
+                //generate position
+                randomZ = UnityEngine.Random.Range(minZBound, maxZBound);
+                knotPosition = new Vector3(xPosition, topY, randomZ);
+
+                //calc direction
+                Vector3 newDirection = (knotPosition - prevKnotPos).normalized;
+
+                //calc angle between
+                float angle = Vector3.Angle(prevDirection, newDirection);
+
+                //if less than maxAngle hurray! point is valid
+                if (angle < maxAngle)
+                {
+                    prevDirection = newDirection; 
+                    break;
+                }
+            }
+
+            //add the knot
             totalKnots.Add(new BezierKnot(knotPosition, tangentIn, tangentOut, quaternion.identity));
+            prevKnotPos = knotPosition;
 
-            //step
+            //calculate next knot position
             float nextX = xPosition + UnityEngine.Random.Range(minStepX, maxStepX);
 
-            //if next knot is going to be over the edge put it at max.x
-            if (nextX > max.x + 0.75f)
+            //if position would be more than max.x, set equal to max.x
+            if (nextX > max.x + 1.5f)
             {
-                nextX = max.x;
-                randomZ = UnityEngine.Random.Range(minZBound, maxZBound);
-                totalKnots.Add(new BezierKnot(new Vector3(nextX, topY, randomZ), float3.zero, float3.zero, quaternion.identity));
+                //checking angle constraints
+                Vector3 finalPos = Vector3.zero;
+                Vector3 finalDirection = Vector3.zero;
+
+                for (int attempt = 0; attempt < maxAttempts; attempt++)
+                {
+                    //generate position
+                    randomZ = UnityEngine.Random.Range(minZBound, maxZBound);
+                    finalPos = new Vector3(max.x, topY, randomZ);
+
+                    //calc final direction
+                    finalDirection = (finalPos - prevKnotPos).normalized;
+
+                    //calc angle between
+                    float angle = Vector3.Angle(prevDirection, finalDirection);
+
+                    //if less than maxAngle hurray! point is valid
+                    if (angle < maxAngle)
+                    {
+                        break;
+                    }
+                }
+
+                //add final knot
+                totalKnots.Add(new BezierKnot(finalPos, -rightDirection, rightDirection, quaternion.identity));
                 break;
             }
 
@@ -94,7 +142,7 @@ public class SplineC: MonoBehaviour
 
         splineContainer.Spline = new Spline(totalKnots, closed: false);
 
-        //important: DONT autosmooth first and last knot, will mess up tangents
+        //important: DONT autosmooth first knot, will mess up tangents
         for (int i = 1; i < splineContainer.Spline.Count; i++)
         {
             splineContainer.Spline.SetTangentMode(i, TangentMode.AutoSmooth);
@@ -108,16 +156,20 @@ public class SplineC: MonoBehaviour
 
     public Vector3 firstKnotPos(GameObject givenSpline)
     {
-        return givenSpline.GetComponent<SplineContainer>().Spline.EvaluatePosition(0f);
+        Vector3 pos = givenSpline.GetComponent<SplineContainer>().Spline.EvaluatePosition(0f);
+        pos = givenSpline.transform.TransformPoint(pos);
+        return pos;
     }
     public Vector3 lastKnotPos(GameObject givenSpline)
     {
-        return givenSpline.GetComponent<SplineContainer>().Spline.EvaluatePosition(1f);
+        Vector3 pos = givenSpline.GetComponent<SplineContainer>().Spline.EvaluatePosition(1f);
+        pos = givenSpline.transform.TransformPoint(pos);
+        return pos; 
     }
-    public Quaternion lastKnotRot()
+    public Quaternion lastKnotRot(GameObject givenSpline)
     {
-        Vector3 endTangent = splineContainer.Spline.EvaluateTangent(1f);
-        Vector3 endUpVector = splineContainer.Spline.EvaluateUpVector(1f);
+        Vector3 endTangent = givenSpline.GetComponent<SplineContainer>().Spline.EvaluateTangent(1f);
+        Vector3 endUpVector = givenSpline.GetComponent<SplineContainer>().Spline.EvaluateUpVector(1f);
         Quaternion quaternion = Quaternion.LookRotation(endTangent, endUpVector);
 
         Quaternion correction = Quaternion.Euler(0, -90, 0);

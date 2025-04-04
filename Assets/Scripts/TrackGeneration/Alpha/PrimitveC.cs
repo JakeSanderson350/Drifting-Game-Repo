@@ -26,21 +26,4 @@ public class PrimitveC : MonoBehaviour
         cube.transform.eulerAngles = Vector3.zero;
         return cube;
     }
-
-    public void alterRotation(Quaternion prevRot)
-    {
-        Debug.Log("Rotation altered");
-        cube.transform.rotation = prevRot;
-    }
-
-    public void alterPosition(Vector3 lastKnotPos, Vector3 firstKnotPos)
-    {
-        Debug.Log("position altered");
-        float distance = Vector3.Distance(lastKnotPos, firstKnotPos);
-        Vector3 directionVector = lastKnotPos - firstKnotPos;
-        Vector3 normalizedDirection = directionVector.normalized;
-
-        Debug.Log("Distance between points: " + distance);
-        Debug.Log("Direction vector: " + normalizedDirection.ToString("F8"));
-    }
 }

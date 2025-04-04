@@ -19,11 +19,14 @@ public class Cell : MonoBehaviour
     public Vector3 firstKnotPos;
     public Quaternion lastKnotRot;
 
+    private int tempIndex;
+
     public void Start()
     {
         lastKnotPos = Vector3.zero;
         lastKnotRot = Quaternion.identity;
         currentTimerTime = timerDuration;
+        tempIndex = 0;
     }
 
     public void Update()
@@ -33,28 +36,47 @@ public class Cell : MonoBehaviour
 
     public void GenerateCell()
     {
-        empty = new GameObject("empty");
+        //init cube and spline, generate points on spline
         cube = cubeGen.Init();
-        cube.transform.SetParent(empty.transform, worldPositionStays: true);
-
         spline = splineGen.Init();
-        splineGen.GenerateKnots(cube);
-        spline.transform.SetParent(empty.transform, worldPositionStays: true);
+        splineGen.GenerateKnots(cube, lastKnotRot);
 
-        //cubeGen.alterRotation(lastKnotRot);
+        //change the rotation of both cube and spline
         alterRotation(lastKnotRot);
 
+        //get first point in spline in worldspace
         firstKnotPos = splineGen.firstKnotPos(spline);
-        cubeGen.alterPosition(lastKnotPos, firstKnotPos);
 
+        //alter position so THIS first knot matches with LAST last knot
+        alterPosition(lastKnotPos, firstKnotPos);
+
+        //get last knot (pos/rot) of THIS spline
         lastKnotPos = splineGen.lastKnotPos(spline);
-        lastKnotRot = splineGen.lastKnotRot();
+        lastKnotRot = splineGen.lastKnotRot(spline);
 
+        tempIndex++;
     }
     public void alterRotation(Quaternion prevRot)
     {
-        Debug.Log("Rotation altered");
-        empty.transform.rotation = prevRot;
+        cube.transform.rotation = prevRot;
+        spline.transform.rotation = prevRot;
+    }
+    public void alterPosition(Vector3 lastKnotPos, Vector3 firstKnotPos)
+    {
+        if (tempIndex == 0) { return; }
+
+        float distance = Vector3.Distance(lastKnotPos, firstKnotPos);
+        Vector3 directionVector = lastKnotPos - firstKnotPos;
+        Vector3 normalizedDirection = directionVector.normalized;
+
+        Vector3 newPositionCube = cube.transform.position + normalizedDirection * distance;
+        cube.transform.position = new Vector3(newPositionCube.x, 0f, newPositionCube.z);
+
+        Vector3 newPositionSpline = spline.transform.position + normalizedDirection * distance;
+        spline.transform.position = new Vector3(newPositionSpline.x, 0f, newPositionSpline.z);
+
+        //Debug.Log("Distance between points: " + distance);
+        //Debug.Log("Direction vector: " + normalizedDirection.ToString("F8"));
     }
     private void UpdateTimer()
     {
