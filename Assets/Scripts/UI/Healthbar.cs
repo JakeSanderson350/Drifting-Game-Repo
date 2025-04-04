@@ -22,7 +22,6 @@ public class Healthbar : MonoBehaviour
     void Update()
     {
         carHealth = 1.0f - carState.GetHealth01();
-        Debug.Log(carHealth);
 
         healthBarAnchor.localScale = new Vector3(Mathf.Lerp(1.0f, 0.0f, carHealth), 1.0f, 1.0f);
         healthBar.color = Color.Lerp(startColor, endColor, carHealth);

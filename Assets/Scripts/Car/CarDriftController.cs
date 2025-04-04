@@ -19,7 +19,6 @@ public class CarDriftController : MonoBehaviour
     private bool isDead = false;
 
     [Header("Body")]
-    public float tireRadius = 0.5f;
     public float drag = 1.0f;
 
     [Header("Engine")]
@@ -34,6 +33,8 @@ public class CarDriftController : MonoBehaviour
     public float driftAngleThreshold = 5.0f;
     public float maxDriftAngle = 60.0f;
     public float transferSpeed = 10.0f;
+    public float tireGripDifficultyIncrement = -0.04f;
+    private float tireGripModifier;
     private float driftAngle;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -71,18 +72,6 @@ public class CarDriftController : MonoBehaviour
         }
 
         return Vector3.Angle(rb.linearVelocity, GetDriveDirection()) * Vector3.Cross(rb.linearVelocity.normalized, GetDriveDirection()).y;
-    }
-
-    public float GetSlipRatio()
-    {
-        float carVelocity = rb.linearVelocity.magnitude;
-        float tireAngularVelocity = 6.0f;
-
-        float slipRatio = tireAngularVelocity * tireRadius - carVelocity;
-        slipRatio /= Mathf.Abs(carVelocity);
-        Debug.Log(slipRatio);
-
-        return slipRatio;
     }
 
     public bool IsDrifting()
@@ -147,6 +136,8 @@ public class CarDriftController : MonoBehaviour
 
     private void UpdateTireForce()
     {
+        tireGripModifier = GameManager.Instance.GetDifficulty() * tireGripDifficultyIncrement;
+
         //Update tire forces
         foreach (Tire tire in frontTires)
         {
@@ -180,7 +171,7 @@ public class CarDriftController : MonoBehaviour
         {
             tireGrip = 0.0075f * _tireAngle - 0.5f;
         }
-        return tireGrip;
+        return tireGrip + tireGripModifier;
     }
 
     private float GetSteeringAngularAcceleration()

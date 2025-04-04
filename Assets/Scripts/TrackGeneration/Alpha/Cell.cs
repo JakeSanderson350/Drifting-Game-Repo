@@ -29,7 +29,7 @@ public class Cell : MonoBehaviour
     [SerializeField] private int numObstaclesPerCell = 10;
     [SerializeField] private float obstaclesDistToRoad = 4.0f;
 
-    private float scaleFactor = 2.0f;
+    private float scaleFactor = 5.0f;
     private int tempIndex;
 
     public void Start()
@@ -124,8 +124,9 @@ public class Cell : MonoBehaviour
     {
         float xRange = cubeGen.lengthX / 2;
         float zRange = cubeGen.widthZ / 2;
+        int scaledNumObstacles = numObstaclesPerCell + GameManager.Instance.GetDifficulty();
 
-        for (int i = 0; i < numObstaclesPerCell; i++)
+        for (int i = 0; i < scaledNumObstacles; i++)
         {
             Vector3 spawnPos = Vector3.zero;
             bool isValidSpawnPos = false;

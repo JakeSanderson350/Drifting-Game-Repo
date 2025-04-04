@@ -149,6 +149,7 @@ GameObject:
   - component: {fileID: 3488100902572810491}
   - component: {fileID: 7260372234300094930}
   - component: {fileID: 2652190493771351157}
+  - component: {fileID: 3034261264244496280}
   m_Layer: 0
   m_Name: Car
   m_TagString: Untagged
@@ -212,7 +213,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7567560579064384266}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 18065519880c1f84b853beded0a49633, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -253,7 +254,6 @@ MonoBehaviour:
   throttle: 0.1
   throttleIncrement: 0.1
   screenUse: 0.8
-  tireRadius: 0.5
   drag: 1
   driveForce: 300
   maxAngularAcceleration: 9000
@@ -262,6 +262,7 @@ MonoBehaviour:
   driftAngleThreshold: 2
   maxDriftAngle: 60
   transferSpeed: 10
+  tireGripDifficultyIncrement: -0.01
 --- !u!114 &7260372234300094930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -312,6 +313,21 @@ MonoBehaviour:
   particleSpawnRadius: 1.8
   particleSpawnHeightOffset: 0.2
   particleSpawnDistance: 2.5
+--- !u!114 &3034261264244496280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7567560579064384266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 584c3bd3098c7a84bb21088a531da1df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startingHealth: 10
+  speedToHealthFactor: 0.5
+  carRB: {fileID: 7378872709621726207}
 --- !u!1 &8433912454428698913
 GameObject:
   m_ObjectHideFlags: 0

@@ -455,8 +455,9 @@ MonoBehaviour:
   obstaclePrefabs:
   - {fileID: 3251523534738225239, guid: 53cb7964d1e732d48b90a5591672695e, type: 3}
   - {fileID: 9175834846965401456, guid: 5fcfc17efbe7b514c82b29acad79e18e, type: 3}
-  numObstaclesPerCell: 30
-  obstaclesDistToRoad: 4
+  - {fileID: 6438372132684690647, guid: 3167be35371e2034baddfdd251fe99c7, type: 3}
+  numObstaclesPerCell: 60
+  obstaclesDistToRoad: 3
 --- !u!4 &720523246
 Transform:
   m_ObjectHideFlags: 0
@@ -567,6 +568,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54c99b848d9d8d14d86ebdddb5fcf50b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  difficultyIncrementTime: 5
+  difficulty: 0
   gameOverScreen: {fileID: 1001942337}
 --- !u!114 &1177215278
 MonoBehaviour:
@@ -665,21 +668,17 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7567560579064384266, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1357417821}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
 --- !u!1 &1357417820 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7567560579064384266, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
   m_PrefabInstance: {fileID: 1332610918}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1357417821
+--- !u!114 &1357417821 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 3034261264244496280, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
+  m_PrefabInstance: {fileID: 1332610918}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1357417820}
   m_Enabled: 1
@@ -687,9 +686,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 584c3bd3098c7a84bb21088a531da1df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingHealth: 10
-  speedToHealthFactor: 0.5
-  carRB: {fileID: 1357417826}
 --- !u!114 &1357417822 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
@@ -712,11 +708,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e44792ea2611e1b4b82326caca88b4c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!54 &1357417826 stripped
-Rigidbody:
-  m_CorrespondingSourceObject: {fileID: 7378872709621726207, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
-  m_PrefabInstance: {fileID: 1332610918}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1357417827 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7668251816532010518, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
