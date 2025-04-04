@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using NUnit.Framework;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Splines;
 
@@ -19,6 +22,12 @@ public class Cell : MonoBehaviour
     public Vector3 firstKnotPos;
     public Quaternion lastKnotRot;
 
+    [Header("Obstacles")]
+    [SerializeField] private List<GameObject> obstaclePrefabs;
+    private List<GameObject> obstacles;
+    [SerializeField] private int numObstaclesPerCell = 10;
+    [SerializeField] private float obstaclesDistToRoad = 4.0f;
+
     private int tempIndex;
 
     public void Start()
@@ -26,6 +35,7 @@ public class Cell : MonoBehaviour
         lastKnotPos = Vector3.zero;
         lastKnotRot = Quaternion.identity;
         currentTimerTime = timerDuration;
+        obstacles = new List<GameObject>();
         tempIndex = 0;
     }
 
@@ -41,6 +51,9 @@ public class Cell : MonoBehaviour
         spline = splineGen.Init();
         splineGen.GenerateKnots(cube, lastKnotRot);
 
+        //add obstacles to cell
+        InitObstacles();
+
         //change the rotation of both cube and spline
         alterRotation(lastKnotRot);
 
@@ -54,12 +67,18 @@ public class Cell : MonoBehaviour
         lastKnotPos = splineGen.lastKnotPos(spline);
         lastKnotRot = splineGen.lastKnotRot(spline);
 
+        obstacles.Clear();
         tempIndex++;
     }
     public void alterRotation(Quaternion prevRot)
     {
         cube.transform.rotation = prevRot;
         spline.transform.rotation = prevRot;
+
+        foreach (GameObject obstacle in obstacles)
+        {
+            obstacle.transform.rotation = prevRot;
+        }
     }
     public void alterPosition(Vector3 lastKnotPos, Vector3 firstKnotPos)
     {
@@ -92,5 +111,28 @@ public class Cell : MonoBehaviour
     private void ResetTimer()
     {
         currentTimerTime = timerDuration;
+    }
+
+    private void InitObstacles() //needs to be called after cube and spline are initted
+    {
+        float xRange = cubeGen.lengthX / 2;
+        float zRange = cubeGen.widthZ / 2;
+
+        for (int i = 0; i < numObstaclesPerCell; i++)
+        {
+            Vector3 spawnPos = Vector3.zero;
+            bool isValidSpawnPos = false;
+
+            do
+            {
+                spawnPos = new Vector3(Random.Range(-xRange, xRange), 0.0f, Random.Range(-zRange, zRange));
+                isValidSpawnPos = splineGen.IsOffRoad(spawnPos, obstaclesDistToRoad);
+            } while (!isValidSpawnPos);
+
+
+            GameObject newObstacle = Instantiate(obstaclePrefabs[Random.Range(0, obstaclePrefabs.Count)], spawnPos, cube.transform.rotation);
+            obstacles.Add(newObstacle);
+            newObstacle.transform.SetParent(cube.transform, true); // bc parented, obstacles will move when cube is moved
+        }
     }
 }

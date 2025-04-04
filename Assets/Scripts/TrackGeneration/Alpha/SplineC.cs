@@ -176,4 +176,20 @@ public class SplineC: MonoBehaviour
         quaternion = quaternion * correction;
         return quaternion;
     }
+
+    public bool IsOffRoad(Vector3 _pos, float _minDist)
+    {
+        //splineContainer.KnotLinkCollection;
+        foreach (BezierKnot bezierKnot in totalKnots)
+        {
+            // If in a certian distance to road return false
+            if (Vector3.Distance(bezierKnot.Position, _pos) < _minDist)
+            {
+                Debug.Log("Invalid Spawn");
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
