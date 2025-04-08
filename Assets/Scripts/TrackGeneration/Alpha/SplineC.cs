@@ -66,7 +66,7 @@ public class SplineC: MonoBehaviour
         //create first knot perpendicular to edge add to list w/ perpendicular tangent
         float randomZ = Random.Range(minZBound, maxZBound);
         Vector3 startPos = new Vector3(min.x, topY, randomZ);
-        totalKnots.Add(new BezierKnot(startPos, -rightDirection, rightDirection, lastKnotRot));
+        totalKnots.Add(new BezierKnot(startPos, -rightDirection, rightDirection, Quaternion.identity));
 
         Vector3 prevKnotPos = startPos;
         Vector3 prevDirection = rightDirection;
@@ -100,40 +100,15 @@ public class SplineC: MonoBehaviour
             }
 
             //add the knot
-            totalKnots.Add(new BezierKnot(knotPosition, tangentIn, tangentOut, quaternion.identity));
+            totalKnots.Add(new BezierKnot(knotPosition, -prevDirection, prevDirection, quaternion.identity));
             prevKnotPos = knotPosition;
 
             //calculate next knot position
             float nextX = xPosition + UnityEngine.Random.Range(minStepX, maxStepX);
 
-            //if position would be more than max.x, set equal to max.x
-            if (nextX > max.x + 1.5f)
+            //if position would be more than max.x break
+            if (nextX > max.x + 1f)
             {
-                //checking angle constraints
-                Vector3 finalPos = Vector3.zero;
-                Vector3 finalDirection = Vector3.zero;
-
-                for (int attempt = 0; attempt < maxAttempts; attempt++)
-                {
-                    //generate position
-                    randomZ = UnityEngine.Random.Range(minZBound, maxZBound);
-                    finalPos = new Vector3(max.x, topY, randomZ);
-
-                    //calc final direction
-                    finalDirection = (finalPos - prevKnotPos).normalized;
-
-                    //calc angle between
-                    float angle = Vector3.Angle(prevDirection, finalDirection);
-
-                    //if less than maxAngle hurray! point is valid
-                    if (angle < maxAngle)
-                    {
-                        break;
-                    }
-                }
-
-                //add final knot
-                totalKnots.Add(new BezierKnot(finalPos, -rightDirection, rightDirection, quaternion.identity));
                 break;
             }
 
@@ -149,7 +124,7 @@ public class SplineC: MonoBehaviour
         }
 
         //set first as mirrored
-        splineContainer.Spline.SetTangentMode(0, TangentMode.Mirrored);
+        splineContainer.Spline.SetTangentMode(0, TangentMode.Continuous);
 
         splineObj.AddComponent<LoftRoadBehaviour>().IncreaseWidthsCount();
     }
@@ -168,13 +143,28 @@ public class SplineC: MonoBehaviour
     }
     public Quaternion lastKnotRot(GameObject givenSpline)
     {
-        Vector3 endTangent = givenSpline.GetComponent<SplineContainer>().Spline.EvaluateTangent(1f);
-        Vector3 endUpVector = givenSpline.GetComponent<SplineContainer>().Spline.EvaluateUpVector(1f);
-        Quaternion quaternion = Quaternion.LookRotation(endTangent, endUpVector);
+        SplineContainer container = givenSpline.GetComponent<SplineContainer>();
+
+        Vector3 endTangent = container.Spline.EvaluateTangent(1f);
+        Vector3 endUpVector = container.Spline.EvaluateUpVector(1f);
+
+        endTangent.Normalize();
+        endUpVector.Normalize();
+
+        Vector3 rightVector = Vector3.Cross(endTangent, endUpVector).normalized;
+        Vector3 correctedUpVector = Vector3.Cross(rightVector, endTangent).normalized;
+        Quaternion orientation = Quaternion.LookRotation(endTangent, correctedUpVector);
+
+        //Quaternion quaternion = Quaternion.LookRotation(endTangent, endUpVector);
+
+        Debug.Log("worldspace reg: " + givenSpline.transform.rotation);
+        Debug.Log("worldspace euler: " + givenSpline.transform.rotation.eulerAngles);
+        Debug.Log("quaternion reg " + orientation);
+        Debug.Log("quaternion reg " + orientation.eulerAngles);
 
         Quaternion correction = Quaternion.Euler(0, -90, 0);
-        quaternion = quaternion * correction;
-        return quaternion;
+        orientation = orientation * correction;
+        return orientation;
     }
 
     public bool IsOffRoad(Vector3 _pos, float _minDist)

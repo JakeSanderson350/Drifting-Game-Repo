@@ -91,7 +91,7 @@ public class Cell : MonoBehaviour
     {
         if (tempIndex == 0) { return; }
 
-        float distance = Vector3.Distance(lastKnotPos, firstKnotPos);
+        float distance = Vector3.Distance(lastKnotPos, firstKnotPos) - 0.5f;
         Vector3 directionVector = lastKnotPos - firstKnotPos;
         Vector3 normalizedDirection = directionVector.normalized;
 
@@ -100,9 +100,6 @@ public class Cell : MonoBehaviour
 
         Vector3 newPositionSpline = spline.transform.position + normalizedDirection * distance;
         spline.transform.position = new Vector3(newPositionSpline.x, 0f, newPositionSpline.z);
-
-        //Debug.Log("Distance between points: " + distance);
-        //Debug.Log("Direction vector: " + normalizedDirection.ToString("F8"));
     }
     private void UpdateTimer()
     {
