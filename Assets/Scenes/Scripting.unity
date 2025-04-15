@@ -745,6 +745,10 @@ PrefabInstance:
       value: 0.45882353
       objectReference: {fileID: 0}
     - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
+      propertyPath: trailMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 763650c0ea9fa574da12a58fee98c779, type: 2}
+    - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
       propertyPath: trailMaxWidth
       value: 1
       objectReference: {fileID: 0}
@@ -769,12 +773,16 @@ PrefabInstance:
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
+      propertyPath: particleEmissionRate
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
       propertyPath: trailSmoothingFactor
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
       propertyPath: particleSpawnDistance
-      value: 0.5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
       propertyPath: trailMinVertexDistance

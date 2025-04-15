@@ -30,7 +30,7 @@ public class ParticleManager : MonoBehaviour
     [Header("Particle Configuration")]
     [SerializeField] private float particleSpawnRadius = 1.8f;
     [SerializeField] private float particleSpawnHeightOffset = 0.2f;
-    [SerializeField] private float particleSpawnDistance = 2.5f;  // Distance behind the trail
+    [SerializeField] private float particleSpawnDistance = 5.0f;  // Distance behind the trail (Increased from 2.5f to 5.0f)
 
     [Header("Fade Configuration")]
     [SerializeField] private float fadeInDuration = 0.5f;
