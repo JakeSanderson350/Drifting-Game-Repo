@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TMPro;
 using Unity.Mathematics;
 using Unity.Splines.Examples;
@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.Splines;
 using Random = UnityEngine.Random;
 
-public class SplineC: MonoBehaviour
+public class tempS : MonoBehaviour
 {
     [Header("Spline Mesh Info")]
     public SplineContainer splineContainer;
@@ -26,13 +26,8 @@ public class SplineC: MonoBehaviour
     [Tooltip("Number of attempts to get a non harsh angle between knots")]
     const int maxAttempts = 20;
 
-    [Space(10)]
-    [Header("Knot Values")]
-    public float3 tangentIn    = new float3(-0.4714046);
-    public float3 tangentOut   = new float3(0.4714046);
-
     public GameObject Init()
-    { 
+    {
         splineObj = new GameObject("Procedural Spline");
         splineContainer = splineObj.AddComponent<SplineContainer>();
         splineObj.tag = "Spline";
@@ -58,7 +53,7 @@ public class SplineC: MonoBehaviour
         float minZBound = min.z + spaceValue;
         float maxZBound = max.z - spaceValue;
         //0.01 is added so spline sits on top of cube
-        float topY = bounds.max.y + 0.01f;  
+        float topY = bounds.max.y + 0.01f;
 
         totalKnots = new List<BezierKnot>();
         Vector3 rightDirection = cube.transform.right;
@@ -94,7 +89,7 @@ public class SplineC: MonoBehaviour
                 //if less than maxAngle hurray! point is valid
                 if (angle < maxAngle)
                 {
-                    prevDirection = newDirection; 
+                    prevDirection = newDirection;
                     break;
                 }
             }
@@ -117,8 +112,8 @@ public class SplineC: MonoBehaviour
 
         splineContainer.Spline = new Spline(totalKnots, closed: false);
 
-        //important: DONT autosmooth first knot, will mess up tangents
-        for (int i = 1; i < splineContainer.Spline.Count - 1; i++)
+        //important: DONT autosmooth first and last knot, will mess up tangents
+        for (int i = 1; i < splineContainer.Spline.Count; i++)
         {
             splineContainer.Spline.SetTangentMode(i, TangentMode.AutoSmooth);
         }
@@ -128,6 +123,7 @@ public class SplineC: MonoBehaviour
         splineContainer.Spline.SetTangentMode(splineContainer.Spline.Count - 1, TangentMode.Continuous);
 
         splineObj.AddComponent<LoftRoadBehaviour>().IncreaseWidthsCount();
+
     }
 
     public Vector3 firstKnotPos(GameObject givenSpline)
@@ -140,7 +136,7 @@ public class SplineC: MonoBehaviour
     {
         Vector3 pos = givenSpline.GetComponent<SplineContainer>().Spline.EvaluatePosition(1f);
         pos = givenSpline.transform.TransformPoint(pos);
-        return pos; 
+        return pos;
     }
     public Quaternion lastKnotRot(GameObject givenSpline)
     {
@@ -156,18 +152,43 @@ public class SplineC: MonoBehaviour
         Vector3 correctedUpVector = Vector3.Cross(rightVector, endTangent).normalized;
         Quaternion orientation = Quaternion.LookRotation(endTangent, correctedUpVector);
 
-        //Quaternion quaternion = Quaternion.LookRotation(endTangent, endUpVector);
-
-        Debug.Log("worldspace reg: " + givenSpline.transform.rotation);
-        Debug.Log("worldspace euler: " + givenSpline.transform.rotation.eulerAngles);
-        Debug.Log("quaternion reg " + orientation);
-        Debug.Log("quaternion reg " + orientation.eulerAngles);
-
         Quaternion correction = Quaternion.Euler(0, -90, 0);
         orientation = orientation * correction;
         return orientation;
     }
+    public float3 GetLastKnotTan(GameObject givenSpline)
+    {
+        var container = givenSpline.GetComponent<SplineContainer>();
+        var spline = container.Spline;
+        var lastKnot = spline[spline.Count - 1];
 
+        //convert from local to world space
+        Vector3 worldTangent = givenSpline.transform.TransformDirection(lastKnot.TangentOut);
+
+        return worldTangent;
+    }
+
+    public void SetFirstKnotTang(float3 tan, GameObject givenSpline, Quaternion rotation)
+    {
+        var container = givenSpline.GetComponent<SplineContainer>();
+        var spline = container.Spline;
+        BezierKnot firstKnot = spline[0];
+
+        //convert from worlspace to local space
+        Vector3 localTangent = givenSpline.transform.InverseTransformDirection(tan);
+
+        //set both tangents
+        firstKnot.TangentOut = localTangent;
+        firstKnot.TangentIn = -localTangent;
+
+
+        Debug.Log("given rot: " + rotation);
+        //set rotation
+//        firstKnot.Rotation = firstKnot.Rotation + rotation;
+
+        //update the knot
+        spline.SetKnot(0, firstKnot);
+    }
     public bool IsOffRoad(Vector3 _pos, float _minDist)
     {
         //splineContainer.KnotLinkCollection;

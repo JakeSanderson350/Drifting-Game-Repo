@@ -5,10 +5,10 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Splines;
 
-public class Cell : MonoBehaviour
+public class tempC : MonoBehaviour
 {
     [Header("References")]
-    public SplineC splineGen;
+    public tempS splineGen;
     public PrimitveC cubeGen;
     public GameObject cube;
     public GameObject spline;
@@ -22,6 +22,7 @@ public class Cell : MonoBehaviour
     public Vector3 lastKnotPos;
     public Vector3 firstKnotPos;
     public Quaternion lastKnotRot;
+    public Unity.Mathematics.float3 lastKnotTangent;
 
     [Header("Obstacles")]
     [SerializeField] private List<GameObject> obstaclePrefabs;
@@ -67,12 +68,16 @@ public class Cell : MonoBehaviour
         //get first point in current spline in worldspace
         firstKnotPos = splineGen.firstKnotPos(spline);
 
-        //alter position so THIS first knot matches with LAST last knot
-        alterPosition(lastKnotPos, firstKnotPos);
-
+        if (tempIndex != 0)
+        {
+            //alter position so THIS first knot matches with LAST last knot
+            alterPosition(lastKnotPos, firstKnotPos);
+            splineGen.SetFirstKnotTang(lastKnotTangent, spline, lastKnotRot);
+        }
         //get last knot (pos/rot) of THIS spline
         lastKnotPos = splineGen.lastKnotPos(spline);
         lastKnotRot = splineGen.lastKnotRot(spline);
+        lastKnotTangent = splineGen.GetLastKnotTan(spline);
 
         obstacles.Clear();
         tempIndex++;
