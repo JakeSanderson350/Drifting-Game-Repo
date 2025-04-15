@@ -2,8 +2,6 @@
 using TMPro;
 using Unity.Mathematics;
 using Unity.Splines.Examples;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Splines;
 using Random = UnityEngine.Random;
@@ -112,18 +110,18 @@ public class tempS : MonoBehaviour
 
         splineContainer.Spline = new Spline(totalKnots, closed: false);
 
-        //important: DONT autosmooth first and last knot, will mess up tangents
+        //important: DONT autosmooth first knot, will mess up tangents
         for (int i = 1; i < splineContainer.Spline.Count; i++)
         {
             splineContainer.Spline.SetTangentMode(i, TangentMode.AutoSmooth);
         }
 
-        //set first as mirrored
+        //set first and last knot as continuous
         splineContainer.Spline.SetTangentMode(0, TangentMode.Continuous);
         splineContainer.Spline.SetTangentMode(splineContainer.Spline.Count - 1, TangentMode.Continuous);
 
+        //add road script
         splineObj.AddComponent<LoftRoadBehaviour>().IncreaseWidthsCount();
-
     }
 
     public Vector3 firstKnotPos(GameObject givenSpline)
@@ -168,7 +166,7 @@ public class tempS : MonoBehaviour
         return worldTangent;
     }
 
-    public void SetFirstKnotTang(float3 tan, GameObject givenSpline, Quaternion rotation)
+    public void AlterFirstKnot(float3 tan, GameObject givenSpline, Quaternion rotation)
     {
         var container = givenSpline.GetComponent<SplineContainer>();
         var spline = container.Spline;
@@ -181,17 +179,22 @@ public class tempS : MonoBehaviour
         firstKnot.TangentOut = localTangent;
         firstKnot.TangentIn = -localTangent;
 
-
-        Debug.Log("given rot: " + rotation);
         //set rotation
-//        firstKnot.Rotation = firstKnot.Rotation + rotation;
+        float yRotation = rotation.eulerAngles.y;
+        // Convert current knot rotation to Euler angles
+        float3 knotEuler = math.degrees(math.Euler(firstKnot.Rotation));
+        // Apply only the Y rotation change
+        knotEuler.y += yRotation;
+        // Convert back to quaternion
+        firstKnot.Rotation = quaternion.Euler(math.radians(knotEuler));
 
         //update the knot
         spline.SetKnot(0, firstKnot);
     }
+
+    //checks if a given position is off the spline
     public bool IsOffRoad(Vector3 _pos, float _minDist)
     {
-        //splineContainer.KnotLinkCollection;
         foreach (BezierKnot bezierKnot in totalKnots)
         {
             // If in a certian distance to road return false
