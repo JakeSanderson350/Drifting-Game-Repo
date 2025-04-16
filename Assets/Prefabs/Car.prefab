@@ -150,6 +150,7 @@ GameObject:
   - component: {fileID: 7260372234300094930}
   - component: {fileID: 2652190493771351157}
   - component: {fileID: 3034261264244496280}
+  - component: {fileID: 3367307440592862184}
   m_Layer: 0
   m_Name: Car
   m_TagString: Untagged
@@ -292,27 +293,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74fd28c1a968de64383bcb96fca7ece0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carDriftController: {fileID: 3488100902572810491}
+  carDriftController: {fileID: 0}
   trailAttachPoints:
-  - {fileID: 3267265012776776845}
-  - {fileID: 1072702072305641541}
+  - {fileID: 0}
+  - {fileID: 0}
   particlePrefab: {fileID: 6090096630861670416, guid: ded0bc335c5094b4084f3135ef6227f6, type: 3}
-  trailMaterial: {fileID: 10308, guid: 0000000000000000f000000000000000, type: 0}
+  trailMaterial: {fileID: 2100000, guid: 763650c0ea9fa574da12a58fee98c779, type: 2}
   roadLayerMask:
     serializedVersion: 2
     m_Bits: 64
-  initialColor: {r: 0, g: 0, b: 1, a: 1}
-  finalColor: {r: 1, g: 0, b: 0, a: 1}
+  initialColor: {r: 0.47058824, g: 0.58431375, b: 0.46666667, a: 1}
+  finalColor: {r: 0.45882353, g: 0, b: 1, a: 1}
   colorTransitionTime: 5
   minDriftAngleForEffects: 3
-  particleEmissionRate: 250
-  trailWidth: 8
-  trailMaxWidth: 14
+  particleEmissionRate: 50
+  trailWidth: 0.5
+  trailMaxWidth: 1
   trailHeightOffset: 0.01
-  trailTime: 1.8
-  particleSpawnRadius: 1.8
+  trailTime: 2.5
+  particleSpawnRadius: 0.5
   particleSpawnHeightOffset: 0.2
-  particleSpawnDistance: 2.5
+  particleSpawnDistance: 3
+  fadeInDuration: 0.5
+  fadeOutDuration: 1
 --- !u!114 &3034261264244496280
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,6 +331,27 @@ MonoBehaviour:
   startingHealth: 10
   speedToHealthFactor: 0.5
   carRB: {fileID: 7378872709621726207}
+  isPaused: 0
+--- !u!114 &3367307440592862184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7567560579064384266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c18513f82bbe964e8dae0dd9e282ed6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debrisParticlePrefab: {fileID: 980563096763372027, guid: 2ed80720d6cb37d4aabd9198a47ec20f, type: 3}
+  minParticleCount: 15
+  maxParticleCount: 50
+  minParticleSpeed: 3
+  maxParticleSpeed: 10
+  particleLifetime: 3
+  speedToParticlesMultiplier: 5
+  vehicleRigidbody: {fileID: 7378872709621726207}
 --- !u!1 &8433912454428698913
 GameObject:
   m_ObjectHideFlags: 0
