@@ -14,6 +14,8 @@ public class PrimitveC : MonoBehaviour
     public float heightY;
     public float widthZ;
 
+    //<summary> initalizes a new cube gameobject with components
+    //<returns> the newly created cube object
     public GameObject Init()
     {
         cube = GameObject.CreatePrimitive(PrimitiveType.Cube);

@@ -11,5 +11,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/AlphaBuild/AlphaScene.unity
     guid: 8593584bdccf7ed489591288ea67813a
+  - enabled: 1
+    path: Assets/Scenes/RotationFix.unity
+    guid: b8d2de426ed21554a8f35aa4f1cacc95
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

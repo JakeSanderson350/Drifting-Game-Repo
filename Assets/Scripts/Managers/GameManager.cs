@@ -80,7 +80,7 @@ public class GameManager : MonoBehaviour
     }
     private void PauseGame()
     {
-        pauseScreen.GetComponent<PauseUI>().SetUIStatus(true);
+        pauseScreen.GetComponent<UIManager>().SetUIStatus(true);
     }
 
     private IEnumerator IncrementDifficulty()

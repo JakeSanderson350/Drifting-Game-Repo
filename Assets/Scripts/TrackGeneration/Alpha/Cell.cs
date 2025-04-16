@@ -19,9 +19,10 @@ public class Cell : MonoBehaviour
     private float currentTimerTime;
 
     [Header("Previous Values")]
-    public Vector3 lastKnotPos;
-    public Vector3 firstKnotPos;
-    public Quaternion lastKnotRot;
+    private Vector3 lastKnotPos;
+    private Vector3 firstKnotPos;
+    private Quaternion lastKnotRot;
+    private Unity.Mathematics.float3 lastKnotTangent;
 
     [Header("Obstacles")]
     [SerializeField] private List<GameObject> obstaclePrefabs;
@@ -30,7 +31,7 @@ public class Cell : MonoBehaviour
     [SerializeField] private float obstaclesDistToRoad = 4.0f;
 
     private float scaleFactor = 5.0f;
-    private int tempIndex;
+    private bool firstCellRendered;
 
     public void Start()
     {
@@ -38,7 +39,7 @@ public class Cell : MonoBehaviour
         lastKnotRot = Quaternion.identity;
         currentTimerTime = 0f;
         obstacles = new List<GameObject>();
-        tempIndex = 0;
+        firstCellRendered = false;
     }
 
     public void Update()
@@ -56,28 +57,34 @@ public class Cell : MonoBehaviour
         //add obstacles to cell
         InitObstacles();
 
-        cube.transform.localScale *= scaleFactor;
-        spline.transform.localScale *= scaleFactor;
-        cube.layer = 6;
-        spline.layer = 6;
+        //scale transforms
+        ScaleTransforms();
 
         //change the rotation of both cube and spline based on rotation of the last knot in last cell
-        alterRotation(lastKnotRot);
+        AlterRotation(lastKnotRot);
 
         //get first point in current spline in worldspace
         firstKnotPos = splineGen.firstKnotPos(spline);
 
-        //alter position so THIS first knot matches with LAST last knot
-        alterPosition(lastKnotPos, firstKnotPos);
+        if (firstCellRendered)
+        {
+            //alter position so THIS first knot matches with LAST last knot
+            AlterPosition(lastKnotPos, firstKnotPos);
+            splineGen.AlterFirstKnot(lastKnotTangent, spline, lastKnotRot);
+        }
 
         //get last knot (pos/rot) of THIS spline
         lastKnotPos = splineGen.lastKnotPos(spline);
         lastKnotRot = splineGen.lastKnotRot(spline);
+        lastKnotTangent = splineGen.GetLastKnotTan(spline);
 
         obstacles.Clear();
-        tempIndex++;
+        firstCellRendered = true;
     }
-    public void alterRotation(Quaternion prevRot)
+
+    //alters rotation of the spline, cube, and obstacles
+    //to match the rotation of the previous last knot
+    public void AlterRotation(Quaternion prevRot)
     {
         cube.transform.rotation = prevRot;
         spline.transform.rotation = prevRot;
@@ -87,10 +94,11 @@ public class Cell : MonoBehaviour
             obstacle.transform.rotation = prevRot;
         }
     }
-    public void alterPosition(Vector3 lastKnotPos, Vector3 firstKnotPos)
-    {
-        if (tempIndex == 0) { return; }
 
+    //alters position of the spline and cube
+    //to match the current first knot, to the previous last knot
+    public void AlterPosition(Vector3 lastKnotPos, Vector3 firstKnotPos)
+    {
         float distance = Vector3.Distance(lastKnotPos, firstKnotPos) - 0.5f;
         Vector3 directionVector = lastKnotPos - firstKnotPos;
         Vector3 normalizedDirection = directionVector.normalized;
@@ -101,23 +109,18 @@ public class Cell : MonoBehaviour
         Vector3 newPositionSpline = spline.transform.position + normalizedDirection * distance;
         spline.transform.position = new Vector3(newPositionSpline.x, 0f, newPositionSpline.z);
     }
-    private void UpdateTimer()
-    {
-        currentTimerTime -= Time.deltaTime;
 
-        if (currentTimerTime <= 0.0)
-        {
-            ResetTimer();
-            GenerateCell();
-        }
+    //scales cube and spline by scale factor
+    private void ScaleTransforms()
+    {
+        cube.transform.localScale *= scaleFactor;
+        spline.transform.localScale *= scaleFactor;
+        cube.layer = 6;
+        spline.layer = 6;
     }
 
-    private void ResetTimer()
-    {
-        currentTimerTime = timerDuration;
-    }
-
-    private void InitObstacles() //needs to be called after cube and spline are initted
+    //needs to be called after cube and spline are initted
+    private void InitObstacles()
     {
         float xRange = cubeGen.lengthX / 2;
         float zRange = cubeGen.widthZ / 2;
@@ -139,5 +142,21 @@ public class Cell : MonoBehaviour
             obstacles.Add(newObstacle);
             newObstacle.transform.SetParent(cube.transform, true); // bc parented, obstacles will move when cube is moved
         }
+    }
+
+    private void UpdateTimer()
+    {
+        currentTimerTime -= Time.deltaTime;
+
+        if (currentTimerTime <= 0.0)
+        {
+            ResetTimer();
+            GenerateCell();
+        }
+    }
+
+    private void ResetTimer()
+    {
+        currentTimerTime = timerDuration;
     }
 }
