@@ -88,4 +88,9 @@ public class ScoreManager : MonoBehaviour
     {
         isAlive = false;
     }
+
+    public int GetScore()
+    {
+        return (int)score;
+    }
 }

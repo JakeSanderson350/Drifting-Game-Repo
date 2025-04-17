@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
     private bool gameOver = false;
 
     [SerializeField] private GameObject pauseScreen;
+    [SerializeField] private ScoreManager scoreManager;
 
     private void Awake()
     {
@@ -64,12 +65,7 @@ public class GameManager : MonoBehaviour
     {
         difficulty = 0;
         StartCoroutine(IncrementDifficulty());
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        scoreManager = GetComponent<ScoreManager>();
     }
 
     private void GameOver()
@@ -96,5 +92,10 @@ public class GameManager : MonoBehaviour
     public int GetDifficulty()
     {
         return difficulty;
+    }
+
+    public int GetGameScore()
+    {
+        return scoreManager.GetScore();
     }
 }
