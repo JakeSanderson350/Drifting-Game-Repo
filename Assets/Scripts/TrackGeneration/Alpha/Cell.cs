@@ -82,8 +82,8 @@ public class Cell : MonoBehaviour
         firstCellRendered = true;
     }
 
-    //alters rotation of the spline, cube, and obstacles
-    //to match the rotation of the previous last knot
+    //<summary> alters rotation of the spline, cube, and obstacles to match the rotation of the previous last knot
+    //<param : prevRot> the rotation of the last knot in the previous spline
     public void AlterRotation(Quaternion prevRot)
     {
         cube.transform.rotation = prevRot;
@@ -95,8 +95,10 @@ public class Cell : MonoBehaviour
         }
     }
 
-    //alters position of the spline and cube
-    //to match the current first knot, to the previous last knot
+    //<summary> alters position of the spline and cube 
+    //<summary> to match the current first knot, to the previous last knot
+    //<param : lastKnotPos> the position of the last knot in the previous cell
+    //<param : firstKnotPos> the position of the first knot in the current cell
     public void AlterPosition(Vector3 lastKnotPos, Vector3 firstKnotPos)
     {
         float distance = Vector3.Distance(lastKnotPos, firstKnotPos) - 0.5f;
@@ -110,7 +112,7 @@ public class Cell : MonoBehaviour
         spline.transform.position = new Vector3(newPositionSpline.x, 0f, newPositionSpline.z);
     }
 
-    //scales cube and spline by scale factor
+    //<summary> scales cube and spline by scale factor
     private void ScaleTransforms()
     {
         cube.transform.localScale *= scaleFactor;
@@ -119,7 +121,8 @@ public class Cell : MonoBehaviour
         spline.layer = 6;
     }
 
-    //needs to be called after cube and spline are initted
+    //<summary> spawn obstacles within the cell
+    //<summary> make sure obstacles are NOT on road
     private void InitObstacles()
     {
         float xRange = cubeGen.lengthX / 2;
