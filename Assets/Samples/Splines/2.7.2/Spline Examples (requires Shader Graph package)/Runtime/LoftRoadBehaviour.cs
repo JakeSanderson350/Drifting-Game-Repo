@@ -27,7 +27,7 @@ namespace Unity.Splines.Examples
                 foreach (var width in m_Widths)
                 {
                     if (width.DefaultValue == 0)
-                        width.DefaultValue = 8f;
+                        width.DefaultValue = 100f;
                 }
 
                 return m_Widths;
@@ -39,18 +39,35 @@ namespace Unity.Splines.Examples
         //2 = null
         public void IncreaseWidthsCount(int num)
         {
-            switch(num)
+
+            if (num == 1)
             {
-                case 0:
-                    m_Widths.Add(new SplineData<float> { DefaultValue = 8f });
-                    break;
-                case 1:
-                    Debug.Log("road widened");
-                    m_Widths.Add(new SplineData<float> { DefaultValue = 20f });
-                    break;
-                default:
-                    break;
+                m_Widths.Clear();
+                m_Widths.Add(new SplineData<float> { DefaultValue = 20f });
             }
+            else
+            {
+                m_Widths.Add(new SplineData<float> { DefaultValue = 8f });
+            }
+        }
+
+        public void EditWidth()
+        {
+            if(m_Widths.Count >= 1)
+            {
+                m_Widths[0] = new SplineData<float> { DefaultValue = 21f };
+            }
+            else
+            {
+                m_Widths.Add(new SplineData<float> { DefaultValue = 20f });
+
+            }
+        }
+
+
+        public void ClearWidth()
+        {
+            m_Widths.Clear();
         }
 
         [SerializeField]
@@ -187,7 +204,7 @@ namespace Unity.Splines.Examples
 #if  UNITY_EDITOR
                     Undo.RecordObject(this, "Modifying Widths SplineData");
 #endif
-                    m_Widths.Add(new SplineData<float>() { DefaultValue = 1f });
+                    m_Widths.Add(new SplineData<float>() { DefaultValue = 20f });
                 }
             }
 

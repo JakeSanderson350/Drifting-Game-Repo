@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Mathematics;
@@ -66,6 +67,8 @@ public class TempSpline : MonoBehaviour
     //<summary> generate a series of knots within given bounds
     public void GenerateKnotsInBounds()
     {
+        grassObj.AddComponent<LoftRoadBehaviour>().IncreaseWidthsCount(1);
+
         if (roadContain == null)
         {
             Debug.LogError("SplineContainer is not assigned!");
@@ -212,11 +215,23 @@ public class TempSpline : MonoBehaviour
         grassContain.Spline.SetTangentMode(0, TangentMode.Continuous);
         grassContain.Spline.SetTangentMode(roadContain.Spline.Count - 1, TangentMode.Continuous);
 
+        grassObj.GetComponent<LoftRoadBehaviour>().ClearWidth();
+        grassObj.GetComponent<LoftRoadBehaviour>().EditWidth();
+
+        StartCoroutine(AddColliderAfterDelay(grassObj));
+
         // Add road script
         roadObj.AddComponent<LoftRoadBehaviour>().IncreaseWidthsCount(0);
         roadObj.AddComponent<MeshCollider>();
 
-        grassObj.AddComponent<LoftRoadBehaviour>().IncreaseWidthsCount(1);
+    }
+
+    private IEnumerator AddColliderAfterDelay(GameObject obj)
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        MeshCollider collider = obj.AddComponent<MeshCollider>();
+        collider.sharedMesh = obj.GetComponent<MeshFilter>().sharedMesh;
     }
 
     //<summary> gets the WORLD position of the FIRST knot in a spline

@@ -24,6 +24,8 @@ public class UIManager : MonoBehaviour
 
         difficultySlider.value = GameManagerED.Instance.GetDifficulty();
         GameManagerED.Instance.SetDifficulty(difficultySlider.value);
+
+        AudioListener.volume = 1.0f;
     }
 
     public void ResumeGame()
@@ -33,10 +35,10 @@ public class UIManager : MonoBehaviour
 
     public void RestartGame()
     {
+        AudioListener.volume = 1.0f;
         overallCanvas.SetActive(false);
         SceneManager.LoadScene("RotationFix");
         Time.timeScale = 1.0f;
-        AudioListener.volume = 1.0f;
     }
 
     public void QuitGame()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Unity.Hierarchy;
 using Unity.Mathematics;
+using Unity.Splines.Examples;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Splines;
@@ -122,8 +123,7 @@ public class TempCell : MonoBehaviour
             RemoveOldestCell();
         }
 
-        //attach collider bruh???
-        StartCoroutine(AddColliderAfterDelay(grassSpline));
+
     }
 
     //<summary> removes oldest cell from active cells + destroy
@@ -255,13 +255,6 @@ public class TempCell : MonoBehaviour
 
         Vector3 newGrassPos = grassSpline.transform.position + normalizedDirection * distance;
         grassSpline.transform.position = new Vector3(newGrassPos.x, newGrassPos.y, newGrassPos.z);
-    }
-
-    private IEnumerator AddColliderAfterDelay(GameObject obj)
-    {
-        yield return new WaitForSeconds(0.5f);
-        MeshCollider collider = obj.AddComponent<MeshCollider>();
-        collider.sharedMesh = obj.GetComponent<MeshFilter>().sharedMesh;
     }
 
     public Vector3 GetFirstKnotPos()
