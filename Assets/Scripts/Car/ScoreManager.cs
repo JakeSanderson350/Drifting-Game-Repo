@@ -14,6 +14,11 @@ public class ScoreManager : MonoBehaviour
     private Color textColor = Color.white;
     private bool isAlive;
 
+    public float donutTimeLimit = 15.0f;
+    private float screenUse = 0.8f;
+    private float prevInput = 0.0f;
+    private float timeTurning = 0.0f;
+
     private void OnEnable()
     {
         CarState.onCarDeath += GameOver;
@@ -55,6 +60,8 @@ public class ScoreManager : MonoBehaviour
                     scoreMultiplier = 5.0f;
                 }
 
+                IsDonut();
+
                 score += (Mathf.Abs(car.GetDriftAngle()) * scoreMultiplier) / 10;
             }
             else
@@ -69,6 +76,27 @@ public class ScoreManager : MonoBehaviour
 
             scoreUI.text = "Score: " + (int)score + "\nMultiplier: " + scoreMultiplier;
         }
+    }
+
+    private void IsDonut()
+    {
+        float input = Mathf.Clamp(TouchInput.centeredScreenPosition.x / screenUse, -1, 1);
+
+        if ((input > 0 && prevInput > 0) || (input < 0 && prevInput < 0))
+        {
+            timeTurning += Time.deltaTime;
+
+            if (timeTurning > donutTimeLimit)
+            {
+                scoreMultiplier = -10.0f;
+            }
+        }
+        else
+        {
+            timeTurning = 0;
+        }
+
+        prevInput = input;
     }
 
     IEnumerator StopDriftStreak()
