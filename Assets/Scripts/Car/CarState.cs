@@ -10,8 +10,6 @@ public class CarState : MonoBehaviour
     [SerializeField] private Rigidbody carRB;
     private float carSpeed;
 
-    [SerializeField] private bool isPaused;
-
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip collisionSound;
     [SerializeField] private AudioClip carDeathSound;
@@ -21,17 +19,14 @@ public class CarState : MonoBehaviour
     [SerializeField] private float minPitch = 0.8f;
     [SerializeField] private float maxPitch = 1.2f;
 
-
     public static Action onCarDeath;
-    public static Action onPauseGame;
+    public static Action togglePause;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        isPaused = false;
         health = startingHealth;
         audioSource = GetComponent<AudioSource>();
-
     }
 
     // Update is called once per frame
@@ -39,17 +34,10 @@ public class CarState : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            isPaused = !isPaused;
-            onPauseGame.Invoke();
-            //GameObject.Find("PauseUI").GetComponent<PauseUI>().SetUIStatus(isPaused);
+            togglePause.Invoke();
         }
 
         carSpeed = carRB.linearVelocity.magnitude;
-
-        /*        if (transform.position.y < -12)
-                {
-                    onCarDeath.Invoke();
-                }*/
     }
 
     void OnCollisionEnter(Collision collision)

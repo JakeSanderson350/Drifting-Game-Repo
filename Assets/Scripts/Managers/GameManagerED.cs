@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManagerED : MonoBehaviour
 {
-    public static GameManager Instance
+    public static GameManagerED Instance
     {
         get => singleton;
         set
@@ -20,11 +20,11 @@ public class GameManager : MonoBehaviour
             else if (singleton != value)
             {
                 Destroy(value);
-                Debug.LogError($"There should only ever be one instance of {nameof(GameManager)}!");
+                Debug.LogError($"There should only ever be one instance of {nameof(GameManagerED)}!");
             }
         }
     }
-    private static GameManager singleton;
+    private static GameManagerED singleton;
 
     [SerializeField] private float difficultyIncrementTime = 5.0f;
     public int difficulty;
@@ -34,6 +34,10 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameObject pauseScreen;
     [SerializeField] private ScoreManager scoreManager;
+
+    [SerializeField] private AudioSource engineSounds;
+    [SerializeField] private bool isPaused = false;
+
 
     private void Awake()
     {
@@ -52,14 +56,16 @@ public class GameManager : MonoBehaviour
     {
         CarState.onCarDeath += GameOver;
         Killzone.onCarDeath += GameOver;
-        CarState.onPauseGame += PauseGame;
+        CarState.togglePause += TogglePause;
+        UIManager.togglePause += TogglePause;
     }
 
     private void OnDisable()
     {
         CarState.onCarDeath -= GameOver;
         Killzone.onCarDeath -= GameOver;
-        CarState.onPauseGame -= PauseGame;
+        CarState.togglePause -= TogglePause;
+        UIManager.togglePause -= TogglePause;
     }
 
     // Start is called before the first frame update
@@ -72,13 +78,38 @@ public class GameManager : MonoBehaviour
 
     private void GameOver()
     {
+        engineSounds.Stop();
         gameOverScreen.SetActive(true);
         Time.timeScale = 0f;
         gameOver = true;
     }
-    private void PauseGame()
+
+
+    public void TogglePause()
     {
-        pauseScreen.GetComponent<UIManager>().SetUIStatus(true);
+        isPaused = !isPaused;
+        UpdatePauseState();
+    }
+
+    public void SetPauseState(bool pauseState)
+    {
+        isPaused = pauseState;
+        UpdatePauseState();
+    }
+
+    private void UpdatePauseState()
+    {
+        pauseScreen.GetComponent<UIManager>().SetUIStatus(isPaused);
+        if (isPaused)
+        {
+            engineSounds.Pause();
+            Time.timeScale = 0f; 
+        }
+        else
+        {
+            engineSounds.UnPause();
+            Time.timeScale = 1f; 
+        }
     }
 
     private IEnumerator IncrementDifficulty()

@@ -181,7 +181,7 @@ public class TempCell : MonoBehaviour
     private List<GameObject> CreateObstacles(GameObject parentCube)
     {
         List<GameObject> newObstacles = new List<GameObject>();
-        int scaledNumObstacles = numObstaclesPerCell + GameManager.Instance.GetDifficulty();
+        int scaledNumObstacles = numObstaclesPerCell + GameManagerED.Instance.GetDifficulty();
 
         for (int i = 0; i < scaledNumObstacles; i++)
         {

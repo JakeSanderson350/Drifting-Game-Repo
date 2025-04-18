@@ -8,7 +8,7 @@ public class ScoreInput : MonoBehaviour
 
     public void SubmitScore()
     {
-        inputScore = GameManager.Instance.GetGameScore();
+        inputScore = GameManagerED.Instance.GetGameScore();
 
         string username = inputName.text;
         if (username.Length > 8)

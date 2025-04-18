@@ -1,3 +1,5 @@
+using System;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,6 +10,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject optionsMenu;
 
+    public static Action togglePause;
     void Start()
     {
         overallCanvas = this.gameObject;
@@ -20,7 +23,7 @@ public class UIManager : MonoBehaviour
 
     public void ResumeGame()
     {
-        SetUIStatus(false);
+        togglePause.Invoke();
     }
 
     public void RestartGame()

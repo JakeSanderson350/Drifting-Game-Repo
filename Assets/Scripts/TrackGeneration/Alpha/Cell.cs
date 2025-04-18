@@ -175,7 +175,7 @@ public class Cell : MonoBehaviour
         List<GameObject> newObstacles = new List<GameObject>();
         float xRange = cubeGen.lengthX / 2;
         float zRange = cubeGen.widthZ / 2;
-        int scaledNumObstacles = numObstaclesPerCell + GameManager.Instance.GetDifficulty();
+        int scaledNumObstacles = numObstaclesPerCell + GameManagerED.Instance.GetDifficulty();
 
         for (int i = 0; i < scaledNumObstacles; i++)
         {

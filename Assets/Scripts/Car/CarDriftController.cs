@@ -38,6 +38,9 @@ public class CarDriftController : MonoBehaviour
     private float tireGripModifier;
     private float driftAngle;
 
+    [Header("Sounds")]
+    [SerializeField] private AudioSource tireScreechAudio;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -64,6 +67,27 @@ public class CarDriftController : MonoBehaviour
         //Debug.Log(wheelAngle);
 
         PointWheelsAt(wheelAngle);
+
+        //screechin sound:
+        if (IsDrifting())
+        {
+            float driftAngle = Mathf.Abs(GetDriftAngle());
+            float volume = Mathf.Clamp01(driftAngle / maxDriftAngle);
+
+            tireScreechAudio.volume = volume;
+
+            if (!tireScreechAudio.isPlaying)
+            {
+                tireScreechAudio.Play();
+            }
+        }
+        else
+        {
+            if (tireScreechAudio.isPlaying)
+            {
+                tireScreechAudio.Stop();
+            }
+        }
     }
 
     public float GetDriftAngle()
@@ -138,7 +162,7 @@ public class CarDriftController : MonoBehaviour
 
     private void UpdateTireForce()
     {
-        tireGripModifier = GameManager.Instance.GetDifficulty() * tireGripDifficultyIncrement;
+        tireGripModifier = GameManagerED.Instance.GetDifficulty() * tireGripDifficultyIncrement;
 
         //Update tire forces
         foreach (Tire tire in frontTires)
