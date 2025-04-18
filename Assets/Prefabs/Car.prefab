@@ -333,6 +333,14 @@ MonoBehaviour:
   speedToHealthFactor: 0.5
   carRB: {fileID: 7378872709621726207}
   isPaused: 0
+  audioSource: {fileID: 1592946665888360533}
+  collisionSound: {fileID: 8300000, guid: dc3a553030a11bf43ac579999146379b, type: 3}
+  carDeathSound: {fileID: 8300000, guid: be336069bad14ba459eb49e69d2e56e0, type: 3}
+  screamSound: {fileID: 8300000, guid: 7ee5a6f129f02e146a78f8364f3e7eb1, type: 3}
+  minVolume: 0.3
+  maxVolume: 1
+  minPitch: 0.8
+  maxPitch: 1.2
 --- !u!114 &3367307440592862184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -346,8 +354,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debrisParticlePrefab: {fileID: 980563096763372027, guid: 2ed80720d6cb37d4aabd9198a47ec20f, type: 3}
-  minParticleCount: 50
-  maxParticleCount: 150
+  minParticleCount: 100
+  maxParticleCount: 300
   minParticleSpeed: 5
   maxParticleSpeed: 15
   particleLifetime: 3
