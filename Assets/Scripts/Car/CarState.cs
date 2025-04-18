@@ -34,10 +34,10 @@ public class CarState : MonoBehaviour
 
         carSpeed = carRB.linearVelocity.magnitude;
 
-        if (transform.position.y < -12)
+/*        if (transform.position.y < -12)
         {
             onCarDeath.Invoke();
-        }
+        }*/
     }
 
     void OnCollisionEnter(Collision collision)

@@ -271,7 +271,7 @@ public class ParticleManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning($"No road detected for trail at {raycastOrigin}");
+                //Debug.LogWarning($"No road detected for trail at {raycastOrigin}");
             }
         }
     }

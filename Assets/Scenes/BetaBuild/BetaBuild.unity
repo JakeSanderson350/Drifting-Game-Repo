@@ -1094,6 +1094,7 @@ GameObject:
   m_Component:
   - component: {fileID: 720523246}
   - component: {fileID: 720523245}
+  - component: {fileID: 720523247}
   m_Layer: 0
   m_Name: CellGen
   m_TagString: Untagged
@@ -1108,16 +1109,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 720523244}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eac2eb385cf1ce54699243ac08259fbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   splineGen: {fileID: 957738050}
   cubeGen: {fileID: 1772169517}
-  cube: {fileID: 0}
-  spline: {fileID: 0}
-  player: {fileID: 0}
   obstaclePrefabs:
   - {fileID: 3251523534738225239, guid: 53cb7964d1e732d48b90a5591672695e, type: 3}
   - {fileID: 9175834846965401456, guid: 5fcfc17efbe7b514c82b29acad79e18e, type: 3}
@@ -1140,6 +1138,29 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &720523247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 720523244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f399b5786995c464abd91ab505fe0cd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  splineGen: {fileID: 957738052}
+  obstaclePrefabs:
+  - {fileID: 3251523534738225239, guid: 53cb7964d1e732d48b90a5591672695e, type: 3}
+  - {fileID: 6438372132684690647, guid: 3167be35371e2034baddfdd251fe99c7, type: 3}
+  - {fileID: 9175834846965401456, guid: 5fcfc17efbe7b514c82b29acad79e18e, type: 3}
+  numObstaclesPerCell: 60
+  obstaclesDistToRoad: 5
+  triggerSize: {x: 0.2, y: 2, z: 8}
+  boundsMin: {x: -5, y: 0, z: -5}
+  boundsMax: {x: 5, y: 0, z: 5}
+  activeCellObjects: []
 --- !u!1 &803883568 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7567560579064384266, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
@@ -1484,6 +1505,18 @@ PrefabInstance:
       propertyPath: 'trailAttachPoints.Array.data[1]'
       value: 
       objectReference: {fileID: 883021092}
+    - target: {fileID: 7260372234300094930, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7260372234300094930, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
+      propertyPath: direction.y
+      value: -15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7378872709621726207, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
+      propertyPath: m_UseGravity
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7567560579064384266, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
       propertyPath: m_Name
       value: Car
@@ -1599,6 +1632,7 @@ GameObject:
   m_Component:
   - component: {fileID: 957738051}
   - component: {fileID: 957738050}
+  - component: {fileID: 957738052}
   m_Layer: 0
   m_Name: SplineGen
   m_TagString: SplineGen
@@ -1613,7 +1647,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 957738049}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0c90ba8462bd71a419725436807b0733, type: 3}
   m_Name: 
@@ -1640,6 +1674,33 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &957738052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 957738049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e84f042a6efa56a4c975104aed4e94f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  splineContainer: {fileID: 0}
+  splineObj: {fileID: 0}
+  totalKnots: []
+  minStepX: 5
+  maxStepX: 12
+  spaceValue: 4
+  maxAngle: 50
+  boundsMin: {x: -25, y: -2.5, z: -12.5}
+  boundsMax: {x: 25, y: 2.5, z: 12.5}
+  splineHeight: 0.01
+  enableDescent: 1
+  minDescentRate: 0.08
+  maxDescentRate: 0.2
+  descentVariation: 0.3
+  maxDescentAngle: 15
 --- !u!1 &1001942337 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7010998641479126612, guid: 78571b5290d34834e9f0c73a7d60ddf8, type: 3}
@@ -1960,6 +2021,7 @@ MonoBehaviour:
   difficulty: 0
   gameOverScreen: {fileID: 1001942337}
   pauseScreen: {fileID: 121771731}
+  scoreManager: {fileID: 0}
 --- !u!114 &1177215278
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2489,6 +2551,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1772169516}
   - component: {fileID: 1772169517}
+  - component: {fileID: 1772169518}
   m_Layer: 0
   m_Name: CubeGen
   m_TagString: Untagged
@@ -2518,7 +2581,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1772169515}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 310599dc022a9aa47ab1eba094f871dc, type: 3}
   m_Name: 
@@ -2526,9 +2589,27 @@ MonoBehaviour:
   cube: {fileID: 0}
   mesh: {fileID: 0}
   tempMaterial: {fileID: 2100000, guid: e18144705a0a6be42b49846db26bc9ce, type: 2}
-  lengthX: 50
+  lengthX: 1
   heightY: 2
-  widthZ: 20
+  widthZ: 1
+--- !u!114 &1772169518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1772169515}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4903d2b733322a7419a54bc412bb2854, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cube: {fileID: 0}
+  mesh: {fileID: 0}
+  tempMaterial: {fileID: 2100000, guid: e18144705a0a6be42b49846db26bc9ce, type: 2}
+  lengthX: 1
+  heightY: 2
+  widthZ: 1
 --- !u!1 &2003966007
 GameObject:
   m_ObjectHideFlags: 0
