@@ -346,12 +346,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debrisParticlePrefab: {fileID: 980563096763372027, guid: 2ed80720d6cb37d4aabd9198a47ec20f, type: 3}
-  minParticleCount: 15
-  maxParticleCount: 50
-  minParticleSpeed: 3
-  maxParticleSpeed: 10
+  minParticleCount: 50
+  maxParticleCount: 150
+  minParticleSpeed: 5
+  maxParticleSpeed: 15
   particleLifetime: 3
-  speedToParticlesMultiplier: 5
+  speedToParticlesMultiplier: 8
   vehicleRigidbody: {fileID: 7378872709621726207}
 --- !u!82 &1592946665888360533
 AudioSource:

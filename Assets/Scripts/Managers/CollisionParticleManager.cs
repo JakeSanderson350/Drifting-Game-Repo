@@ -1,17 +1,16 @@
 using UnityEngine;
-
 public class CollisionDebrisManager : MonoBehaviour
 {
     [Header("Particle Settings")]
     [SerializeField] private ParticleSystem debrisParticlePrefab;
-    [SerializeField] private int minParticleCount = 15;   // Increased default minimum
-    [SerializeField] private int maxParticleCount = 50;   // Increased default maximum
-    [SerializeField] private float minParticleSpeed = 3f; // Slightly increased
-    [SerializeField] private float maxParticleSpeed = 10f;// Slightly increased
+    [SerializeField] private int minParticleCount = 50;
+    [SerializeField] private int maxParticleCount = 150;
+    [SerializeField] private float minParticleSpeed = 5f;
+    [SerializeField] private float maxParticleSpeed = 15f;
     [SerializeField] private float particleLifetime = 3f;
 
     [Header("Collision Settings")]
-    [SerializeField] private float speedToParticlesMultiplier = 5f;  // Increased from 2f to 5f
+    [SerializeField] private float speedToParticlesMultiplier = 8f;  
 
     [Header("References")]
     [SerializeField] private Rigidbody vehicleRigidbody;
@@ -33,7 +32,7 @@ public class CollisionDebrisManager : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Obstacle")
+        if (collision.gameObject.CompareTag("Obstacle"))
         {
             Debug.Log("Obstacle hit - spawning debris particles");
 
@@ -47,14 +46,14 @@ public class CollisionDebrisManager : MonoBehaviour
                 maxParticleCount
             );
 
-            Debug.Log($"Vehicle speed: {vehicleSpeed}, Spawning {particleCount} particles in total");
+            Debug.Log($"Vehicle speed: {vehicleSpeed}, Spawning {particleCount} particles");
 
-            // Spawn particles at each contact point
-            foreach (ContactPoint contact in collision.contacts)
+            // Use the first contact point as the center of the collision
+            if (collision.contactCount > 0)
             {
-                // Get exact collision point and normal
-                Vector3 collisionPoint = contact.point;
-                Vector3 collisionNormal = contact.normal;
+                // Get collision information from the first contact point
+                Vector3 collisionPoint = collision.contacts[0].point;
+                Vector3 collisionNormal = collision.contacts[0].normal;
 
                 // Spawn particle effect at collision point
                 ParticleSystem spawnedParticleSystem = Instantiate(
@@ -67,18 +66,17 @@ public class CollisionDebrisManager : MonoBehaviour
                 var mainModule = spawnedParticleSystem.main;
                 mainModule.startLifetime = particleLifetime;
 
+                // Setup for a single large burst
                 var emissionModule = spawnedParticleSystem.emission;
                 emissionModule.SetBurst(0, new ParticleSystem.Burst(0f, particleCount));
+                emissionModule.rateOverTime = 0;  // Ensure continuous emission is off
 
-                // Make sure rate over time is zero (we only want the initial burst)
-                emissionModule.rateOverTime = 0;
-
-                // Set particle direction to burst outward from collision point
+                // Wider spread for a crash effect
                 var shapeModule = spawnedParticleSystem.shape;
                 shapeModule.shapeType = ParticleSystemShapeType.Cone;
-                shapeModule.angle = 35f; // Wider angle for more spread
+                shapeModule.angle = 60f;
 
-                // Set particle speed based on vehicle speed
+                // Higher particle speed based on vehicle speed
                 var velocityModule = spawnedParticleSystem.velocityOverLifetime;
                 float particleSpeed = Mathf.Lerp(minParticleSpeed, maxParticleSpeed, vehicleSpeed / 30f);
                 velocityModule.speedModifier = particleSpeed;
@@ -89,8 +87,7 @@ public class CollisionDebrisManager : MonoBehaviour
                 // Destroy after lifetime
                 Destroy(spawnedParticleSystem.gameObject, particleLifetime + 0.5f);
 
-                // Log for debugging
-                Debug.Log($"Spawned particle system at point {collisionPoint} with {particleCount} particles");
+                Debug.Log($"Spawned single particle system at point {collisionPoint} with {particleCount} particles");
             }
         }
     }
