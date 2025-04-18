@@ -14,6 +14,7 @@ public class CarState : MonoBehaviour
     [SerializeField] private AudioClip collisionSound;
     [SerializeField] private AudioClip carDeathSound;
     [SerializeField] private AudioClip screamSound;
+    [SerializeField] private AudioClip honkSound;
     [SerializeField] private float minVolume = 0.3f;
     [SerializeField] private float maxVolume = 1.0f;
     [SerializeField] private float minPitch = 0.8f;
@@ -68,6 +69,8 @@ public class CarState : MonoBehaviour
 
     public void PlayCollisionSound()
     {
+        audioSource.PlayOneShot(honkSound);
+
         float speedRatio = Mathf.Clamp01(carSpeed / 30f);
 
         audioSource.volume = Mathf.Lerp(minVolume, maxVolume, speedRatio);

@@ -38,7 +38,6 @@ public class GameManagerED : MonoBehaviour
     [SerializeField] private AudioSource engineSounds;
     [SerializeField] private bool isPaused = false;
 
-
     private void Awake()
     {
         Instance = this;
@@ -81,6 +80,7 @@ public class GameManagerED : MonoBehaviour
         engineSounds.Stop();
         gameOverScreen.SetActive(true);
         Time.timeScale = 0f;
+        AudioListener.volume = 0f;
         gameOver = true;
     }
 
@@ -91,10 +91,9 @@ public class GameManagerED : MonoBehaviour
         UpdatePauseState();
     }
 
-    public void SetPauseState(bool pauseState)
+    public bool GetPauseStatus()
     {
-        isPaused = pauseState;
-        UpdatePauseState();
+        return isPaused;
     }
 
     private void UpdatePauseState()
@@ -103,11 +102,13 @@ public class GameManagerED : MonoBehaviour
         if (isPaused)
         {
             engineSounds.Pause();
+            AudioListener.volume = 0f;
             Time.timeScale = 0f; 
         }
         else
         {
             engineSounds.UnPause();
+            AudioListener.volume = 1f;
             Time.timeScale = 1f; 
         }
     }
@@ -125,6 +126,11 @@ public class GameManagerED : MonoBehaviour
     public int GetDifficulty()
     {
         return difficulty;
+    }
+    public void SetDifficulty(float value)
+    {
+        difficulty = Mathf.RoundToInt(value);
+        Debug.Log("Difficulty set to: " + difficulty);
     }
 
     public int GetGameScore()

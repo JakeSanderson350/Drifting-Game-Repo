@@ -508,7 +508,6 @@ MonoBehaviour:
   overallCanvas: {fileID: 121771731}
   pauseMenu: {fileID: 2003966007}
   optionsMenu: {fileID: 698841327}
-  pauseStatus: 0
 --- !u!1001 &178133720
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2850,6 +2849,7 @@ MonoBehaviour:
   pauseScreen: {fileID: 121771731}
   scoreManager: {fileID: 1177215278}
   engineSounds: {fileID: 1177215282}
+  isPaused: 0
 --- !u!114 &1177215278
 MonoBehaviour:
   m_ObjectHideFlags: 0

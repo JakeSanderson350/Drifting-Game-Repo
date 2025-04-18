@@ -52,6 +52,12 @@ public class CarCameraController : MonoBehaviour
         }
     }
 
+    public void SetCameraView(bool status)
+    {
+        isThirdPerson = !isThirdPerson;
+        Debug.Log("3rd person status: " + isThirdPerson);
+    }
+
     //public Transform target;
     //public Vector3 offset = new Vector3(0, 7, -7.5f);
     //private Vector3 offsetWorld;

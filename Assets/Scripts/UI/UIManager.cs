@@ -2,6 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject overallCanvas;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject optionsMenu;
+    [SerializeField] private Slider difficultySlider;
 
     public static Action togglePause;
     void Start()
@@ -19,6 +21,9 @@ public class UIManager : MonoBehaviour
 
         optionsMenu.SetActive(false);
         overallCanvas.SetActive(false);
+
+        difficultySlider.value = GameManagerED.Instance.GetDifficulty();
+        GameManagerED.Instance.SetDifficulty(difficultySlider.value);
     }
 
     public void ResumeGame()
@@ -31,6 +36,7 @@ public class UIManager : MonoBehaviour
         overallCanvas.SetActive(false);
         SceneManager.LoadScene("RotationFix");
         Time.timeScale = 1.0f;
+        AudioListener.volume = 1.0f;
     }
 
     public void QuitGame()

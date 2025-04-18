@@ -69,7 +69,7 @@ public class CarDriftController : MonoBehaviour
         PointWheelsAt(wheelAngle);
 
         //screechin sound:
-        if (IsDrifting())
+        if (IsDrifting() && !GameManagerED.Instance.GetPauseStatus())
         {
             float driftAngle = Mathf.Abs(GetDriftAngle());
             float volume = Mathf.Clamp01(driftAngle / maxDriftAngle);
