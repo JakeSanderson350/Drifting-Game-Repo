@@ -17,7 +17,7 @@ public class TempCell : MonoBehaviour
     [Header("Previous Values")]
     private Vector3 lastKnotPos;
     private Vector3 firstKnotPos;
-    private Quaternion lastKnotRot;
+    [SerializeField] private Quaternion lastKnotRot;
     private Unity.Mathematics.float3 lastKnotTangent;
 
     [Header("Obstacles")]
@@ -205,7 +205,7 @@ public class TempCell : MonoBehaviour
 
     private GameObject CreateKillzone(GameObject parentObj)
     {
-        return Instantiate(killzonePrefab, parentObj.transform.position + Vector3.down * 60, parentObj.transform.rotation);
+        return Instantiate(killzonePrefab, parentObj.transform.position + Vector3.down * 70, parentObj.transform.rotation);
     }
 
     //<summary> scales cube and spline by scale factor
@@ -233,10 +233,9 @@ public class TempCell : MonoBehaviour
     //<param : obstacles> obstacles in cell
     public void AlterRotation(Quaternion prevRot, GameObject spline, GameObject grassSpline, GameObject trigger) 
     {
-            //cube.transform.rotation = prevRot;
         spline.transform.rotation = prevRot;
         grassSpline.transform.rotation = prevRot;
-        trigger.transform.rotation = prevRot;
+        trigger.transform.rotation = prevRot * spline.transform.rotation;
     }
 
     //<summary> alters position of the spline and cube 
