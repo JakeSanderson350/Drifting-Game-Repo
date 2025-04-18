@@ -8,12 +8,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/BetaBuild/MainMenu.unity
     guid: 2de1ad76a1e8b5e478d0a2b2427f3e61
-  - enabled: 0
-    path: Assets/Scenes/AlphaBuild/AlphaScene.unity
-    guid: 8593584bdccf7ed489591288ea67813a
-  - enabled: 0
-    path: Assets/Scenes/RotationFix.unity
-    guid: b8d2de426ed21554a8f35aa4f1cacc95
   - enabled: 1
     path: Assets/Scenes/BetaBuild/BetaBuild.unity
     guid: dfff9bcce8248e6488a4a2577209b1fa

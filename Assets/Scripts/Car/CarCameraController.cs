@@ -14,14 +14,14 @@ public class CarCameraController : MonoBehaviour
 
     public bool isThirdPerson = true;
 
-    public void Update()
+/*    public void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             isThirdPerson = !isThirdPerson;
         }
 
-    }
+    }*/
 
     // Update is called once per frame
     void FixedUpdate()

@@ -26,7 +26,7 @@ public class TempCell : MonoBehaviour
     [SerializeField] private float obstaclesDistToRoad = 4.0f;
 
     [Header("Trigger Settings")]
-    public Vector3 triggerSize = new Vector3(0.2f, 2f, 10f);  // Size of the trigger collider
+    public Vector3 triggerSize = new Vector3(0.1f, 2f, 15f);  // Size of the trigger collider
     public Vector3 boundsMin = new Vector3(-5, 0, -5);  // Minimum bounds coordinates
     public Vector3 boundsMax = new Vector3(5, 0, 5);    // Maximum bounds coordinates
 
