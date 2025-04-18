@@ -67,9 +67,6 @@ public class CollisionDebrisManager : MonoBehaviour
                 var mainModule = spawnedParticleSystem.main;
                 mainModule.startLifetime = particleLifetime;
 
-                // Don't divide by contact count - just use the full particle count for each contact point
-                // This ensures more particles regardless of how many contact points exist
-
                 var emissionModule = spawnedParticleSystem.emission;
                 emissionModule.SetBurst(0, new ParticleSystem.Burst(0f, particleCount));
 
