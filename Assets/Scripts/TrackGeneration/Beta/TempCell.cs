@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Unity.Hierarchy;
@@ -10,6 +11,7 @@ public class TempCell : MonoBehaviour
 {
     [Header("References")]
     public TempSpline splineGen;
+    private GameObject grassSpline;
 
     [Header("Previous Values")]
     private Vector3 lastKnotPos;
@@ -64,19 +66,21 @@ public class TempCell : MonoBehaviour
         //init cube and spline, generate points on spline
         GameObject newSpline = splineGen.Init();
         splineGen.GenerateKnotsInBounds();
+        grassSpline = splineGen.GetGrassSpline();
 
         //add underneath the empty gameobject
         newSpline.transform.SetParent(cellObject.transform);
+        grassSpline.transform.SetParent(cellObject.transform);
 
         //create and set up trigger
         GameObject newTrigger = CreateTrigger();
         newTrigger.transform.SetParent(cellObject.transform);
 
         //scale transforms
-        ScaleTransforms(newSpline, newTrigger);
+        ScaleTransforms(newSpline, grassSpline, newTrigger);
 
         //apply rotation based on previous cell
-        AlterRotation(lastKnotRot, newSpline, newTrigger); 
+        AlterRotation(lastKnotRot, newSpline, grassSpline, newTrigger); 
         //get first point on spline
         firstKnotPos = splineGen.firstKnotPos(newSpline);
 
@@ -84,8 +88,8 @@ public class TempCell : MonoBehaviour
         if (firstCellRendered)
         {
             //alter position to connect with previous cell
-            AlterPosition(lastKnotPos, firstKnotPos, newSpline);
-            splineGen.AlterFirstKnot(lastKnotTangent, newSpline, lastKnotRot);
+            AlterPosition(lastKnotPos, firstKnotPos, newSpline, grassSpline);
+            splineGen.AlterFirstKnot(lastKnotTangent, newSpline, grassSpline, lastKnotRot);
         }
 
         //store last knot info
@@ -96,15 +100,22 @@ public class TempCell : MonoBehaviour
         //move trigger to the end of this spline
         newTrigger.transform.position = lastKnotPos;
 
+        //alter grass spline
+        splineGen.AlterGrassSpline(grassSpline);
+
         //add to list
         activeCellObjects.Add(cellObject);
         firstCellRendered = true;
+
 
         //if we have more than MAX_ACTIVE_CELLS remove oldest
         if (isInitialized && activeCellObjects.Count > MAX_ACTIVE_CELLS)
         {
             RemoveOldestCell();
         }
+
+        //attach collider bruh???
+        StartCoroutine(AddColliderAfterDelay(grassSpline));
     }
 
     //<summary> removes oldest cell from active cells + destroy
@@ -159,10 +170,11 @@ public class TempCell : MonoBehaviour
     //<param : cube> cube in cell
     //<param : spline> spline in cell
     //<param : trigger> trigger in cell
-    private void ScaleTransforms(GameObject spline, GameObject trigger)
+    private void ScaleTransforms(GameObject spline, GameObject grassSpline, GameObject trigger)
     {
             //cube.transform.localScale *= scaleFactor;
         spline.transform.localScale *= scaleFactor;
+        grassSpline.transform.localScale *= scaleFactor;
         trigger.transform.localScale *= scaleFactor;
             //cube.layer = 6;
         spline.layer = 6;
@@ -175,19 +187,12 @@ public class TempCell : MonoBehaviour
     //<param : spline> spline in cell
     //<param : trigger> trigger in cell
     //<param : obstacles> obstacles in cell
-    public void AlterRotation(Quaternion prevRot, GameObject spline, GameObject trigger) 
+    public void AlterRotation(Quaternion prevRot, GameObject spline, GameObject grassSpline, GameObject trigger) 
     {
             //cube.transform.rotation = prevRot;
         spline.transform.rotation = prevRot;
+        grassSpline.transform.rotation = prevRot;
         trigger.transform.rotation = prevRot;
-
-        float yRotation = prevRot.eulerAngles.y;
-        // Convert knot rotation to Euler angles
-        //float3 knotEuler = math.degrees(math.Euler(firstKnot.Rotation));
-        // Apply only y rotation
-        //knotEuler.y += yRotation;
-        // Convert back to quaternion
-        //firstKnot.Rotation = quaternion.Euler(math.radians(knotEuler));
 
         //foreach (GameObject obstacle in obstacles)
         //{
@@ -201,17 +206,24 @@ public class TempCell : MonoBehaviour
     //<param : firstKnotPos> the position of the first knot in the current cell
     //<param : cube> cube in cell
     //<param : spline> spline in cell
-    public void AlterPosition(Vector3 lastKnotPos, Vector3 firstKnotPos,GameObject spline)
+    public void AlterPosition(Vector3 lastKnotPos, Vector3 firstKnotPos, GameObject spline, GameObject grassSpline)
     {
         float distance = Vector3.Distance(lastKnotPos, firstKnotPos) - 0.5f;
         Vector3 directionVector = lastKnotPos - firstKnotPos;
         Vector3 normalizedDirection = directionVector.normalized;
 
-            //Vector3 newPosCube = cube.transform.position + normalizedDirection * distance;
-            //cube.transform.position = new Vector3(newPosCube.x, newPosCube.y, newPosCube.z);
-
         Vector3 newPosSpline = spline.transform.position + normalizedDirection * distance;
         spline.transform.position = new Vector3(newPosSpline.x, newPosSpline.y, newPosSpline.z);
+
+        Vector3 newGrassPos = grassSpline.transform.position + normalizedDirection * distance;
+        grassSpline.transform.position = new Vector3(newGrassPos.x, newGrassPos.y, newGrassPos.z);
+    }
+
+    private IEnumerator AddColliderAfterDelay(GameObject obj)
+    {
+        yield return new WaitForSeconds(0.5f);
+        MeshCollider collider = obj.AddComponent<MeshCollider>();
+        collider.sharedMesh = obj.GetComponent<MeshFilter>().sharedMesh;
     }
 }
 

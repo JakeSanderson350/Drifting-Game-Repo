@@ -34,15 +34,22 @@ namespace Unity.Splines.Examples
             }
         }
 
-        public void IncreaseWidthsCount()
+        //0 = default road width (8)
+        //1 = grass width (20)
+        //2 = null
+        public void IncreaseWidthsCount(int num)
         {
-            if (m_Widths.Count == 0)
+            switch(num)
             {
-                m_Widths.Add(new SplineData<float> { DefaultValue = 8f });
-            }
-            else
-            {
-                m_Widths.Add(new SplineData<float> { DefaultValue = 8f });
+                case 0:
+                    m_Widths.Add(new SplineData<float> { DefaultValue = 8f });
+                    break;
+                case 1:
+                    Debug.Log("road widened");
+                    m_Widths.Add(new SplineData<float> { DefaultValue = 20f });
+                    break;
+                default:
+                    break;
             }
         }
 

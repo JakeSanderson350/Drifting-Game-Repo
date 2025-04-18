@@ -9,9 +9,13 @@ using Random = UnityEngine.Random;
 public class TempSpline : MonoBehaviour
 {
     [Header("Spline Mesh Info")]
-    public SplineContainer splineContainer; //container holds spline data
-    public GameObject splineObj;            //object the spline container is attached to
-    public List<BezierKnot> totalKnots;     //collection of knots in current spline
+    public SplineContainer roadContain; //container holds spline data
+    public SplineContainer grassContain; //container holds spline data
+    public GameObject roadObj;            //object the spline container is attached to
+    public GameObject grassObj;            //object the spline container is attached to
+    public List<BezierKnot> roadKnots;     //collection of knots in current spline
+    public List<BezierKnot> grassKnots;     //collection of knots in current spline
+    public Material grassMaterial;
 
     [Space(10)]
     [Header("Step Values")]
@@ -28,28 +32,40 @@ public class TempSpline : MonoBehaviour
 
     [Space(10)]
     [Header("Descent Settings")]
-    public bool enableDescent = false;                  // Enable downward slope for track
-    public float minDescentRate;                // Minimum descent per segment
-    public float maxDescentRate;                 // Maximum descent per segment
-    public float descentVariation;             // Variation in descent (0-1)
-    public float maxDescentAngle;                 // Maximum downward angle
+    public bool enableDescent = false;                
+    public float minDescentRate;           
+    public float maxDescentRate;              
+    public float descentVariation;        
+    public float maxDescentAngle;          
 
-    const int maxAttempts = 20;             //num of temps to find a valid angle
+    const int maxAttempts = 20;         
 
     //<summary> initalizes a new spline gameobject with components
     //<returns> the newly created spline object
     public GameObject Init()
     {
-        splineObj = new GameObject("Procedural Spline");
-        splineContainer = splineObj.AddComponent<SplineContainer>();
-        splineObj.tag = "Spline";
-        return splineObj;
+        roadObj = new GameObject("Road Spline");
+        roadContain = roadObj.AddComponent<SplineContainer>();
+        roadObj.tag = "Spline";
+
+        grassObj = new GameObject("Grass Spline");
+        grassContain = grassObj.AddComponent<SplineContainer>();
+        grassObj.tag = "Spline";
+
+        return roadObj;
+    }
+
+    //<summary> used to grab a reference to only the grass spline
+    //<returns> grass spline gameobject
+    public GameObject GetGrassSpline()
+    {
+        return grassObj;
     }
 
     //<summary> generate a series of knots within given bounds
     public void GenerateKnotsInBounds()
     {
-        if (splineContainer == null)
+        if (roadContain == null)
         {
             Debug.LogError("SplineContainer is not assigned!");
             return;
@@ -68,13 +84,13 @@ public class TempSpline : MonoBehaviour
         float currentY = startY;
 
         // Initialize the list
-        totalKnots = new List<BezierKnot>();
+        roadKnots = new List<BezierKnot>();
         Vector3 rightDirection = Vector3.right;
 
         // Create first knot perpendicular to left edge
         float randomZ = Random.Range(minZBound, maxZBound);
         Vector3 startPos = new Vector3(min.x, startY, randomZ);
-        totalKnots.Add(new BezierKnot(startPos, -rightDirection, rightDirection, Quaternion.identity));
+        roadKnots.Add(new BezierKnot(startPos, -rightDirection, rightDirection, Quaternion.identity));
 
         // Keep track of previous position and direction, for angle calculations
         Vector3 prevKnotPos = startPos;
@@ -161,7 +177,7 @@ public class TempSpline : MonoBehaviour
             }
 
             // Add the knot
-            totalKnots.Add(new BezierKnot(knotPosition, -prevDirection, prevDirection, quaternion.identity));
+            roadKnots.Add(new BezierKnot(knotPosition, -prevDirection, prevDirection, quaternion.identity));
             prevKnotPos = knotPosition;
             prevY = knotPosition.y;
 
@@ -178,22 +194,28 @@ public class TempSpline : MonoBehaviour
         }
 
         // Create an open spline with list
-        splineContainer.Spline = new Spline(totalKnots, closed: false);
+        roadContain.Spline = new Spline(roadKnots, closed: false);
+        grassContain.Spline = new Spline(roadKnots, closed: false);
 
         // Important: DONT autosmooth first knot, will mess up tangents
-        for (int i = 1; i < splineContainer.Spline.Count; i++)
+        for (int i = 1; i < roadContain.Spline.Count; i++)
         {
-            splineContainer.Spline.SetTangentMode(i, TangentMode.AutoSmooth);
+            roadContain.Spline.SetTangentMode(i, TangentMode.AutoSmooth);
+            grassContain.Spline.SetTangentMode(i, TangentMode.AutoSmooth);
         }
 
         // Set first and last knot as continuous
-        splineContainer.Spline.SetTangentMode(0, TangentMode.Continuous);
-        splineContainer.Spline.SetTangentMode(splineContainer.Spline.Count - 1, TangentMode.Continuous);
+        roadContain.Spline.SetTangentMode(0, TangentMode.Continuous);
+        roadContain.Spline.SetTangentMode(roadContain.Spline.Count - 1, TangentMode.Continuous);
+
+        grassContain.Spline.SetTangentMode(0, TangentMode.Continuous);
+        grassContain.Spline.SetTangentMode(roadContain.Spline.Count - 1, TangentMode.Continuous);
 
         // Add road script
-        splineObj.AddComponent<LoftRoadBehaviour>().IncreaseWidthsCount();
-        splineObj.AddComponent<MeshCollider>();
-        //splineObj.AddComponent<SplineExtrude>().Rebuild();
+        roadObj.AddComponent<LoftRoadBehaviour>().IncreaseWidthsCount(0);
+        roadObj.AddComponent<MeshCollider>();
+
+        grassObj.AddComponent<LoftRoadBehaviour>().IncreaseWidthsCount(1);
     }
 
     //<summary> gets the WORLD position of the FIRST knot in a spline
@@ -261,7 +283,7 @@ public class TempSpline : MonoBehaviour
     //<param : tan> the tangent to apply
     //<param : givenSpline> the spline to modify
     //<param : rotation> the rotation to apply
-    public void AlterFirstKnot(float3 tan, GameObject givenSpline, Quaternion rotation)
+    public void AlterFirstKnot(float3 tan, GameObject givenSpline, GameObject grassSpline, Quaternion rotation)
     {
         var container = givenSpline.GetComponent<SplineContainer>();
         var spline = container.Spline;
@@ -285,6 +307,28 @@ public class TempSpline : MonoBehaviour
 
         // Update the knot
         spline.SetKnot(0, firstKnot);
+
+        var gContainer = givenSpline.GetComponent<SplineContainer>();
+        var gSpline = gContainer.Spline;
+        gSpline.SetKnot(0, firstKnot);
+    }
+
+    //<summary> changes the grass spline so it looks different than road
+    //<param : > the grass spline to modify
+    public void AlterGrassSpline(GameObject gSpline)
+    {
+        var container = gSpline.GetComponent<SplineContainer>();
+        var spline = container.Spline;
+
+        //change material
+        gSpline.GetComponent<MeshRenderer>().material = grassMaterial;
+
+        //change shader
+        gSpline.GetComponent<MeshRenderer>().material.shader = Shader.Find("Standard");
+
+        //move down to prevent z fighting
+        Vector3 pos = gSpline.transform.position; 
+        gSpline.transform.position = new Vector3(pos.x, pos.y - 0.5f, pos.z);
     }
 
     //<summary> checks if given position is off the spline
@@ -293,7 +337,7 @@ public class TempSpline : MonoBehaviour
     //<returns> true if pos is off road, false if pos is on road
     public bool IsOffRoad(Vector3 _pos, float _minDist)
     {
-        foreach (BezierKnot bezierKnot in totalKnots)
+        foreach (BezierKnot bezierKnot in roadKnots)
         {
             // If in a certian distance to road return false
             if (Vector3.Distance(bezierKnot.Position, _pos) < _minDist)

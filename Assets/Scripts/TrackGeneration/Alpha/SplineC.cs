@@ -125,7 +125,7 @@ public class SplineC : MonoBehaviour
         splineContainer.Spline.SetTangentMode(splineContainer.Spline.Count - 1, TangentMode.Continuous);
 
         //add road script
-        splineObj.AddComponent<LoftRoadBehaviour>().IncreaseWidthsCount();
+        splineObj.AddComponent<LoftRoadBehaviour>().IncreaseWidthsCount(0);
     }
 
     //<summary> gets the WORLD position of the FIRST knot in a spline

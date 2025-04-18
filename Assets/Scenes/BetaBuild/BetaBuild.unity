@@ -1093,7 +1093,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 720523246}
-  - component: {fileID: 720523245}
   - component: {fileID: 720523247}
   m_Layer: 0
   m_Name: CellGen
@@ -1102,27 +1101,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &720523245
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 720523244}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eac2eb385cf1ce54699243ac08259fbc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  splineGen: {fileID: 957738050}
-  cubeGen: {fileID: 1772169517}
-  obstaclePrefabs:
-  - {fileID: 3251523534738225239, guid: 53cb7964d1e732d48b90a5591672695e, type: 3}
-  - {fileID: 9175834846965401456, guid: 5fcfc17efbe7b514c82b29acad79e18e, type: 3}
-  - {fileID: 6438372132684690647, guid: 3167be35371e2034baddfdd251fe99c7, type: 3}
-  numObstaclesPerCell: 60
-  obstaclesDistToRoad: 5
-  activeCellObjects: []
 --- !u!4 &720523246
 Transform:
   m_ObjectHideFlags: 0
@@ -1631,7 +1609,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 957738051}
-  - component: {fileID: 957738050}
   - component: {fileID: 957738052}
   m_Layer: 0
   m_Name: SplineGen
@@ -1640,25 +1617,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &957738050
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 957738049}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c90ba8462bd71a419725436807b0733, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  splineContainer: {fileID: 0}
-  splineObj: {fileID: 0}
-  totalKnots: []
-  minStepX: 2
-  maxStepX: 5
-  spaceValue: 4
-  maxAngle: 50
 --- !u!4 &957738051
 Transform:
   m_ObjectHideFlags: 0
@@ -1686,11 +1644,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e84f042a6efa56a4c975104aed4e94f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  splineContainer: {fileID: 0}
-  splineObj: {fileID: 0}
-  totalKnots: []
-  minStepX: 5
-  maxStepX: 12
+  roadContain: {fileID: 0}
+  grassContain: {fileID: 0}
+  roadObj: {fileID: 0}
+  grassObj: {fileID: 0}
+  roadKnots: []
+  grassKnots: []
+  grassMaterial: {fileID: 2100000, guid: 4fcddc7fcea09034798e52b7e7bb1194, type: 2}
+  minStepX: 3
+  maxStepX: 9
   spaceValue: 4
   maxAngle: 50
   boundsMin: {x: -25, y: -2.5, z: -12.5}
@@ -2541,75 +2503,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1656968080}
   m_CullTransparentMesh: 1
---- !u!1 &1772169515
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1772169516}
-  - component: {fileID: 1772169517}
-  - component: {fileID: 1772169518}
-  m_Layer: 0
-  m_Name: CubeGen
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1772169516
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1772169515}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1772169517
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1772169515}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 310599dc022a9aa47ab1eba094f871dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cube: {fileID: 0}
-  mesh: {fileID: 0}
-  tempMaterial: {fileID: 2100000, guid: e18144705a0a6be42b49846db26bc9ce, type: 2}
-  lengthX: 1
-  heightY: 2
-  widthZ: 1
---- !u!114 &1772169518
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1772169515}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4903d2b733322a7419a54bc412bb2854, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cube: {fileID: 0}
-  mesh: {fileID: 0}
-  tempMaterial: {fileID: 2100000, guid: e18144705a0a6be42b49846db26bc9ce, type: 2}
-  lengthX: 1
-  heightY: 2
-  widthZ: 1
 --- !u!1 &2003966007
 GameObject:
   m_ObjectHideFlags: 0
@@ -2655,7 +2548,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 376037978}
   - {fileID: 957738051}
-  - {fileID: 1772169516}
   - {fileID: 720523246}
   - {fileID: 1177215280}
   - {fileID: 683814755}
