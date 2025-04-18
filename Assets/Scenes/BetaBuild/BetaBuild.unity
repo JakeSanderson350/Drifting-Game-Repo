@@ -1133,7 +1133,7 @@ MonoBehaviour:
   - {fileID: 3251523534738225239, guid: 53cb7964d1e732d48b90a5591672695e, type: 3}
   - {fileID: 6438372132684690647, guid: 3167be35371e2034baddfdd251fe99c7, type: 3}
   - {fileID: 9175834846965401456, guid: 5fcfc17efbe7b514c82b29acad79e18e, type: 3}
-  numObstaclesPerCell: 60
+  numObstaclesPerCell: 30
   obstaclesDistToRoad: 5
   triggerSize: {x: 0.2, y: 2, z: 8}
   boundsMin: {x: -5, y: 0, z: -5}
@@ -1983,7 +1983,7 @@ MonoBehaviour:
   difficulty: 0
   gameOverScreen: {fileID: 1001942337}
   pauseScreen: {fileID: 121771731}
-  scoreManager: {fileID: 0}
+  scoreManager: {fileID: 1177215278}
 --- !u!114 &1177215278
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1999,6 +1999,7 @@ MonoBehaviour:
   scoreUI: {fileID: 477927778}
   car: {fileID: 883021094}
   particleManager: {fileID: 883021096}
+  donutTimeLimit: 15
 --- !u!114 &1177215279
 MonoBehaviour:
   m_ObjectHideFlags: 0
