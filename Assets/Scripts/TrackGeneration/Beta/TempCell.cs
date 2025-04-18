@@ -76,6 +76,9 @@ public class TempCell : MonoBehaviour
         GameObject newTrigger = CreateTrigger();
         newTrigger.transform.SetParent(cellObject.transform);
 
+        //add obstacles
+        List<GameObject> cellObstacles = CreateObstacles(newSpline);
+
         //scale transforms
         ScaleTransforms(newSpline, grassSpline, newTrigger);
 
@@ -166,6 +169,35 @@ public class TempCell : MonoBehaviour
         return trigger;
     }
 
+    //<summary> spawn obstacles within the cell
+    //<summary> make sure obstacles are NOT on road
+    //<param : parentCube> cube in cell to act as parent 
+    //<returns> list of obstacles in the cell
+    private List<GameObject> CreateObstacles(GameObject parentCube)
+    {
+        List<GameObject> newObstacles = new List<GameObject>();
+        int scaledNumObstacles = numObstaclesPerCell + GameManager.Instance.GetDifficulty();
+
+        for (int i = 0; i < scaledNumObstacles; i++)
+        {
+            Vector3 spawnPos = Vector3.zero;
+            bool isValidSpawnPos = false;
+
+            do
+            {
+                //spawnPos = new Vector3(Random.Range(-xRange, xRange), 0.0f, Random.Range(-zRange, zRange));
+                spawnPos = splineGen.GetRandomSpawnPos(obstaclesDistToRoad);
+                isValidSpawnPos = splineGen.IsOffRoad(spawnPos, obstaclesDistToRoad);
+            } while (!isValidSpawnPos);
+
+            GameObject newObstacle = Instantiate(obstaclePrefabs[UnityEngine.Random.Range(0, obstaclePrefabs.Count)], spawnPos, parentCube.transform.rotation);
+            newObstacles.Add(newObstacle);
+            newObstacle.transform.SetParent(parentCube.transform, true); // bc parented, obstacles will move when cube is moved
+        }
+
+        return newObstacles;
+    }
+
     //<summary> scales cube and spline by scale factor
     //<param : cube> cube in cell
     //<param : spline> spline in cell
@@ -176,8 +208,10 @@ public class TempCell : MonoBehaviour
         spline.transform.localScale *= scaleFactor;
         grassSpline.transform.localScale *= scaleFactor;
         trigger.transform.localScale *= scaleFactor;
+
             //cube.layer = 6;
         spline.layer = 6;
+        grassSpline.layer = 6;
     }
 
     //<summary> alters rotation of the spline, cube, the triggerand obstacles
@@ -217,6 +251,11 @@ public class TempCell : MonoBehaviour
 
         Vector3 newGrassPos = grassSpline.transform.position + normalizedDirection * distance;
         grassSpline.transform.position = new Vector3(newGrassPos.x, newGrassPos.y, newGrassPos.z);
+
+        //foreach (GameObject obstacle in obstacles)
+        //{
+        //    obstacle.transform.position = obstacle.transform.position + normalizedDirection * distance;
+        //}
     }
 
     private IEnumerator AddColliderAfterDelay(GameObject obj)

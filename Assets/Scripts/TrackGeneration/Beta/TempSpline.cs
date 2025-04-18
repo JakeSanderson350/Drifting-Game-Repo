@@ -16,6 +16,7 @@ public class TempSpline : MonoBehaviour
     public List<BezierKnot> roadKnots;     //collection of knots in current spline
     public List<BezierKnot> grassKnots;     //collection of knots in current spline
     public Material grassMaterial;
+    private float avgSplineLength = 252.0f; //avg length of splines used to calc position of obstacles
 
     [Space(10)]
     [Header("Step Values")]
@@ -329,6 +330,18 @@ public class TempSpline : MonoBehaviour
         //move down to prevent z fighting
         Vector3 pos = gSpline.transform.position; 
         gSpline.transform.position = new Vector3(pos.x, pos.y - 0.5f, pos.z);
+    }
+
+    public Vector3 GetRandomSpawnPos(float _minDist)
+    {
+        float t = Random.Range(0.0f, 1.0f);
+        Vector3 splinePos = roadContain.EvaluatePosition(t);
+
+        Vector2 horizontalOffset = Random.insideUnitCircle * _minDist;
+        float y = roadContain.EvaluatePosition(t + (horizontalOffset.y / avgSplineLength)).y;
+        Vector3 spawnPos = new Vector3(splinePos.x + horizontalOffset.x, y - 0.75f, splinePos.z + horizontalOffset.y);
+
+        return spawnPos;
     }
 
     //<summary> checks if given position is off the spline
