@@ -51,12 +51,14 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         CarState.onCarDeath += GameOver;
+        Killzone.onCarDeath += GameOver;
         CarState.onPauseGame += PauseGame;
     }
 
     private void OnDisable()
     {
         CarState.onCarDeath -= GameOver;
+        Killzone.onCarDeath -= GameOver;
         CarState.onPauseGame -= PauseGame;
     }
 

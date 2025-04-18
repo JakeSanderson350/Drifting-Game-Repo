@@ -12,6 +12,7 @@ public class TempCell : MonoBehaviour
     [Header("References")]
     public TempSpline splineGen;
     private GameObject grassSpline;
+    [SerializeField] private GameObject killzonePrefab;
 
     [Header("Previous Values")]
     private Vector3 lastKnotPos;
@@ -102,6 +103,10 @@ public class TempCell : MonoBehaviour
 
         //move trigger to the end of this spline
         newTrigger.transform.position = lastKnotPos;
+
+        //create killzone underneath cell
+        GameObject killzone = CreateKillzone(newSpline);
+        killzone.transform.SetParent(cellObject.transform);
 
         //alter grass spline
         splineGen.AlterGrassSpline(grassSpline);
@@ -198,6 +203,11 @@ public class TempCell : MonoBehaviour
         return newObstacles;
     }
 
+    private GameObject CreateKillzone(GameObject parentObj)
+    {
+        return Instantiate(killzonePrefab, parentObj.transform.position + Vector3.down * 60, parentObj.transform.rotation);
+    }
+
     //<summary> scales cube and spline by scale factor
     //<param : cube> cube in cell
     //<param : spline> spline in cell
@@ -253,6 +263,11 @@ public class TempCell : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         MeshCollider collider = obj.AddComponent<MeshCollider>();
         collider.sharedMesh = obj.GetComponent<MeshFilter>().sharedMesh;
+    }
+
+    public Vector3 GetFirstKnotPos()
+    {
+        return (Vector3)activeCellObjects[0].transform.Find("Road Spline")?.GetComponent<SplineContainer>()?.EvaluatePosition(0.1f);
     }
 }
 

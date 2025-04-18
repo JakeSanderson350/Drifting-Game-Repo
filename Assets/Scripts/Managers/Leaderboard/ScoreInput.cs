@@ -10,6 +10,12 @@ public class ScoreInput : MonoBehaviour
     {
         inputScore = GameManager.Instance.GetGameScore();
 
-        LeaderboardManager.Instance.SetLeaderboardEntry(inputName.text.Substring(0, 7), inputScore);
+        string username = inputName.text;
+        if (username.Length > 8)
+        {
+            username = username.Substring(0, 8);
+        }
+
+        LeaderboardManager.Instance.SetLeaderboardEntry(username, inputScore);
     }
 }
