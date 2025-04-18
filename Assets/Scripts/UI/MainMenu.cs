@@ -6,7 +6,7 @@ public class MainMenu : MonoBehaviour
     public void PlayGame()
     {
         Time.timeScale = 1.0f;
-        SceneManager.LoadScene("RotationFix"); // Change to whatever our play scene gonna be
+        SceneManager.LoadScene("BetaBuild"); // Change to whatever our play scene gonna be
     }
 
     public void QuitGame()
