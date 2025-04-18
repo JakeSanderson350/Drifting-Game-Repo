@@ -227,11 +227,6 @@ public class TempCell : MonoBehaviour
         spline.transform.rotation = prevRot;
         grassSpline.transform.rotation = prevRot;
         trigger.transform.rotation = prevRot;
-
-        //foreach (GameObject obstacle in obstacles)
-        //{
-        //    obstacle.transform.rotation = prevRot;
-        //}
     }
 
     //<summary> alters position of the spline and cube 
@@ -251,11 +246,6 @@ public class TempCell : MonoBehaviour
 
         Vector3 newGrassPos = grassSpline.transform.position + normalizedDirection * distance;
         grassSpline.transform.position = new Vector3(newGrassPos.x, newGrassPos.y, newGrassPos.z);
-
-        //foreach (GameObject obstacle in obstacles)
-        //{
-        //    obstacle.transform.position = obstacle.transform.position + normalizedDirection * distance;
-        //}
     }
 
     private IEnumerator AddColliderAfterDelay(GameObject obj)

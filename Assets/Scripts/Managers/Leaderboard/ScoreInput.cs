@@ -10,6 +10,6 @@ public class ScoreInput : MonoBehaviour
     {
         inputScore = GameManager.Instance.GetGameScore();
 
-        LeaderboardManager.Instance.SetLeaderboardEntry(inputName.text, inputScore);
+        LeaderboardManager.Instance.SetLeaderboardEntry(inputName.text.Substring(0, 7), inputScore);
     }
 }

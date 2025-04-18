@@ -16,7 +16,7 @@ public class TempSpline : MonoBehaviour
     public List<BezierKnot> roadKnots;     //collection of knots in current spline
     public List<BezierKnot> grassKnots;     //collection of knots in current spline
     public Material grassMaterial;
-    private float avgSplineLength = 252.0f; //avg length of splines used to calc position of obstacles
+    private float avgSplineLength = 52.0f; //avg length of splines used to calc position of obstacles
 
     [Space(10)]
     [Header("Step Values")]
@@ -332,14 +332,16 @@ public class TempSpline : MonoBehaviour
         gSpline.transform.position = new Vector3(pos.x, pos.y - 0.5f, pos.z);
     }
 
+    //<summary> get random position to spawn obstacle based on posiiton on spline
+    //<param : _minDist> minimum distance to consider off road
+    //<returns> pos that is minDist away from random pos on spline
     public Vector3 GetRandomSpawnPos(float _minDist)
     {
         float t = Random.Range(0.0f, 1.0f);
         Vector3 splinePos = roadContain.EvaluatePosition(t);
 
-        Vector2 horizontalOffset = Random.insideUnitCircle * _minDist;
-        float y = roadContain.EvaluatePosition(t + (horizontalOffset.y / avgSplineLength)).y;
-        Vector3 spawnPos = new Vector3(splinePos.x + horizontalOffset.x, y - 0.75f, splinePos.z + horizontalOffset.y);
+        Vector3 horizontalOffset = Random.onUnitSphere * _minDist;
+        Vector3 spawnPos = new Vector3(splinePos.x + horizontalOffset.x, splinePos.y - 0.75f, splinePos.z + horizontalOffset.z);
 
         return spawnPos;
     }
@@ -350,10 +352,11 @@ public class TempSpline : MonoBehaviour
     //<returns> true if pos is off road, false if pos is on road
     public bool IsOffRoad(Vector3 _pos, float _minDist)
     {
-        foreach (BezierKnot bezierKnot in roadKnots)
+        for (int i = 0; i <= 10; i++)
         {
-            // If in a certian distance to road return false
-            if (Vector3.Distance(bezierKnot.Position, _pos) < _minDist)
+            Vector3 splinePos = roadContain.EvaluatePosition(i / 10.0f);
+
+            if (Vector3.Distance(splinePos, _pos) < _minDist)
             {
                 return false;
             }
