@@ -1129,12 +1129,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   splineGen: {fileID: 957738052}
+  killzonePrefab: {fileID: 2188315614071934327, guid: f013da9f30f5e4b4c87b3f0fed0d4595, type: 3}
   obstaclePrefabs:
   - {fileID: 3251523534738225239, guid: 53cb7964d1e732d48b90a5591672695e, type: 3}
   - {fileID: 6438372132684690647, guid: 3167be35371e2034baddfdd251fe99c7, type: 3}
   - {fileID: 9175834846965401456, guid: 5fcfc17efbe7b514c82b29acad79e18e, type: 3}
   numObstaclesPerCell: 30
-  obstaclesDistToRoad: 5
+  obstaclesDistToRoad: 3.5
   triggerSize: {x: 0.2, y: 2, z: 8}
   boundsMin: {x: -5, y: 0, z: -5}
   boundsMax: {x: 5, y: 0, z: 5}
@@ -1509,15 +1510,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7668251816532010518, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -44.61
+      value: -150.96
       objectReference: {fileID: 0}
     - target: {fileID: 7668251816532010518, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 14.55
+      value: 28.66
       objectReference: {fileID: 0}
     - target: {fileID: 7668251816532010518, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.13
+      value: -23.2
       objectReference: {fileID: 0}
     - target: {fileID: 7668251816532010518, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1960,6 +1961,7 @@ GameObject:
   - component: {fileID: 1177215279}
   - component: {fileID: 1177215278}
   - component: {fileID: 1177215277}
+  - component: {fileID: 1177215281}
   m_Layer: 0
   m_Name: GameController
   m_TagString: Untagged
@@ -2027,6 +2029,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1177215281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1177215276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73e9093528d32b645a6a4e7ea8a4601a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  car: {fileID: 803883568}
+  cell: {fileID: 720523247}
 --- !u!1 &1228851333
 GameObject:
   m_ObjectHideFlags: 0
