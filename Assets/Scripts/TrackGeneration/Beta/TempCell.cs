@@ -122,8 +122,6 @@ public class TempCell : MonoBehaviour
         {
             RemoveOldestCell();
         }
-
-
     }
 
     //<summary> removes oldest cell from active cells + destroy

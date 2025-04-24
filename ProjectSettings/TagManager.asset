@@ -8,6 +8,8 @@ TagManager:
   - Spline
   - SplineGen
   - Obstacle
+  - 1stPriority
+  - 2ndPriority
   layers:
   - Default
   - TransparentFX

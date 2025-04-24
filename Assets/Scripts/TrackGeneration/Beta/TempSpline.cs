@@ -342,9 +342,11 @@ public class TempSpline : MonoBehaviour
         //change shader
         gSpline.GetComponent<MeshRenderer>().material.shader = Shader.Find("Standard");
 
+        gSpline.GetComponent<MeshRenderer>().material.renderQueue = 1995;
+
         //move down to prevent z fighting
         Vector3 pos = gSpline.transform.position; 
-        gSpline.transform.position = new Vector3(pos.x, pos.y - 0.3f, pos.z);
+        //gSpline.transform.position = new Vector3(pos.x, pos.y - 0.3f, pos.z);
     }
 
     //<summary> get random position to spawn obstacle based on posiiton on spline
