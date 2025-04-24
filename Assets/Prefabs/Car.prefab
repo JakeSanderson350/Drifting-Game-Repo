@@ -296,10 +296,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74fd28c1a968de64383bcb96fca7ece0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carDriftController: {fileID: 0}
+  carDriftController: {fileID: 3488100902572810491}
   trailAttachPoints:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1072702072305641541}
+  - {fileID: 3267265012776776845}
   particlePrefab: {fileID: 6090096630861670416, guid: ded0bc335c5094b4084f3135ef6227f6, type: 3}
   trailMaterial: {fileID: 2100000, guid: 763650c0ea9fa574da12a58fee98c779, type: 2}
   roadLayerMask:
@@ -307,16 +307,16 @@ MonoBehaviour:
     m_Bits: 64
   initialColor: {r: 0.47058824, g: 0.58431375, b: 0.46666667, a: 1}
   finalColor: {r: 0.45882353, g: 0, b: 1, a: 1}
-  colorTransitionTime: 5
-  minDriftAngleForEffects: 3
+  colorTransitionTime: 6
+  minDriftAngleForEffects: 2
   particleEmissionRate: 50
   trailWidth: 0.5
   trailMaxWidth: 1
   trailHeightOffset: 0.01
-  trailTime: 2.5
+  trailTime: 1.8
   particleSpawnRadius: 0.5
-  particleSpawnHeightOffset: 0.2
-  particleSpawnDistance: 3
+  particleSpawnHeightOffset: 0.1
+  particleSpawnDistance: 1.5
   fadeInDuration: 0.5
   fadeOutDuration: 1
 --- !u!114 &3034261264244496280
@@ -356,8 +356,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debrisParticlePrefab: {fileID: 980563096763372027, guid: 2ed80720d6cb37d4aabd9198a47ec20f, type: 3}
-  minParticleCount: 100
-  maxParticleCount: 300
+  minParticleCount: 300
+  maxParticleCount: 600
   minParticleSpeed: 5
   maxParticleSpeed: 15
   particleLifetime: 3

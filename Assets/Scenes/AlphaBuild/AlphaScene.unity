@@ -370,7 +370,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7dbe2a31eac248459e32382f0b30288, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pauseCanvas: {fileID: 121771731}
+  overallCanvas: {fileID: 0}
+  pauseMenu: {fileID: 0}
+  optionsMenu: {fileID: 0}
+  difficultySlider: {fileID: 0}
 --- !u!1001 &178133720
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -938,19 +941,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   splineGen: {fileID: 957738050}
   cubeGen: {fileID: 1772169517}
-  cube: {fileID: 0}
-  spline: {fileID: 0}
-  empty: {fileID: 0}
-  timerDuration: 3
-  lastKnotPos: {x: 0, y: 0, z: 0}
-  firstKnotPos: {x: 0, y: 0, z: 0}
-  lastKnotRot: {x: 0, y: 0, z: 0, w: 0}
   obstaclePrefabs:
   - {fileID: 3251523534738225239, guid: 53cb7964d1e732d48b90a5591672695e, type: 3}
   - {fileID: 9175834846965401456, guid: 5fcfc17efbe7b514c82b29acad79e18e, type: 3}
   - {fileID: 6438372132684690647, guid: 3167be35371e2034baddfdd251fe99c7, type: 3}
   numObstaclesPerCell: 60
   obstaclesDistToRoad: 5
+  activeCellObjects: []
 --- !u!4 &720523246
 Transform:
   m_ObjectHideFlags: 0
@@ -980,65 +977,13 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
-      propertyPath: trailTime
-      value: 2.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
-      propertyPath: trailWidth
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
-      propertyPath: finalColor.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
-      propertyPath: finalColor.r
-      value: 0.45882353
-      objectReference: {fileID: 0}
-    - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
-      propertyPath: trailMaxWidth
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
-      propertyPath: initialColor.b
-      value: 0.46666667
-      objectReference: {fileID: 0}
-    - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
-      propertyPath: initialColor.g
-      value: 0.58431375
-      objectReference: {fileID: 0}
-    - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
-      propertyPath: initialColor.r
-      value: 0.47058824
-      objectReference: {fileID: 0}
-    - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
-      propertyPath: carDriftController
-      value: 
-      objectReference: {fileID: 883021094}
-    - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
-      propertyPath: particleSpawnRadius
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
       propertyPath: trailSmoothingFactor
       value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
-      propertyPath: particleSpawnDistance
-      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
       propertyPath: trailMinVertexDistance
       value: 0.01
       objectReference: {fileID: 0}
-    - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
-      propertyPath: 'trailAttachPoints.Array.data[0]'
-      value: 
-      objectReference: {fileID: 883021093}
-    - target: {fileID: 2652190493771351157, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
-      propertyPath: 'trailAttachPoints.Array.data[1]'
-      value: 
-      objectReference: {fileID: 883021092}
     - target: {fileID: 7567560579064384266, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
       propertyPath: m_Name
       value: Car
@@ -1088,16 +1033,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
---- !u!4 &883021092 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3267265012776776845, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
-  m_PrefabInstance: {fileID: 883021091}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &883021093 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1072702072305641541, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
-  m_PrefabInstance: {fileID: 883021091}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &883021094 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3488100902572810491, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
@@ -1172,14 +1107,6 @@ MonoBehaviour:
   maxStepX: 5
   spaceValue: 4
   maxAngle: 50
-  tangentIn:
-    x: -0.4714046
-    y: -0.4714046
-    z: -0.4714046
-  tangentOut:
-    x: 0.4714046
-    y: 0.4714046
-    z: 0.4714046
 --- !u!4 &957738051
 Transform:
   m_ObjectHideFlags: 0
@@ -1515,6 +1442,9 @@ MonoBehaviour:
   difficulty: 0
   gameOverScreen: {fileID: 1001942337}
   pauseScreen: {fileID: 121771731}
+  scoreManager: {fileID: 0}
+  engineSounds: {fileID: 0}
+  isPaused: 0
 --- !u!114 &1177215278
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1530,6 +1460,7 @@ MonoBehaviour:
   scoreUI: {fileID: 477927778}
   car: {fileID: 883021094}
   particleManager: {fileID: 883021096}
+  donutTimeLimit: 15
 --- !u!114 &1177215279
 MonoBehaviour:
   m_ObjectHideFlags: 0

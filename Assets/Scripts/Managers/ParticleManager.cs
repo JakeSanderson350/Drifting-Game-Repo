@@ -169,7 +169,7 @@ public class ParticleManager : MonoBehaviour
         var main = ps.main;
         main.startColor = initialColor;
         main.startLifetime = 2.0f;
-        main.startSize = 1.0f;
+        main.startSize = 0.5f;
         main.simulationSpace = ParticleSystemSimulationSpace.World;
         main.startSpeed = 2.0f;
         main.playOnAwake = false; // Prevent playing automatically on awake
