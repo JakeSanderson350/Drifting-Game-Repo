@@ -1,7 +1,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PrimitveC : MonoBehaviour
+public class FlatPrimitve : MonoBehaviour
 {
     [Header("Mesh Values")]
     public GameObject cube;

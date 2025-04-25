@@ -382,6 +382,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainMenuButtons: {fileID: 567702577}
   playMenuButtons: {fileID: 134410312}
+  downHillScene: GoldBuildDown
+  flatScene: GoldBuildFlat
 --- !u!1 &134410312
 GameObject:
   m_ObjectHideFlags: 0

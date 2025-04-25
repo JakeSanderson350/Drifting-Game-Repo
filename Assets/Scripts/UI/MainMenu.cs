@@ -5,6 +5,8 @@ public class MainMenu : MonoBehaviour
 {
     [SerializeField] private GameObject mainMenuButtons;
     [SerializeField] private GameObject playMenuButtons;
+    [SerializeField] private string downHillScene;
+    [SerializeField] private string flatScene;
 
     public void Play()
     {
@@ -15,13 +17,13 @@ public class MainMenu : MonoBehaviour
     public void PlayGameDownhill()
     {
         Time.timeScale = 1.0f;
-        SceneManager.LoadScene("BetaBuild"); // Change to whatever our play scene gonna be
+        SceneManager.LoadScene(downHillScene); // Change to whatever our play scene gonna be
     }
 
     public void PlayGameFlat()
     {
         Time.timeScale = 1.0f;
-        SceneManager.LoadScene("BetaBuildFlat"); // Change to whatever our play scene gonna be
+        SceneManager.LoadScene(flatScene); // Change to whatever our play scene gonna be
     }
 
     public void QuitGame()

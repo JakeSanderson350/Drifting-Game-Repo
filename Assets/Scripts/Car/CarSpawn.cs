@@ -4,7 +4,7 @@ using UnityEngine;
 public class CarSpawn : MonoBehaviour
 {
     [SerializeField] private GameObject car;
-    [SerializeField] private TempCell cell;
+    [SerializeField] private DownCell cell;
     [SerializeField] private Cell cellFlat;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

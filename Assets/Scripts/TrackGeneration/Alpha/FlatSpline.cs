@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Splines;
 using Random = UnityEngine.Random;
 
-public class SplineC : MonoBehaviour
+public class FlatSpline : MonoBehaviour
 {
     [Header("Spline Mesh Info")]
     public SplineContainer splineContainer; //container holds spline data

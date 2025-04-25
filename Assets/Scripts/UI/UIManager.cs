@@ -34,7 +34,7 @@ public class UIManager : MonoBehaviour
     public void RestartGame()
     {
         overallCanvas.SetActive(false);
-        SceneManager.LoadScene("RotationFix");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         Time.timeScale = 1.0f;
     }
 

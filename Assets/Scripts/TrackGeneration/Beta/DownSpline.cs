@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Splines;
 using Random = UnityEngine.Random;
 
-public class TempSpline : MonoBehaviour
+public class DownSpline : MonoBehaviour
 {
     [Header("Spline Mesh Info")]
     public SplineContainer roadContain; //container holds spline data

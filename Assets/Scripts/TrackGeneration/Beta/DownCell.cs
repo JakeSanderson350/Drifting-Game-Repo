@@ -1,27 +1,35 @@
+using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Unity.Hierarchy;
+using Unity.Mathematics;
+using Unity.Splines.Examples;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Splines;
 
-public class Cell : MonoBehaviour
+public class DownCell : MonoBehaviour
 {
     [Header("References")]
-    public SplineC splineGen;
-    public PrimitveC cubeGen;
+    public DownSpline splineGen;
+    private GameObject grassSpline;
     [SerializeField] private GameObject killzonePrefab;
 
     [Header("Previous Values")]
     private Vector3 lastKnotPos;
     private Vector3 firstKnotPos;
-    private Quaternion lastKnotRot;
+    [SerializeField] private Quaternion lastKnotRot;
     private Unity.Mathematics.float3 lastKnotTangent;
 
     [Header("Obstacles")]
     [SerializeField] private List<GameObject> obstaclePrefabs;
     [SerializeField] private int numObstaclesPerCell = 10;
     [SerializeField] private float obstaclesDistToRoad = 4.0f;
+
+    [Header("Trigger Settings")]
+    public Vector3 triggerSize = new Vector3(0.1f, 2f, 15f);  // Size of the trigger collider
+    public Vector3 boundsMin = new Vector3(-5, 0, -5);  // Minimum bounds coordinates
+    public Vector3 boundsMax = new Vector3(5, 0, 5);    // Maximum bounds coordinates
 
     //cell management
     [SerializeField] private List<GameObject> activeCellObjects = new List<GameObject>();
@@ -46,6 +54,8 @@ public class Cell : MonoBehaviour
     {
         GenerateCell();     //cell 1
         GenerateCell();     //cell 2
+        //GenerateCell();     //cell 2
+        //GenerateCell();     //cell 2
         isInitialized = true;
     }
 
@@ -53,32 +63,30 @@ public class Cell : MonoBehaviour
     public void GenerateCell()
     {
         cellCounter++;
-
         //create an empty gameobject
         GameObject cellObject = new GameObject("Cell_" + cellCounter);
 
         //init cube and spline, generate points on spline
-        GameObject newCube = cubeGen.Init();
         GameObject newSpline = splineGen.Init();
-        splineGen.GenerateKnots(newCube);
+        splineGen.GenerateKnotsInBounds();
+        grassSpline = splineGen.GetGrassSpline();
 
         //add underneath the empty gameobject
-        newCube.transform.SetParent(cellObject.transform);
         newSpline.transform.SetParent(cellObject.transform);
+        grassSpline.transform.SetParent(cellObject.transform);
 
         //create and set up trigger
-        GameObject newTrigger = CreateTrigger(newCube);
+        GameObject newTrigger = CreateTrigger();
         newTrigger.transform.SetParent(cellObject.transform);
 
         //add obstacles
-        List<GameObject> cellObstacles = CreateObstacles(newCube);
+        List<GameObject> cellObstacles = CreateObstacles(newSpline);
 
         //scale transforms
-        ScaleTransforms(newCube, newSpline, newTrigger);
+        ScaleTransforms(newSpline, grassSpline, newTrigger);
 
         //apply rotation based on previous cell
-        AlterRotation(lastKnotRot, newCube, newSpline, newTrigger, cellObstacles);
-
+        AlterRotation(lastKnotRot, newSpline, grassSpline, newTrigger); 
         //get first point on spline
         firstKnotPos = splineGen.firstKnotPos(newSpline);
 
@@ -86,8 +94,8 @@ public class Cell : MonoBehaviour
         if (firstCellRendered)
         {
             //alter position to connect with previous cell
-            AlterPosition(lastKnotPos, firstKnotPos, newCube, newSpline);
-            splineGen.AlterFirstKnot(lastKnotTangent, newSpline, lastKnotRot);
+            AlterPosition(lastKnotPos, firstKnotPos, newSpline, grassSpline);
+            splineGen.AlterFirstKnot(lastKnotTangent, newSpline, grassSpline, lastKnotRot);
         }
 
         //store last knot info
@@ -102,9 +110,14 @@ public class Cell : MonoBehaviour
         GameObject killzone = CreateKillzone(newSpline);
         killzone.transform.SetParent(cellObject.transform);
 
+        //alter grass spline
+        splineGen.AlterGrassSpline(grassSpline);
+
         //add to list
         activeCellObjects.Add(cellObject);
         firstCellRendered = true;
+
+        //newSpline.GetComponent<MeshRenderer>().material.renderQueue = 3000;
 
         //if we have more than MAX_ACTIVE_CELLS remove oldest
         if (isInitialized && activeCellObjects.Count > MAX_ACTIVE_CELLS)
@@ -135,45 +148,30 @@ public class Cell : MonoBehaviour
     //<summary> creates a trigger object at the edge of a cell to detect when the player crosses it
     //<param : parentCube> cube in cell to act as parent 
     //<returns> fully configured trigger GameObject with collider and handler
-    private GameObject CreateTrigger(GameObject parentCube)
+    private GameObject CreateTrigger()
     {
         GameObject trigger = new GameObject("EdgeTrigger");
 
-        Bounds cubeBounds = parentCube.GetComponent<Renderer>().bounds;
-
-        //position trigger at the end of the cell
-        Vector3 triggerPosition = new Vector3
-        (
-            cubeBounds.extents.x * scaleFactor,
-            cubeBounds.extents.y * scaleFactor,  
-            cubeBounds.center.z                
+        // Position trigger at the end of the bounds
+        Vector3 triggerPosition = new Vector3(
+            boundsMax.x,                         // Place at maximum X (end of track)
+            (boundsMin.y + boundsMax.y) * 0.5f,  // Center on Y axis
+            (boundsMin.z + boundsMax.z) * 0.5f   // Center on Z axis
         );
+
         trigger.transform.position = triggerPosition;
 
         //add box collider
         BoxCollider triggerCollider = trigger.AddComponent<BoxCollider>();
         triggerCollider.isTrigger = true;
-
-        //set size of the trigger
-        float triggerThickness = 0.2f;
-        trigger.transform.localScale = new Vector3
-        (
-            triggerThickness,
-            cubeBounds.size.y * 2,
-            cubeBounds.size.z
-        );
+        triggerCollider.transform.localScale = triggerSize;
 
         //add a trigger script to listen for for player
-        TriggerHandler triggerScript = trigger.AddComponent<TriggerHandler>();
+        TriggerHandlerTemp triggerScript = trigger.AddComponent<TriggerHandlerTemp>();
         triggerScript.cellManager = this;
         triggerScript.cellIndex = cellCounter;
 
         return trigger;
-    }
-
-    private GameObject CreateKillzone(GameObject parentObj)
-    {
-        return Instantiate(killzonePrefab, parentObj.transform.position + Vector3.down * 30, parentObj.transform.rotation);
     }
 
     //<summary> spawn obstacles within the cell
@@ -183,8 +181,6 @@ public class Cell : MonoBehaviour
     private List<GameObject> CreateObstacles(GameObject parentCube)
     {
         List<GameObject> newObstacles = new List<GameObject>();
-        float xRange = cubeGen.lengthX / 2;
-        float zRange = cubeGen.widthZ / 2;
         int scaledNumObstacles = numObstaclesPerCell + GameManagerED.Instance.GetDifficulty();
 
         for (int i = 0; i < scaledNumObstacles; i++)
@@ -194,11 +190,12 @@ public class Cell : MonoBehaviour
 
             do
             {
-                spawnPos = new Vector3(Random.Range(-xRange, xRange), 0.45f, Random.Range(-zRange, zRange));
+                //spawnPos = new Vector3(Random.Range(-xRange, xRange), 0.0f, Random.Range(-zRange, zRange));
+                spawnPos = splineGen.GetRandomSpawnPos(obstaclesDistToRoad);
                 isValidSpawnPos = splineGen.IsOffRoad(spawnPos, obstaclesDistToRoad);
             } while (!isValidSpawnPos);
 
-            GameObject newObstacle = Instantiate(obstaclePrefabs[Random.Range(0, obstaclePrefabs.Count)], spawnPos, parentCube.transform.rotation);
+            GameObject newObstacle = Instantiate(obstaclePrefabs[UnityEngine.Random.Range(0, obstaclePrefabs.Count)], spawnPos, parentCube.transform.rotation);
             newObstacles.Add(newObstacle);
             newObstacle.transform.SetParent(parentCube.transform, true); // bc parented, obstacles will move when cube is moved
         }
@@ -206,17 +203,25 @@ public class Cell : MonoBehaviour
         return newObstacles;
     }
 
+    private GameObject CreateKillzone(GameObject parentObj)
+    {
+        return Instantiate(killzonePrefab, parentObj.transform.position + Vector3.down * 70, parentObj.transform.rotation);
+    }
+
     //<summary> scales cube and spline by scale factor
     //<param : cube> cube in cell
     //<param : spline> spline in cell
     //<param : trigger> trigger in cell
-    private void ScaleTransforms(GameObject cube, GameObject spline, GameObject trigger)
+    private void ScaleTransforms(GameObject spline, GameObject grassSpline, GameObject trigger)
     {
-        cube.transform.localScale *= scaleFactor;
+            //cube.transform.localScale *= scaleFactor;
         spline.transform.localScale *= scaleFactor;
+        grassSpline.transform.localScale *= scaleFactor;
         trigger.transform.localScale *= scaleFactor;
-        cube.layer = 6;
+
+            //cube.layer = 6;
         spline.layer = 6;
+        grassSpline.layer = 6;
     }
 
     //<summary> alters rotation of the spline, cube, the triggerand obstacles
@@ -226,16 +231,11 @@ public class Cell : MonoBehaviour
     //<param : spline> spline in cell
     //<param : trigger> trigger in cell
     //<param : obstacles> obstacles in cell
-    public void AlterRotation(Quaternion prevRot, GameObject cube, GameObject spline, GameObject trigger, List<GameObject> obstacles)
+    public void AlterRotation(Quaternion prevRot, GameObject spline, GameObject grassSpline, GameObject trigger) 
     {
-        cube.transform.rotation = prevRot;
         spline.transform.rotation = prevRot;
-        trigger.transform.rotation = prevRot;
-
-        foreach (GameObject obstacle in obstacles)
-        {
-            obstacle.transform.rotation = prevRot;
-        }
+        grassSpline.transform.rotation = prevRot;
+        trigger.transform.rotation = prevRot * spline.transform.rotation;
     }
 
     //<summary> alters position of the spline and cube 
@@ -244,29 +244,29 @@ public class Cell : MonoBehaviour
     //<param : firstKnotPos> the position of the first knot in the current cell
     //<param : cube> cube in cell
     //<param : spline> spline in cell
-    public void AlterPosition(Vector3 lastKnotPos, Vector3 firstKnotPos, GameObject cube, GameObject spline)
+    public void AlterPosition(Vector3 lastKnotPos, Vector3 firstKnotPos, GameObject spline, GameObject grassSpline)
     {
         float distance = Vector3.Distance(lastKnotPos, firstKnotPos) - 0.5f;
         Vector3 directionVector = lastKnotPos - firstKnotPos;
         Vector3 normalizedDirection = directionVector.normalized;
 
-        Vector3 newPosCube = cube.transform.position + normalizedDirection * distance;
-        cube.transform.position = new Vector3(newPosCube.x, 0f, newPosCube.z);
-
         Vector3 newPosSpline = spline.transform.position + normalizedDirection * distance;
-        spline.transform.position = new Vector3(newPosSpline.x, 0f, newPosSpline.z);
+        spline.transform.position = new Vector3(newPosSpline.x, newPosSpline.y, newPosSpline.z);
+
+        Vector3 newGrassPos = grassSpline.transform.position + normalizedDirection * distance;
+        grassSpline.transform.position = new Vector3(newGrassPos.x, newGrassPos.y, newGrassPos.z);
     }
 
     public Vector3 GetFirstKnotPos()
     {
-        return (Vector3)activeCellObjects[0].transform.Find("Procedural Spline")?.GetComponent<SplineContainer>()?.EvaluatePosition(0.1f);
+        return (Vector3)activeCellObjects[0].transform.Find("Road Spline")?.GetComponent<SplineContainer>()?.EvaluatePosition(0.1f);
     }
 }
 
 //<summary> handles trigger events for individual cells, notifying the cell manager
-public class TriggerHandler : MonoBehaviour
+public class TriggerHandlerTemp : MonoBehaviour
 {
-    public Cell cellManager;
+    public DownCell cellManager;
     public int cellIndex;
 
     private void OnTriggerEnter(Collider other)
@@ -275,6 +275,9 @@ public class TriggerHandler : MonoBehaviour
         {
             //tell the cell manager that this trigger was activated
             cellManager.OnCellTriggered(cellIndex);
+
+            //get rid of the trigger after so players cant spam its
+            Destroy(this.gameObject);
         }
     }
 }
