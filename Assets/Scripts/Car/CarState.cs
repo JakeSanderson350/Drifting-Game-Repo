@@ -48,12 +48,12 @@ public class CarState : MonoBehaviour
             Debug.Log("Obstacle hit");
 
             health -= (int)(carSpeed * speedToHealthFactor);
-
             if (health <= 0)
             {
                 PlayCarDeathSound();
                 PlayScream();
-                onCarDeath.Invoke();
+                if (onCarDeath != null)
+                    onCarDeath.Invoke();
             }
             else
             {
@@ -69,8 +69,6 @@ public class CarState : MonoBehaviour
 
     public void PlayCollisionSound()
     {
-        audioSource.PlayOneShot(honkSound);
-
         float speedRatio = Mathf.Clamp01(carSpeed / 30f);
 
         audioSource.volume = Mathf.Lerp(minVolume, maxVolume, speedRatio);
@@ -85,6 +83,7 @@ public class CarState : MonoBehaviour
         audioSource.pitch = 1.0f;
 
         audioSource.PlayOneShot(carDeathSound);
+        Debug.Log("Playing death sound");
     }
     private void PlayScream()
     {

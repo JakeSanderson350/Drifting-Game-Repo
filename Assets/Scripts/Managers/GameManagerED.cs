@@ -80,7 +80,6 @@ public class GameManagerED : MonoBehaviour
         engineSounds.Stop();
         gameOverScreen.SetActive(true);
         Time.timeScale = 0f;
-        AudioListener.volume = 0f;
         gameOver = true;
     }
 
@@ -101,13 +100,13 @@ public class GameManagerED : MonoBehaviour
         pauseScreen.GetComponent<UIManager>().SetUIStatus(isPaused);
         if (isPaused)
         {
-            engineSounds.Pause();
-            AudioListener.volume = 0f;
+           // engineSounds.Pause();
+            //AudioListener.volume = 0f;
             Time.timeScale = 0f; 
         }
         else
         {
-            engineSounds.UnPause();
+            //engineSounds.UnPause();
             AudioListener.volume = 1f;
             Time.timeScale = 1f; 
         }
