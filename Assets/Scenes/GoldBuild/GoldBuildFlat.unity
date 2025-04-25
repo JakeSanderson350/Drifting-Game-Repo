@@ -602,6 +602,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3317793031702183444, guid: 78571b5290d34834e9f0c73a7d60ddf8, type: 3}
+      propertyPath: flatScene
+      value: GoldBuildFlat
+      objectReference: {fileID: 0}
+    - target: {fileID: 3317793031702183444, guid: 78571b5290d34834e9f0c73a7d60ddf8, type: 3}
+      propertyPath: downHillScene
+      value: GoldBuildDown
+      objectReference: {fileID: 0}
     - target: {fileID: 3940682408071966916, guid: 78571b5290d34834e9f0c73a7d60ddf8, type: 3}
       propertyPath: m_fontSize
       value: 12

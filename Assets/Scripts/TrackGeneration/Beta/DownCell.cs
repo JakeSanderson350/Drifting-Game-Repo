@@ -67,12 +67,12 @@ public class DownCell : MonoBehaviour
         GameObject cellObject = new GameObject("Cell_" + cellCounter);
 
         //init cube and spline, generate points on spline
-        GameObject newSpline = splineGen.Init();
+        GameObject roadSpline = splineGen.Init();
         splineGen.GenerateKnotsInBounds();
         grassSpline = splineGen.GetGrassSpline();
 
         //add underneath the empty gameobject
-        newSpline.transform.SetParent(cellObject.transform);
+        roadSpline.transform.SetParent(cellObject.transform);
         grassSpline.transform.SetParent(cellObject.transform);
 
         //create and set up trigger
@@ -80,34 +80,66 @@ public class DownCell : MonoBehaviour
         newTrigger.transform.SetParent(cellObject.transform);
 
         //add obstacles
-        List<GameObject> cellObstacles = CreateObstacles(newSpline);
+        List<GameObject> cellObstacles = CreateObstacles(roadSpline);
 
         //scale transforms
-        ScaleTransforms(newSpline, grassSpline, newTrigger);
+        ScaleTransforms(roadSpline, grassSpline, newTrigger);
 
         //apply rotation based on previous cell
-        AlterRotation(lastKnotRot, newSpline, grassSpline, newTrigger); 
+        AlterRotation(lastKnotRot, roadSpline, grassSpline, newTrigger); 
         //get first point on spline
-        firstKnotPos = splineGen.firstKnotPos(newSpline);
+        firstKnotPos = splineGen.firstKnotPos(roadSpline);
 
         //DO NOT alter position on first cell
         if (firstCellRendered)
         {
+            int maxAttempts = 10;
+            int attempt = 0;
+
+            // Get first knot position of current cell and check angle
+            Vector3 newFirstKnotPos = splineGen.firstKnotPos(roadSpline);
+
+            // While angle is not acceptable and we haven't exceeded max attempts
+            while (!IsConnectionAngleAcceptable(lastKnotTangent, newFirstKnotPos, lastKnotPos) && attempt < maxAttempts)
+            {
+                // Destroy current spline and grass spline
+                Destroy(roadSpline);
+                Destroy(grassSpline);
+
+                // Regenerate spline
+                roadSpline = splineGen.Init();
+                splineGen.GenerateKnotsInBounds();
+                grassSpline = splineGen.GetGrassSpline();
+
+                // Re-parent and re-apply transforms
+                roadSpline.transform.SetParent(cellObject.transform);
+                grassSpline.transform.SetParent(cellObject.transform);
+
+                // Scale and rotate again
+                ScaleTransforms(roadSpline, grassSpline, newTrigger);
+                AlterRotation(lastKnotRot, roadSpline, grassSpline, newTrigger);
+
+                // Get updated first knot position
+                newFirstKnotPos = splineGen.firstKnotPos(roadSpline);
+
+                attempt++;
+            }
+
             //alter position to connect with previous cell
-            AlterPosition(lastKnotPos, firstKnotPos, newSpline, grassSpline);
-            splineGen.AlterFirstKnot(lastKnotTangent, newSpline, grassSpline, lastKnotRot);
+            AlterPosition(lastKnotPos, firstKnotPos, roadSpline, grassSpline);
+            splineGen.AlterFirstKnot(lastKnotTangent, roadSpline, grassSpline, lastKnotRot);
         }
 
         //store last knot info
-        lastKnotPos = splineGen.lastKnotPos(newSpline);
-        lastKnotRot = splineGen.lastKnotRot(newSpline);
-        lastKnotTangent = splineGen.GetLastKnotTan(newSpline);
+        lastKnotPos = splineGen.lastKnotPos(roadSpline);
+        lastKnotRot = splineGen.lastKnotRot(roadSpline);
+        lastKnotTangent = splineGen.GetLastKnotTan(roadSpline);
 
         //move trigger to the end of this spline
         newTrigger.transform.position = lastKnotPos;
 
         //create killzone underneath cell
-        GameObject killzone = CreateKillzone(newSpline);
+        GameObject killzone = CreateKillzone(roadSpline);
         killzone.transform.SetParent(cellObject.transform);
 
         //alter grass spline
@@ -116,8 +148,6 @@ public class DownCell : MonoBehaviour
         //add to list
         activeCellObjects.Add(cellObject);
         firstCellRendered = true;
-
-        //newSpline.GetComponent<MeshRenderer>().material.renderQueue = 3000;
 
         //if we have more than MAX_ACTIVE_CELLS remove oldest
         if (isInitialized && activeCellObjects.Count > MAX_ACTIVE_CELLS)
@@ -260,6 +290,29 @@ public class DownCell : MonoBehaviour
     public Vector3 GetFirstKnotPos()
     {
         return (Vector3)activeCellObjects[0].transform.Find("Road Spline")?.GetComponent<SplineContainer>()?.EvaluatePosition(0.1f);
+    }
+
+    // <summary> checks if the angle between the last knot of the previous cell and first knot of current cell is acceptable
+    // <param : prevLastKnotTangent> Tangent of the last knot in previous cell
+    // <param : newFirstKnotPos> position of the first knot in new cell
+    // <param : prevLastKnotPos> position of the last knot in previous cell
+    // <returns> true if angle is below 90 degrees, false otherwise
+    private bool IsConnectionAngleAcceptable(Vector3 prevLastKnotTangent, Vector3 newFirstKnotPos, Vector3 prevLastKnotPos)
+    {
+        //direction vector
+        Vector3 connectionDirection = newFirstKnotPos - prevLastKnotPos;
+        connectionDirection.Normalize();
+
+        //normalize
+        Vector3 normalizedTangent = prevLastKnotTangent.normalized;
+
+        //calc angle
+        float angle = Vector3.Angle(normalizedTangent, connectionDirection);
+
+        Debug.Log($"Connection angle: {angle} degrees");
+
+        //return true if angle is below 90 degrees
+        return angle < 90.0f;
     }
 }
 

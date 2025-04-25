@@ -231,8 +231,26 @@ public class DownSpline : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
 
-        MeshCollider collider = obj.AddComponent<MeshCollider>();
-        collider.sharedMesh = obj.GetComponent<MeshFilter>().sharedMesh;
+        //check if obj exits
+        if (obj != null)
+        {
+            //check mesh filter exists
+            MeshFilter meshFilter = obj.GetComponent<MeshFilter>();
+
+            if (meshFilter != null && meshFilter.sharedMesh != null)
+            {
+                MeshCollider collider = obj.AddComponent<MeshCollider>();
+                collider.sharedMesh = meshFilter.sharedMesh;
+            }
+            else
+            {
+                Debug.LogWarning("Couldn't add collider: MeshFilter or sharedMesh is null");
+            }
+        }
+        else
+        {
+            Debug.Log("Skipping collider addition: GameObject was destroyed");
+        }
     }
 
     //<summary> gets the WORLD position of the FIRST knot in a spline

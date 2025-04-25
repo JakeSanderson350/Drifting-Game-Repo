@@ -46,7 +46,7 @@ public class VolumeController : MonoBehaviour
         PlayerPrefs.SetFloat(VOLUME_PREFS, currentVolume);
         PlayerPrefs.Save();
 
-        Debug.Log($"Volume set to: {currentVolume:F2} ({Mathf.Round(sliderValue * 100)}%)");
+        //Debug.Log($"Volume set to: {currentVolume:F2} ({Mathf.Round(sliderValue * 100)}%)");
     }
     public float GetCurrentVolume()
     {

@@ -14,6 +14,18 @@ public class MainMenu : MonoBehaviour
         playMenuButtons.SetActive(true);
     }
 
+    public void RestartGame()
+    {
+        if (SceneManager.GetActiveScene().name == downHillScene)
+        {
+            PlayGameDownhill();
+        }
+        else
+        {
+            PlayGameFlat();
+        }
+    }
+
     public void PlayGameDownhill()
     {
         Time.timeScale = 1.0f;
