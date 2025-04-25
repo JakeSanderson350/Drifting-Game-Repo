@@ -55,10 +55,8 @@ public class CarState : MonoBehaviour
                 PlayScream();
                 onCarDeath.Invoke();
             }
-            else
-            {
+
                 PlayCollisionSound();
-            }
         }
     }
 

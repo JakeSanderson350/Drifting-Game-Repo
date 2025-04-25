@@ -355,12 +355,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debrisParticlePrefab: {fileID: 980563096763372027, guid: 2ed80720d6cb37d4aabd9198a47ec20f, type: 3}
-  minParticleCount: 300
-  maxParticleCount: 600
+  minParticleCount: 150
+  maxParticleCount: 300
   minParticleSpeed: 5
   maxParticleSpeed: 15
   particleLifetime: 3
-  speedToParticlesMultiplier: 8
+  spreadAngle: 120
+  speedToParticlesMultiplier: 12
   vehicleRigidbody: {fileID: 7378872709621726207}
 --- !u!82 &4465913973733421193
 AudioSource:
@@ -375,7 +376,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: b19bd09141ea82940bd0dc5e877f944e, type: 3}
   m_Resource: {fileID: 8300000, guid: b19bd09141ea82940bd0dc5e877f944e, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.564
   m_Pitch: 1
   Loop: 0
   Mute: 0
