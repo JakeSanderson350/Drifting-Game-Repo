@@ -5,6 +5,7 @@ public class CarSpawn : MonoBehaviour
 {
     [SerializeField] private GameObject car;
     [SerializeField] private TempCell cell;
+    [SerializeField] private Cell cellFlat;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -16,6 +17,17 @@ public class CarSpawn : MonoBehaviour
     {
         yield return new WaitForSeconds(0.2f);
 
-        car.transform.position = cell.GetFirstKnotPos() + Vector3.up * 5;
+        if (cell != null)
+        {
+            car.transform.position = cell.GetFirstKnotPos() + Vector3.up * 5;
+        }
+        else if (cellFlat != null)
+        {
+            car.transform.position = cellFlat.GetFirstKnotPos() + Vector3.up * 5;
+        }
+        else
+        {
+            Debug.Log("No spawn point found");
+        }
     }
 }
