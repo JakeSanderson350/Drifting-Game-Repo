@@ -10,6 +10,7 @@ public class Cell : MonoBehaviour
     [Header("References")]
     public SplineC splineGen;
     public PrimitveC cubeGen;
+    [SerializeField] private GameObject killzonePrefab;
 
     [Header("Previous Values")]
     private Vector3 lastKnotPos;
@@ -97,6 +98,10 @@ public class Cell : MonoBehaviour
         //move trigger to the end of this spline
         newTrigger.transform.position = lastKnotPos;
 
+        //create killzone underneath cell
+        GameObject killzone = CreateKillzone(newSpline);
+        killzone.transform.SetParent(cellObject.transform);
+
         //add to list
         activeCellObjects.Add(cellObject);
         firstCellRendered = true;
@@ -166,6 +171,11 @@ public class Cell : MonoBehaviour
         return trigger;
     }
 
+    private GameObject CreateKillzone(GameObject parentObj)
+    {
+        return Instantiate(killzonePrefab, parentObj.transform.position + Vector3.down * 30, parentObj.transform.rotation);
+    }
+
     //<summary> spawn obstacles within the cell
     //<summary> make sure obstacles are NOT on road
     //<param : parentCube> cube in cell to act as parent 
@@ -184,7 +194,7 @@ public class Cell : MonoBehaviour
 
             do
             {
-                spawnPos = new Vector3(Random.Range(-xRange, xRange), 0.0f, Random.Range(-zRange, zRange));
+                spawnPos = new Vector3(Random.Range(-xRange, xRange), 0.45f, Random.Range(-zRange, zRange));
                 isValidSpawnPos = splineGen.IsOffRoad(spawnPos, obstaclesDistToRoad);
             } while (!isValidSpawnPos);
 
@@ -245,6 +255,11 @@ public class Cell : MonoBehaviour
 
         Vector3 newPosSpline = spline.transform.position + normalizedDirection * distance;
         spline.transform.position = new Vector3(newPosSpline.x, 0f, newPosSpline.z);
+    }
+
+    public Vector3 GetFirstKnotPos()
+    {
+        return (Vector3)activeCellObjects[0].transform.Find("Procedural Spline")?.GetComponent<SplineContainer>()?.EvaluatePosition(0.1f);
     }
 }
 
