@@ -54,6 +54,8 @@ public class TempCell : MonoBehaviour
     {
         GenerateCell();     //cell 1
         GenerateCell();     //cell 2
+        GenerateCell();     //cell 2
+        GenerateCell();     //cell 2
         isInitialized = true;
     }
 
@@ -61,7 +63,6 @@ public class TempCell : MonoBehaviour
     public void GenerateCell()
     {
         cellCounter++;
-
         //create an empty gameobject
         GameObject cellObject = new GameObject("Cell_" + cellCounter);
 
@@ -116,6 +117,7 @@ public class TempCell : MonoBehaviour
         activeCellObjects.Add(cellObject);
         firstCellRendered = true;
 
+        //newSpline.GetComponent<MeshRenderer>().material.renderQueue = 3000;
 
         //if we have more than MAX_ACTIVE_CELLS remove oldest
         if (isInitialized && activeCellObjects.Count > MAX_ACTIVE_CELLS)
@@ -273,6 +275,9 @@ public class TriggerHandlerTemp : MonoBehaviour
         {
             //tell the cell manager that this trigger was activated
             cellManager.OnCellTriggered(cellIndex);
+
+            //get rid of the trigger after so players cant spam its
+            Destroy(this.gameObject);
         }
     }
 }

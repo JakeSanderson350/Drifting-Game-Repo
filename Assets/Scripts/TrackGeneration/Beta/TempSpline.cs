@@ -17,6 +17,7 @@ public class TempSpline : MonoBehaviour
     public List<BezierKnot> roadKnots;     //collection of knots in current spline
     public List<BezierKnot> grassKnots;     //collection of knots in current spline
     public Material grassMaterial;
+    public Shader testingShader;
     private float avgSplineLength = 52.0f; //avg length of splines used to calc position of obstacles
 
     [Space(10)]
@@ -314,11 +315,10 @@ public class TempSpline : MonoBehaviour
 
         // Get y rotation
         float yRotation = rotation.eulerAngles.y;
-        // Convert knot rotation to Euler angles
+        //float zRotation = rotation.eulerAngles.z;
         float3 knotEuler = math.degrees(math.Euler(firstKnot.Rotation));
-        // Apply only y rotation
+
         knotEuler.y += yRotation;
-        // Convert back to quaternion
         firstKnot.Rotation = quaternion.Euler(math.radians(knotEuler));
 
         // Update the knot
@@ -326,6 +326,10 @@ public class TempSpline : MonoBehaviour
 
         var gContainer = givenSpline.GetComponent<SplineContainer>();
         var gSpline = gContainer.Spline;
+        gSpline.SetKnot(0, firstKnot);
+
+        //knotEuler.z += zRotation;
+        spline.SetKnot(0, firstKnot);
         gSpline.SetKnot(0, firstKnot);
     }
 
@@ -341,12 +345,12 @@ public class TempSpline : MonoBehaviour
 
         //change shader
         gSpline.GetComponent<MeshRenderer>().material.shader = Shader.Find("Standard");
+        //gSpline.GetComponent<MeshRenderer>().material.renderQueue = 0;
+        //gSpline.GetComponent<MeshRenderer>().material.shader = testingShader;
 
-        gSpline.GetComponent<MeshRenderer>().material.renderQueue = 1995;
-
-        //move down to prevent z fighting
+        //move down to prevent z fightingf
         Vector3 pos = gSpline.transform.position; 
-        //gSpline.transform.position = new Vector3(pos.x, pos.y - 0.3f, pos.z);
+        gSpline.transform.position = new Vector3(pos.x, pos.y-0.3f, pos.z);
     }
 
     //<summary> get random position to spawn obstacle based on posiiton on spline
