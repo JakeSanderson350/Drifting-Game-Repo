@@ -23,6 +23,11 @@ public class Cell : MonoBehaviour
     [SerializeField] private int numObstaclesPerCell = 10;
     [SerializeField] private float obstaclesDistToRoad = 4.0f;
 
+    [Header("Connection Angle")]
+    public bool useConnectionAngleCheck = false;
+    public float maxAngle = 90f;
+    public float maxAttmepts = 10;
+
     //cell management
     [SerializeField] private List<GameObject> activeCellObjects = new List<GameObject>();
     private int cellCounter = 0;
@@ -85,6 +90,10 @@ public class Cell : MonoBehaviour
         //DO NOT alter position on first cell
         if (firstCellRendered)
         {
+            if (useConnectionAngleCheck)
+            {
+                CheckConnectionAngle(newSpline, newCube, cellObject);
+            }
             //alter position to connect with previous cell
             AlterPosition(lastKnotPos, firstKnotPos, newCube, newSpline);
             splineGen.AlterFirstKnot(lastKnotTangent, newSpline, lastKnotRot);
@@ -260,6 +269,26 @@ public class Cell : MonoBehaviour
     public Vector3 GetFirstKnotPos()
     {
         return (Vector3)activeCellObjects[0].transform.Find("Procedural Spline")?.GetComponent<SplineContainer>()?.EvaluatePosition(0.1f);
+    }
+
+    public void CheckConnectionAngle(GameObject newSpline, GameObject newCube, GameObject cellObject)
+    {
+        GameObject previousSpline = activeCellObjects[activeCellObjects.Count - 1].transform.Find("Procedural Spline").gameObject;
+
+        int attempts = 0;
+
+        while (!splineGen.IsAngleBetweenCellsAcceptable(previousSpline, newSpline, maxAngle) && attempts < maxAttmepts)
+        {
+            // Destroy current spline and create a new one
+            Destroy(newSpline);
+            newSpline = splineGen.Init();
+            splineGen.GenerateKnots(newCube);
+            newSpline.transform.SetParent(cellObject.transform);
+
+            // Update first knot position
+            firstKnotPos = splineGen.firstKnotPos(newSpline);
+            attempts++;
+        }
     }
 }
 

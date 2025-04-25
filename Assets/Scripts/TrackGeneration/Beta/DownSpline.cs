@@ -66,7 +66,7 @@ public class DownSpline : MonoBehaviour
     }
 
     //<summary> generate a series of knots within given bounds
-    public void GenerateKnotsInBounds()
+    public void GenerateKnotsInBounds(bool addCollider = true)
     {
         grassObj.AddComponent<LoftRoadBehaviour>().IncreaseWidthsCount(1);
 
@@ -219,7 +219,10 @@ public class DownSpline : MonoBehaviour
         grassObj.GetComponent<LoftRoadBehaviour>().ClearWidth();
         grassObj.GetComponent<LoftRoadBehaviour>().EditWidth();
 
-        StartCoroutine(AddColliderAfterDelay(grassObj));
+        if (addCollider)
+        {
+            StartCoroutine(AddColliderAfterDelay(grassObj));
+        }
 
         // Add road script
         roadObj.AddComponent<LoftRoadBehaviour>().IncreaseWidthsCount(0);
@@ -227,7 +230,7 @@ public class DownSpline : MonoBehaviour
 
     }
 
-    private IEnumerator AddColliderAfterDelay(GameObject obj)
+    public IEnumerator AddColliderAfterDelay(GameObject obj)
     {
         yield return new WaitForSeconds(0.5f);
 
@@ -363,12 +366,10 @@ public class DownSpline : MonoBehaviour
 
         //change shader
         gSpline.GetComponent<MeshRenderer>().material.shader = Shader.Find("Standard");
-        //gSpline.GetComponent<MeshRenderer>().material.renderQueue = 0;
-        //gSpline.GetComponent<MeshRenderer>().material.shader = testingShader;
 
         //move down to prevent z fightingf
         Vector3 pos = gSpline.transform.position; 
-        gSpline.transform.position = new Vector3(pos.x, pos.y-0.3f, pos.z);
+        gSpline.transform.position = new Vector3(pos.x, pos.y, pos.z);
     }
 
     //<summary> get random position to spawn obstacle based on posiiton on spline

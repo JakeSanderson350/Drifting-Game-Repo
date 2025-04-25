@@ -2109,6 +2109,9 @@ MonoBehaviour:
   - {fileID: 6438372132684690647, guid: 3167be35371e2034baddfdd251fe99c7, type: 3}
   numObstaclesPerCell: 60
   obstaclesDistToRoad: 5
+  useConnectionAngleCheck: 1
+  maxAngle: 80
+  maxAttmepts: 15
   activeCellObjects: []
 --- !u!4 &1684093534
 Transform:

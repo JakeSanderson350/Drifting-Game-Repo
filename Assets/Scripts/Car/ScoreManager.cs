@@ -13,6 +13,7 @@ public class ScoreManager : MonoBehaviour
     private float scoreMultiplier = 1.0f;
     private Color textColor = Color.white;
     private bool isAlive;
+    private bool isPaused;
 
     public float donutTimeLimit = 15.0f;
     private float screenUse = 0.8f;
@@ -22,22 +23,25 @@ public class ScoreManager : MonoBehaviour
     private void OnEnable()
     {
         CarState.onCarDeath += GameOver;
+        CarState.togglePause += TogglePause;
     }
 
     private void OnDisable()
     {
         CarState.onCarDeath -= GameOver;
+        CarState.togglePause -= TogglePause;
     }
 
     void Start()
     {
         score = 0.0f;
         isAlive = true;
+        isPaused = false;
     }
 
     void Update()
     {
-        if (isAlive)
+        if (isAlive && !isPaused)
         {
             if (car.IsDrifting())
             {
@@ -115,6 +119,11 @@ public class ScoreManager : MonoBehaviour
     private void GameOver()
     {
         isAlive = false;
+    }
+
+    private void TogglePause()
+    {
+        isPaused = !isPaused;
     }
 
     public int GetScore()

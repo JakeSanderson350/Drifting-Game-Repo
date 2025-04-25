@@ -240,4 +240,20 @@ public class FlatSpline : MonoBehaviour
 
         return true;
     }
+
+    public bool IsAngleBetweenCellsAcceptable(GameObject previousSpline, GameObject currentSpline, float maxAllowedAngle)
+    {
+        SplineContainer prevContainer = previousSpline.GetComponent<SplineContainer>();
+        Vector3 prevTangent = prevContainer.Spline.EvaluateTangent(1f);
+        prevTangent = previousSpline.transform.TransformDirection(prevTangent).normalized;
+
+        SplineContainer currContainer = currentSpline.GetComponent<SplineContainer>();
+        Vector3 currTangent = currContainer.Spline.EvaluateTangent(0f);
+        currTangent = currentSpline.transform.TransformDirection(currTangent).normalized;
+
+        float angle = Vector3.Angle(prevTangent, currTangent);
+        Debug.Log($"Connection angle: {angle} degrees");
+
+        return angle <= maxAllowedAngle;
+    }
 }

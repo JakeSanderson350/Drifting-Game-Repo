@@ -18,6 +18,9 @@ Shader "Unlit/GoochShader"
         // Fresnel effect properties
         _FresnelColor ("Fresnel Color", Color) = (0.5, 0.5, 1.0, 1) // Color for fresnel effect
         _FresnelPower ("Fresnel Power", Range(0.1, 10.0)) = 2.0 // Controls fresnel falloff
+
+        _OffsetFactor ("Offset Factor", Float) = -1
+        _OffsetUnits ("Offset Units", Float) = -1
     }
     SubShader
     {
@@ -75,6 +78,8 @@ Shader "Unlit/GoochShader"
         // Main Pass - Gooch shading with enhancements
         Pass
         {
+            Offset [_OffsetFactor], [_OffsetUnits]
+
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
