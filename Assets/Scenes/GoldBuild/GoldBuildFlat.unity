@@ -1518,6 +1518,10 @@ PrefabInstance:
       propertyPath: 'trailAttachPoints.Array.data[1]'
       value: 
       objectReference: {fileID: 883021092}
+    - target: {fileID: 3367307440592862184, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
+      propertyPath: spreadAngle
+      value: 90
+      objectReference: {fileID: 0}
     - target: {fileID: 3488100902572810491, guid: 922b1b1fc0c0e624180deeb413bf2554, type: 3}
       propertyPath: tireScreechAudio
       value: 
@@ -1743,7 +1747,7 @@ MonoBehaviour:
   gameOverScreen: {fileID: 1001942337}
   pauseScreen: {fileID: 816305238}
   scoreManager: {fileID: 1177215278}
-  engineSounds: {fileID: 0}
+  engineSounds: {fileID: 1177215282}
   isPaused: 0
 --- !u!114 &1177215278
 MonoBehaviour:
@@ -1816,7 +1820,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 2a6f88f1f88ee134d91d2b821a37f2cc, type: 3}
   m_Resource: {fileID: 8300000, guid: 2a6f88f1f88ee134d91d2b821a37f2cc, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.4
+  m_Volume: 0.156
   m_Pitch: 1
   Loop: 1
   Mute: 0
